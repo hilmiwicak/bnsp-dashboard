@@ -26,7 +26,8 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            // The 'hashed' cast is intentionally omitted: passwords are hashed with
+            // password_hash() in AuthController, and casting would hash them twice.
         ];
     }
 }
