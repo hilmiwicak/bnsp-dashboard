@@ -34,17 +34,21 @@ class ModuleNavigationTest extends TestCase
 
     public function test_every_module_page_is_reachable(): void
     {
-        $slugs = [
-            'laporan',
+        $paths = [
+            '/dashboard',
+            '/tenants',
+            '/ruang-fasilitas',
+            '/pemesanan',
+            '/kontrak-sewa',
+            '/jadwal-ruang',
+            '/tagihan-pembayaran',
+            '/laporan',
         ];
 
-        $user = User::factory()->create();
+        $admin = User::factory()->create();
 
-        foreach ($slugs as $slug) {
-            $this->actingAs($user)
-                ->get("/{$slug}")
-                ->assertOk()
-                ->assertSee('Tahap berikutnya');
+        foreach ($paths as $path) {
+            $this->actingAs($admin)->get($path)->assertOk();
         }
     }
 

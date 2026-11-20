@@ -6,6 +6,7 @@ use App\Http\Controllers\ContractController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PortalController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\TenantApplicationController;
@@ -57,19 +58,7 @@ Route::middleware('auth')->group(function () {
         Route::patch('tagihan-pembayaran/{invoice}/lunas', [InvoiceController::class, 'markPaid'])
             ->name('tagihan-pembayaran.lunas');
 
-        // Modul standar kantor virtual selain Data Tenant. Struktur halaman sudah
-        // disiapkan (judul, deskripsi, kolom tabel) dan datanya menyusul.
-        $modules = [
-            'laporan' => [
-                'heading' => 'Laporan',
-                'description' => 'Rekap data tenant, pemesanan, dan pendapatan kantor virtual per periode.',
-                'columns' => ['Periode', 'Total Tenant', 'Total Pemesanan', 'Total Pendapatan', 'Status'],
-            ],
-        ];
-
-        foreach ($modules as $slug => $module) {
-            Route::view($slug, 'modules.placeholder', $module)->name($slug.'.index');
-        }
+        Route::get('laporan', [ReportController::class, 'index'])->name('laporan.index');
     });
 
     // Portal untuk tenant dan customer.

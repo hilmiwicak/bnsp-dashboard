@@ -167,7 +167,15 @@ class Booking extends Model
      */
     public function statusTone(): string
     {
-        return match ($this->status) {
+        return self::toneFor($this->status);
+    }
+
+    /**
+     * Warna badge untuk sebuah status pemesanan.
+     */
+    public static function toneFor(string $status): string
+    {
+        return match ($status) {
             'Disetujui' => 'green',
             'Menunggu' => 'amber',
             'Ditolak' => 'rose',
