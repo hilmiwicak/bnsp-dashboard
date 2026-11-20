@@ -14,5 +14,55 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::view('/dashboard', 'dashboard')->name('dashboard');
+
+    // Modul standar kantor virtual selain Data Penyewa. Struktur halaman sudah
+    // disiapkan (judul, deskripsi, kolom tabel) dan datanya menyusul.
+    $modules = [
+        'paket-layanan' => [
+            'heading' => 'Data Paket Layanan',
+            'description' => 'Kelola paket keanggotaan kantor virtual beserta harga dan fasilitas yang disertakan.',
+            'columns' => ['Kode Paket', 'Nama Paket', 'Harga / Bulan', 'Fasilitas', 'Status'],
+        ],
+        'ruang-fasilitas' => [
+            'heading' => 'Data Ruang & Fasilitas',
+            'description' => 'Daftar ruang meeting, private office, dan fasilitas pendukung yang dapat dipesan penyewa.',
+            'columns' => ['Kode Ruang', 'Nama Ruang', 'Kapasitas', 'Lokasi', 'Status'],
+        ],
+        'layanan-tambahan' => [
+            'heading' => 'Data Layanan Tambahan',
+            'description' => 'Layanan pendukung seperti alamat domisili, mail handling, resepsionis, dan notaris.',
+            'columns' => ['Kode Layanan', 'Nama Layanan', 'Tarif', 'Satuan', 'Status'],
+        ],
+        'pemesanan' => [
+            'heading' => 'Pemesanan',
+            'description' => 'Catat pemesanan ruang dan layanan yang diajukan oleh penyewa kantor virtual.',
+            'columns' => ['Kode Pemesanan', 'Penyewa', 'Ruang / Layanan', 'Tanggal', 'Durasi', 'Status'],
+        ],
+        'kontrak-sewa' => [
+            'heading' => 'Kontrak Sewa',
+            'description' => 'Kelola dokumen kontrak sewa aktif, termasuk periode dan paket layanan yang disepakati.',
+            'columns' => ['Nomor Kontrak', 'Penyewa', 'Paket', 'Mulai', 'Berakhir', 'Status'],
+        ],
+        'jadwal-ruang' => [
+            'heading' => 'Jadwal Penggunaan Ruang',
+            'description' => 'Pantau jadwal pemakaian ruang meeting agar tidak terjadi bentrok antar penyewa.',
+            'columns' => ['Ruang', 'Penyewa', 'Tanggal', 'Jam Mulai', 'Jam Selesai', 'Status'],
+        ],
+        'tagihan-pembayaran' => [
+            'heading' => 'Tagihan & Pembayaran',
+            'description' => 'Terbitkan tagihan bulanan penyewa dan catat pembayaran yang sudah diterima.',
+            'columns' => ['No. Tagihan', 'Penyewa', 'Periode', 'Jumlah', 'Jatuh Tempo', 'Status'],
+        ],
+        'laporan' => [
+            'heading' => 'Laporan',
+            'description' => 'Rekap data penyewa, pemesanan, dan pendapatan kantor virtual per periode.',
+            'columns' => ['Periode', 'Total Penyewa', 'Total Pemesanan', 'Total Pendapatan', 'Status'],
+        ],
+    ];
+
+    foreach ($modules as $slug => $module) {
+        Route::view($slug, 'modules.placeholder', $module)->name($slug.'.index');
+    }
+
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });

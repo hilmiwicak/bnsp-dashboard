@@ -12,6 +12,9 @@ export default defineConfig({
                 bunny('Poppins', {
                     weights: [400, 500, 600, 700],
                 }),
+                bunny('Inter', {
+                    weights: [400, 500, 600, 700],
+                }),
             ],
         }),
         tailwindcss(),
