@@ -74,6 +74,24 @@
                         <span class="absolute right-[11px] top-[9px] h-2 w-2 rounded-full bg-[#fe5c73] ring-2 ring-white"></span>
                     </button>
 
+                    {{-- Logout selalu terlihat, untuk semua role. --}}
+                    <form method="POST" action="{{ route('logout') }}" class="shrink-0">
+                        @csrf
+
+                        <button
+                            type="submit"
+                            class="flex h-[44px] w-[44px] items-center justify-center gap-2 rounded-full bg-white text-dash-muted shadow-[0_2px_12px_rgba(25,35,80,0.08)] transition hover:text-dash-alert focus:outline-none focus-visible:ring-2 focus-visible:ring-dash-primary/30 sm:h-[50px] sm:w-auto sm:px-5"
+                            aria-label="Logout"
+                            title="Logout"
+                        >
+                            <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
+                            </svg>
+
+                            <span class="hidden text-[14px] font-medium sm:inline">Logout</span>
+                        </button>
+                    </form>
+
                     <div class="flex h-[44px] w-[44px] items-center justify-center rounded-full bg-[#dfe7f5] text-[13px] font-semibold text-dash-ink sm:h-[52px] sm:w-[52px] lg:h-[60px] lg:w-[60px] lg:text-[15px]">
                         {{ $initials ?: 'KV' }}
                     </div>

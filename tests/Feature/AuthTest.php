@@ -116,6 +116,23 @@ class AuthTest extends TestCase
         $this->assertGuest();
     }
 
+    public function test_every_role_can_log_out(): void
+    {
+        $accounts = [
+            User::factory()->create(),
+            User::factory()->tenant()->create(),
+            User::factory()->customer()->create(),
+        ];
+
+        foreach ($accounts as $user) {
+            $this->actingAs($user)
+                ->post('/logout')
+                ->assertRedirect('/login');
+
+            $this->assertGuest();
+        }
+    }
+
     public function test_dashboard_requires_authentication(): void
     {
         $this->get('/dashboard')->assertRedirect('/login');

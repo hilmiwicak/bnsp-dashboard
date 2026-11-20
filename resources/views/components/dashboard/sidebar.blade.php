@@ -30,7 +30,7 @@
         <span class="truncate text-[20px] font-bold tracking-tight text-dash-ink">Kantor Virtual.</span>
     </div>
 
-    <nav class="flex flex-1 flex-col gap-1 pb-6" aria-label="Navigasi utama">
+    <nav class="flex flex-1 flex-col gap-1 overflow-y-auto pb-6" aria-label="Navigasi utama">
         @foreach ($items as $item)
             <x-dashboard.nav-item
                 :icon="$item['icon']"
@@ -42,7 +42,7 @@
         @endforeach
     </nav>
 
-    <form method="POST" action="{{ route('logout') }}" class="mt-auto border-t border-dash-line/70">
+    <form method="POST" action="{{ route('logout') }}" class="mt-auto shrink-0 border-t border-dash-line/70">
         @csrf
         <x-dashboard.nav-item icon="logout">Logout</x-dashboard.nav-item>
     </form>

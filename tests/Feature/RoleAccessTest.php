@@ -83,6 +83,26 @@ class RoleAccessTest extends TestCase
         $response->assertSee('Logout');
     }
 
+    public function test_every_role_sees_a_logout_control(): void
+    {
+        $logoutUrl = 'action="'.route('logout').'"';
+
+        $this->actingAs(User::factory()->create())
+            ->get('/dashboard')
+            ->assertOk()
+            ->assertSee($logoutUrl, false);
+
+        $this->actingAs(User::factory()->tenant()->create())
+            ->get('/portal')
+            ->assertOk()
+            ->assertSee($logoutUrl, false);
+
+        $this->actingAs(User::factory()->customer()->create())
+            ->get('/portal')
+            ->assertOk()
+            ->assertSee($logoutUrl, false);
+    }
+
     public function test_login_sends_a_customer_to_the_portal(): void
     {
         $customer = User::factory()->customer()->create([
