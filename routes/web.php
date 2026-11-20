@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PortalController;
+use App\Http\Controllers\RoomController;
 use App\Http\Controllers\TenantApplicationController;
 use App\Http\Controllers\TenantController;
 use Illuminate\Http\Request;
@@ -26,14 +27,13 @@ Route::middleware('auth')->group(function () {
 
         Route::resource('tenants', TenantController::class)->except('show');
 
+        Route::resource('ruang-fasilitas', RoomController::class)
+            ->parameters(['ruang-fasilitas' => 'room'])
+            ->except('show');
+
         // Modul standar kantor virtual selain Data Tenant. Struktur halaman sudah
         // disiapkan (judul, deskripsi, kolom tabel) dan datanya menyusul.
         $modules = [
-            'ruang-fasilitas' => [
-                'heading' => 'Data Ruang & Fasilitas',
-                'description' => 'Daftar ruang meeting, private office, dan fasilitas pendukung yang dapat dipesan tenant.',
-                'columns' => ['Kode Ruang', 'Nama Ruang', 'Kapasitas', 'Lokasi', 'Status'],
-            ],
             'pemesanan' => [
                 'heading' => 'Pemesanan',
                 'description' => 'Catat pemesanan ruang dan layanan yang diajukan oleh tenant kantor virtual.',

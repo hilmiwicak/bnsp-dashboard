@@ -90,14 +90,4 @@ class TenantController extends Controller
             ->route('tenants.index')
             ->with('status', "Data tenant {$nama} berhasil dihapus.");
     }
-
-    /**
-     * Only accept filter values that exist in the allowed list.
-     *
-     * @param  list<string>  $allowed
-     */
-    private function allowedFilter(mixed $value, array $allowed): ?string
-    {
-        return is_string($value) && in_array($value, $allowed, true) ? $value : null;
-    }
 }

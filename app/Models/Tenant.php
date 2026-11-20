@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasSequentialCode;
 use Database\Factories\TenantFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
@@ -27,7 +28,7 @@ use Illuminate\Support\Carbon;
 class Tenant extends Model
 {
     /** @use HasFactory<TenantFactory> */
-    use HasFactory;
+    use HasFactory, HasSequentialCode;
 
     /**
      * Status keanggotaan tenant.
@@ -69,12 +70,7 @@ class Tenant extends Model
      */
     public static function nextKodeTenant(): string
     {
-        $terakhir = static::query()
-            ->pluck('kode_tenant')
-            ->map(fn (string $kode) => (int) preg_replace('/\D+/', '', $kode))
-            ->max() ?? 0;
-
-        return 'TNT-'.str_pad((string) ($terakhir + 1), 3, '0', STR_PAD_LEFT);
+        return static::nextCode('TNT', 'kode_tenant');
     }
 
     /**
