@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BookingController;
 use App\Http\Controllers\PortalController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\TenantApplicationController;
@@ -31,14 +32,16 @@ Route::middleware('auth')->group(function () {
             ->parameters(['ruang-fasilitas' => 'room'])
             ->except('show');
 
+        Route::resource('pemesanan', BookingController::class)
+            ->parameters(['pemesanan' => 'booking'])
+            ->except('show');
+
+        Route::patch('pemesanan/{booking}/status', [BookingController::class, 'updateStatus'])
+            ->name('pemesanan.status');
+
         // Modul standar kantor virtual selain Data Tenant. Struktur halaman sudah
         // disiapkan (judul, deskripsi, kolom tabel) dan datanya menyusul.
         $modules = [
-            'pemesanan' => [
-                'heading' => 'Pemesanan',
-                'description' => 'Catat pemesanan ruang dan layanan yang diajukan oleh tenant kantor virtual.',
-                'columns' => ['Kode Pemesanan', 'Tenant', 'Ruang / Layanan', 'Tanggal', 'Durasi', 'Status'],
-            ],
             'kontrak-sewa' => [
                 'heading' => 'Kontrak Sewa',
                 'description' => 'Kelola dokumen kontrak sewa aktif, termasuk periode dan status kontrak yang disepakati.',

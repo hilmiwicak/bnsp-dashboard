@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable([
     'kode_ruang',
@@ -66,6 +67,14 @@ class Room extends Model
     public static function nextKodeRuang(): string
     {
         return static::nextCode('RNG', 'kode_ruang');
+    }
+
+    /**
+     * Pemesanan yang memakai ruang ini.
+     */
+    public function bookings(): HasMany
+    {
+        return $this->hasMany(Booking::class);
     }
 
     /**

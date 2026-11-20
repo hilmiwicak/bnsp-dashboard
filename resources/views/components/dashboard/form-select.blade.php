@@ -11,9 +11,13 @@
 @php
     $current = (string) old($name, $selected);
 
-    $options = collect($options)->mapWithKeys(
-        fn ($label, $value) => [is_int($value) ? $label : $value => $label]
-    );
+    // Daftar biasa (['Aktif', 'Nonaktif']) memakai label sebagai nilainya,
+    // sedangkan array ber-key (id => label) mempertahankan key sebagai nilai.
+    $options = collect($options);
+    $isList = $options->isEmpty() || $options->keys()->all() === range(0, $options->count() - 1);
+    $options = $isList
+        ? $options->mapWithKeys(fn ($label) => [$label => $label])
+        : $options;
 
     $base = 'h-[50px] w-full appearance-none rounded-2xl border bg-white pl-4 pr-11 text-[15px] outline-none transition focus:ring-4';
 

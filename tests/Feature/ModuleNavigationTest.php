@@ -35,7 +35,6 @@ class ModuleNavigationTest extends TestCase
     public function test_every_module_page_is_reachable(): void
     {
         $slugs = [
-            'pemesanan',
             'kontrak-sewa',
             'jadwal-ruang',
             'tagihan-pembayaran',

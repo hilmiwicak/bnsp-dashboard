@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
         // Data tenant lebih dulu, karena akun tenant perlu dihubungkan ke salah satunya.
         $this->call(TenantSeeder::class);
         $this->call(RoomSeeder::class);
+        $this->call(BookingSeeder::class);
 
         $this->seedAccount('admin@example.com', 'Admin User', UserRole::Admin);
 
