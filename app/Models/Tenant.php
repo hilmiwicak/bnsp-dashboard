@@ -65,6 +65,19 @@ class Tenant extends Model
     }
 
     /**
+     * Kode tenant berikutnya untuk pengajuan mandiri, mis. TNT-009.
+     */
+    public static function nextKodeTenant(): string
+    {
+        $terakhir = static::query()
+            ->pluck('kode_tenant')
+            ->map(fn (string $kode) => (int) preg_replace('/\D+/', '', $kode))
+            ->max() ?? 0;
+
+        return 'TNT-'.str_pad((string) ($terakhir + 1), 3, '0', STR_PAD_LEFT);
+    }
+
+    /**
      * Cari tenant berdasarkan kode, nama PIC, perusahaan, email, atau nomor HP.
      */
     public function scopeSearch(Builder $query, ?string $term): Builder

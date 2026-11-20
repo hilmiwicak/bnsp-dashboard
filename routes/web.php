@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PortalController;
+use App\Http\Controllers\TenantApplicationController;
 use App\Http\Controllers\TenantController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -68,6 +69,10 @@ Route::middleware('auth')->group(function () {
     // Portal untuk tenant dan customer.
     Route::middleware('role:tenant,customer')->group(function () {
         Route::get('/portal', [PortalController::class, 'index'])->name('portal');
+
+        // Pengajuan sewa mandiri bagi customer yang belum punya data tenant.
+        Route::get('/portal/pengajuan', [TenantApplicationController::class, 'create'])->name('portal.apply');
+        Route::post('/portal/pengajuan', [TenantApplicationController::class, 'store'])->name('portal.apply.store');
     });
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

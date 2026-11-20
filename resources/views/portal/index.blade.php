@@ -108,14 +108,7 @@
                             @endforeach
                         </dl>
                     @else
-                        <div class="flex items-center justify-between gap-4">
-                            <h2 class="text-[20px] font-semibold tracking-tight text-dash-ink lg:text-[22px]">Langkah Selanjutnya</h2>
-
-                            <span class="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#fff5d1] px-3 py-1 text-[12px] font-semibold text-[#b57e00]">
-                                <span class="h-1.5 w-1.5 rounded-full bg-[#ffbb38]"></span>
-                                Tahap berikutnya
-                            </span>
-                        </div>
+                        <h2 class="text-[20px] font-semibold tracking-tight text-dash-ink lg:text-[22px]">Langkah Selanjutnya</h2>
 
                         <ol class="mt-5 space-y-4">
                             @foreach ($steps as $step)
@@ -127,6 +120,15 @@
                                 </li>
                             @endforeach
                         </ol>
+
+                        <div class="mt-6">
+                            <x-dashboard.button :href="route('portal.apply')" class="w-full">
+                                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                </svg>
+                                Ajukan Sewa
+                            </x-dashboard.button>
+                        </div>
                     @endif
                 </div>
             </section>
