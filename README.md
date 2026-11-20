@@ -1,58 +1,185 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Kantor Virtual — Sistem Informasi Manajemen
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A management information system for a **virtual office**: tenants, bookable
+rooms and facilities, room bookings, tenancy contracts, monthly invoices, a room
+usage schedule, and yearly reports.
 
-## About Laravel
+Built with Laravel as a BNSP certification project. The interface is in
+Indonesian and follows a clean, modern dashboard design.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Features
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+| Menu | What it does |
+|---|---|
+| **Dashboard** | Live summary: tenant totals and status split, seven-day booking activity, six-month paid revenue, outstanding bills, newest tenants |
+| **Data Tenant** | Full CRUD for tenants, with keyword search and status filter |
+| **Data Ruang & Fasilitas** | Full CRUD for rooms and their facilities, filterable by type and status |
+| **Pemesanan** | Full CRUD for room bookings, with double-booking detection and one-click approval |
+| **Kontrak Sewa** | Full CRUD for tenancy contracts; duration is derived from the contract period |
+| **Jadwal Penggunaan Ruang** | Read-only schedule, built from approved bookings and grouped by date |
+| **Tagihan & Pembayaran** | Full CRUD for monthly invoices, with one-click settlement and an outstanding total |
+| **Laporan** | Yearly report: bookings, paid revenue and outstanding bills per month, plus a booking status breakdown |
 
-## Learning Laravel
+Additional behaviour:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- **Authentication** — register, login, logout, with hashed passwords.
+- **Roles** — `admin`, `tenant`, `customer`, enforced per route.
+- **Tenant portal** — non-admin accounts get a portal instead of the admin area.
+- **Self-service application** — a customer can apply for a tenancy, which
+  creates the tenant record and promotes the account to `tenant`.
+- **Booking conflict detection** — overlapping bookings on the same room and
+  date are rejected; back-to-back slots are allowed.
+- **No external chart library** — the bar, pie and line charts are hand-built
+  SVG components.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## Roles
 
-## Agentic Development
+| Role | Lands on | Access |
+|---|---|---|
+| `admin` | `/dashboard` | Full CRUD on tenants, rooms, bookings, contracts and invoices |
+| `tenant` | `/portal` | Read-only view of their own tenancy |
+| `customer` | `/portal` | Read-only portal plus the tenancy application form |
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+Wrong role gets `403`; guests are redirected to `/login`. The full role × route
+matrix is in [`docs/BUILD-HISTORY.md`](docs/BUILD-HISTORY.md).
+
+---
+
+## Tech stack
+
+- **PHP** 8.3+ · **Laravel** 13
+- **MySQL / MariaDB** (the project was developed against MariaDB via Laravel Herd)
+- **Tailwind CSS** 4 · **Vite** 8
+- **PHPUnit** 12 · **Laravel Pint** for code style
+- Fonts: Poppins (auth screens), Inter (dashboard), self-hosted through the
+  Vite font plugin
+
+---
+
+## Requirements
+
+- PHP 8.3 or newer with the usual Laravel extensions
+- Composer 2
+- Node.js 20.19+ or 22.12+ (required by Vite 8) and npm
+- MySQL or MariaDB
+
+---
+
+## Installation
 
 ```bash
-composer require laravel/boost --dev
+# 1. Dependencies
+composer install
+npm install
 
-php artisan boost:install
+# 2. Environment
+cp .env.example .env
+php artisan key:generate
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Point the database settings in `.env` at your MySQL/MariaDB server:
 
-## Contributing
+```dotenv
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=bnsp_laravel
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Then create the schema and the sample data:
 
-## Code of Conduct
+```bash
+php artisan migrate --seed
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Build the front-end assets, then run the app:
 
-## Security Vulnerabilities
+```bash
+npm run build      # production build
+php artisan serve  # http://127.0.0.1:8000
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+While developing, `composer dev` starts the PHP server, the queue listener, the
+log tailer and the Vite dev server together. `composer setup` is a shortcut that
+installs dependencies, creates `.env`, generates the key, migrates, and builds
+assets — but it does not seed, so run `php artisan db:seed` afterwards.
 
-## License
+To start over with fresh sample data:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+php artisan migrate:fresh --seed
+```
+
+### Demo accounts
+
+All demo accounts use the password `password`.
+
+| Email | Role | Notes |
+|---|---|---|
+| `admin@example.com` | Admin | Full management area |
+| `tenant@example.com` | Tenant | Linked to tenant `TNT-001` |
+| `customer@example.com` | Customer | Can submit a tenancy application |
+
+---
+
+## Testing
+
+```bash
+php artisan test
+```
+
+Tests run against an in-memory SQLite database, so no MySQL setup is needed and
+your development data is untouched. The suite covers authentication, role
+access, every module's CRUD, booking conflicts, invoice settlement, the
+dashboard aggregates, the reports, and the seeders.
+
+Code style:
+
+```bash
+./vendor/bin/pint
+```
+
+---
+
+## Project structure
+
+```
+app/
+  Enums/UserRole.php              admin / tenant / customer
+  Http/Controllers/               one controller per module
+  Http/Middleware/                EnsureUserHasRole (alias: role)
+  Http/Requests/                  validation per entity
+  Models/                         Tenant, Room, Booking, Contract, Invoice, User
+  Models/Concerns/                HasSequentialCode (TNT-001, RNG-001, …)
+  Support/Bulan.php               Indonesian day and month names
+resources/views/
+  dashboard.blade.php             admin dashboard
+  components/dashboard/           sidebar, stat cards, charts, table, form fields
+  components/layouts/             auth and dashboard layouts
+  {tenants,rooms,bookings,contracts,invoices,schedules,reports,portal}/
+database/
+  migrations/                     schema
+  seeders/                        demo data, safe to run repeatedly
+  factories/                      test data
+docs/BUILD-HISTORY.md             how the project was built, step by step
+```
+
+---
+
+## Notes
+
+- **`paket layanan` and `layanan tambahan` are intentionally out of scope** —
+  there is no column, menu, or module for them.
+- **Fonts need network access at build time.** `npm run build` downloads Poppins
+  and Inter from `fonts.bunny.net`; allow that host if the build fails.
+- **Room and tenant deletion cascades** to their bookings, contracts and
+  invoices. Deleting a tenant keeps the login accounts, which end up with a
+  null `tenant_id`.
+- **Tenants have no write access.** Booking rooms and viewing invoices are
+  admin-only; a tenant-facing booking flow is the natural next step.
