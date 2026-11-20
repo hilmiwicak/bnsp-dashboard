@@ -12,7 +12,7 @@
         'bg-[#fde9f1] text-[#ff82ac]',
     ];
 
-    $isFiltered = $filters['q'] !== '' || $filters['paket_layanan'] || $filters['status'];
+    $isFiltered = $filters['q'] !== '' || $filters['status'];
 @endphp
 
 <x-layouts.dashboard title="Data Penyewa" heading="Data Penyewa">
@@ -57,16 +57,6 @@
                     </div>
                 </div>
 
-                <div class="w-full sm:w-[190px]">
-                    <x-dashboard.form-select
-                        name="paket_layanan"
-                        label="Paket Layanan"
-                        :options="\App\Models\Penyewa::PAKET_LAYANAN"
-                        :selected="$filters['paket_layanan']"
-                        placeholder="Semua Paket"
-                    />
-                </div>
-
                 <div class="w-full sm:w-[180px]">
                     <x-dashboard.form-select
                         name="status"
@@ -98,7 +88,6 @@
                             <th scope="col" class="px-6 py-4 font-medium lg:px-8">Kode</th>
                             <th scope="col" class="px-6 py-4 font-medium">Penyewa</th>
                             <th scope="col" class="px-6 py-4 font-medium">Kontak</th>
-                            <th scope="col" class="px-6 py-4 font-medium">Paket Layanan</th>
                             <th scope="col" class="px-6 py-4 font-medium">Masa Sewa</th>
                             <th scope="col" class="px-6 py-4 font-medium">Status</th>
                             <th scope="col" class="px-6 py-4 text-right font-medium lg:px-8">Aksi</th>
@@ -129,11 +118,7 @@
                                     <p class="text-[13px] text-dash-muted">{{ $item->no_hp }}</p>
                                 </td>
 
-                                <td class="whitespace-nowrap px-6 py-4 text-[15px] text-dash-ink">
-                                    {{ $item->paket_layanan }}
-                                </td>
-
-                                <td class="whitespace-nowrap px-6 py-4 text-[15px] text-dash-ink">
+                                <td class="whitespace-nowrap px-6 py-4 text-sm text-dash-ink">
                                     {{ $item->tanggal_mulai_sewa->format('d/m/Y') }}
                                     <span class="block text-[13px] text-dash-muted">
                                         {{ $item->durasi_sewa }} bulan &middot; s.d. {{ $item->masaSewaBerakhir()->format('d/m/Y') }}
@@ -174,7 +159,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="px-6 py-16 text-center">
+                                <td colspan="6" class="px-6 py-16 text-center">
                                     <span class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-dash-surface text-dash-muted">
                                         <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />

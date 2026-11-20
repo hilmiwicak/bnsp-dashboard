@@ -20,7 +20,6 @@ use Illuminate\Support\Carbon;
     'alamat',
     'no_hp',
     'email',
-    'paket_layanan',
     'tanggal_mulai_sewa',
     'durasi_sewa',
     'status',
@@ -36,18 +35,6 @@ class Penyewa extends Model
      * @var string
      */
     protected $table = 'penyewa';
-
-    /**
-     * Paket layanan yang tersedia pada kantor virtual.
-     *
-     * @var list<string>
-     */
-    public const PAKET_LAYANAN = [
-        'Virtual Office',
-        'Virtual Office Plus',
-        'Private Office',
-        'Ruang Meeting',
-    ];
 
     /**
      * Status keanggotaan penyewa.

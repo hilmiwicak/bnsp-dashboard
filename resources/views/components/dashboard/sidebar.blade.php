@@ -2,9 +2,7 @@
     $items = [
         ['label' => 'Dashboard', 'icon' => 'home', 'route' => 'dashboard', 'active' => 'dashboard'],
         ['label' => 'Data Penyewa', 'icon' => 'users', 'route' => 'penyewa.index', 'active' => 'penyewa.*'],
-        ['label' => 'Data Paket Layanan', 'icon' => 'package', 'route' => 'paket-layanan.index', 'active' => 'paket-layanan.*'],
         ['label' => 'Data Ruang & Fasilitas', 'icon' => 'building', 'route' => 'ruang-fasilitas.index', 'active' => 'ruang-fasilitas.*'],
-        ['label' => 'Data Layanan Tambahan', 'icon' => 'wrench', 'route' => 'layanan-tambahan.index', 'active' => 'layanan-tambahan.*'],
         ['label' => 'Pemesanan', 'icon' => 'receipt', 'route' => 'pemesanan.index', 'active' => 'pemesanan.*'],
         ['label' => 'Kontrak Sewa', 'icon' => 'document', 'route' => 'kontrak-sewa.index', 'active' => 'kontrak-sewa.*'],
         ['label' => 'Jadwal Penggunaan Ruang', 'icon' => 'calendar', 'route' => 'jadwal-ruang.index', 'active' => 'jadwal-ruang.*'],

@@ -129,20 +129,10 @@
     <section class="{{ $card }}">
         <div class="mb-6">
             <h3 class="{{ $legend }}">Detail Sewa</h3>
-            <p class="{{ $note }}">Paket layanan, periode sewa, dan status keanggotaan penyewa.</p>
+            <p class="{{ $note }}">Periode sewa dan status keanggotaan penyewa.</p>
         </div>
 
         <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
-            <x-dashboard.form-select
-                name="paket_layanan"
-                label="Paket Layanan"
-                :options="\App\Models\Penyewa::PAKET_LAYANAN"
-                :selected="$penyewa->paket_layanan"
-                placeholder="Pilih paket layanan"
-                :error="$errors->first('paket_layanan')"
-                required
-            />
-
             <x-dashboard.form-select
                 name="status"
                 label="Status Penyewa"

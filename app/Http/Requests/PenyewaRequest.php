@@ -42,7 +42,6 @@ class PenyewaRequest extends FormRequest
                 'required', 'string', 'email', 'max:255',
                 Rule::unique('penyewa', 'email')->ignore($ignoreId),
             ],
-            'paket_layanan' => ['required', Rule::in(Penyewa::PAKET_LAYANAN)],
             'tanggal_mulai_sewa' => ['required', 'date'],
             'durasi_sewa' => ['required', 'integer', 'min:1', 'max:120'],
             'status' => ['required', Rule::in(Penyewa::STATUS)],
@@ -64,7 +63,6 @@ class PenyewaRequest extends FormRequest
             'tanggal_lahir' => 'tanggal lahir',
             'jenis_kelamin' => 'jenis kelamin',
             'no_hp' => 'nomor HP',
-            'paket_layanan' => 'paket layanan',
             'tanggal_mulai_sewa' => 'tanggal mulai sewa',
             'durasi_sewa' => 'durasi sewa',
         ];

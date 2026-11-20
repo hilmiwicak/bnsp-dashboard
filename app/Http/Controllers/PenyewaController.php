@@ -17,13 +17,11 @@ class PenyewaController extends Controller
     {
         $filters = [
             'q' => trim((string) $request->query('q')),
-            'paket_layanan' => $this->allowedFilter($request->query('paket_layanan'), Penyewa::PAKET_LAYANAN),
             'status' => $this->allowedFilter($request->query('status'), Penyewa::STATUS),
         ];
 
         $penyewa = Penyewa::query()
             ->search($filters['q'])
-            ->when($filters['paket_layanan'], fn ($query, $paket) => $query->where('paket_layanan', $paket))
             ->when($filters['status'], fn ($query, $status) => $query->where('status', $status))
             ->orderByDesc('created_at')
             ->orderByDesc('id')

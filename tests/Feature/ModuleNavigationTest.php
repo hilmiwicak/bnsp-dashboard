@@ -15,9 +15,7 @@ class ModuleNavigationTest extends TestCase
         $labels = [
             'Dashboard',
             'Data Penyewa',
-            'Data Paket Layanan',
             'Data Ruang & Fasilitas',
-            'Data Layanan Tambahan',
             'Pemesanan',
             'Kontrak Sewa',
             'Jadwal Penggunaan Ruang',
@@ -37,9 +35,7 @@ class ModuleNavigationTest extends TestCase
     public function test_every_module_page_is_reachable(): void
     {
         $slugs = [
-            'paket-layanan',
             'ruang-fasilitas',
-            'layanan-tambahan',
             'pemesanan',
             'kontrak-sewa',
             'jadwal-ruang',
@@ -59,7 +55,7 @@ class ModuleNavigationTest extends TestCase
 
     public function test_menu_pages_require_authentication(): void
     {
-        $this->get('/paket-layanan')->assertRedirect('/login');
+        $this->get('/ruang-fasilitas')->assertRedirect('/login');
         $this->get('/laporan')->assertRedirect('/login');
     }
 

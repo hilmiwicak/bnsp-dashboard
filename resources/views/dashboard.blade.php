@@ -8,7 +8,7 @@
 
     $expenseSlices = [
         ['label' => 'Ruang Meeting', 'value' => 30, 'color' => '#343c6a'],
-        ['label' => 'Layanan Tambahan', 'value' => 15, 'color' => '#fc7900'],
+        ['label' => 'Perpanjangan', 'value' => 15, 'color' => '#fc7900'],
         ['label' => 'Lainnya', 'value' => 35, 'color' => '#1814f3'],
         ['label' => 'Keanggotaan', 'value' => 20, 'color' => '#fa00ff'],
     ];

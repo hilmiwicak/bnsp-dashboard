@@ -23,19 +23,13 @@ return new class extends Migration
             $table->text('alamat');
             $table->string('no_hp', 20);
             $table->string('email')->unique();
-            $table->enum('paket_layanan', [
-                'Virtual Office',
-                'Virtual Office Plus',
-                'Private Office',
-                'Ruang Meeting',
-            ]);
             $table->date('tanggal_mulai_sewa');
             $table->unsignedSmallInteger('durasi_sewa')->comment('Durasi sewa dalam bulan');
             $table->enum('status', ['Aktif', 'Menunggu Verifikasi', 'Nonaktif'])
                 ->default('Menunggu Verifikasi');
             $table->timestamps();
 
-            $table->index(['paket_layanan', 'status']);
+            $table->index('status');
         });
     }
 

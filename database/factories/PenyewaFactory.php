@@ -29,7 +29,6 @@ class PenyewaFactory extends Factory
             'alamat' => fake()->address(),
             'no_hp' => fake()->numerify('08##########'),
             'email' => fake()->unique()->safeEmail(),
-            'paket_layanan' => fake()->randomElement(Penyewa::PAKET_LAYANAN),
             'tanggal_mulai_sewa' => fake()->dateTimeBetween('-18 months', 'now')->format('Y-m-d'),
             'durasi_sewa' => fake()->randomElement([3, 6, 12, 24]),
             'status' => fake()->randomElement(Penyewa::STATUS),
