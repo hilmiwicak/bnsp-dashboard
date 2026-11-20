@@ -34,7 +34,7 @@
                     </svg>
                 </button>
 
-                <h1 class="truncate text-xl font-semibold text-dash-ink sm:text-[24px] lg:text-[28px]">
+                <h1 class="truncate text-[24px] font-bold leading-tight tracking-tight text-dash-ink sm:text-[28px]">
                     {{ $heading }}
                 </h1>
 
@@ -74,7 +74,7 @@
                         <span class="absolute right-[11px] top-[9px] h-2 w-2 rounded-full bg-[#fe5c73] ring-2 ring-white"></span>
                     </button>
 
-                    <div class="flex h-[44px] w-[44px] items-center justify-center rounded-full bg-[#dfe7f5] text-sm font-semibold text-dash-ink sm:h-[52px] sm:w-[52px] lg:h-[60px] lg:w-[60px] lg:text-base">
+                    <div class="flex h-[44px] w-[44px] items-center justify-center rounded-full bg-[#dfe7f5] text-[13px] font-semibold text-dash-ink sm:h-[52px] sm:w-[52px] lg:h-[60px] lg:w-[60px] lg:text-[15px]">
                         {{ $initials ?: 'KV' }}
                     </div>
                 </div>

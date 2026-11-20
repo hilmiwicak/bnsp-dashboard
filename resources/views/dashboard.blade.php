@@ -93,7 +93,7 @@
 
                         <div class="min-w-0 flex-1">
                             <p class="truncate text-[15px] font-medium text-dash-ink">{{ $transaction['title'] }}</p>
-                            <p class="mt-0.5 text-xs text-dash-muted">{{ $transaction['date'] }}</p>
+                            <p class="mt-0.5 text-[13px] text-dash-muted">{{ $transaction['date'] }}</p>
                         </div>
 
                         <p class="shrink-0 text-[15px] font-medium {{ $transaction['amountTone'] }}">{{ $transaction['amount'] }}</p>
@@ -137,12 +137,12 @@
                 <div class="flex items-start gap-4 sm:gap-6">
                     @foreach ($team as $person)
                         <div class="flex min-w-0 flex-col items-center gap-2 text-center">
-                            <span class="flex h-[60px] w-[60px] items-center justify-center rounded-full text-base font-semibold {{ $person['tone'] }}">
+                            <span class="flex h-[60px] w-[60px] items-center justify-center rounded-full text-[15px] font-semibold {{ $person['tone'] }}">
                                 {{ $person['initials'] }}
                             </span>
                             <div class="min-w-0">
                                 <p class="truncate text-[15px] font-medium text-dash-ink">{{ $person['name'] }}</p>
-                                <p class="truncate text-xs text-dash-muted">{{ $person['role'] }}</p>
+                                <p class="truncate text-[13px] text-dash-muted">{{ $person['role'] }}</p>
                             </div>
                         </div>
                     @endforeach

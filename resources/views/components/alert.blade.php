@@ -11,7 +11,7 @@
 
 <div
     role="{{ $role }}"
-    {{ $attributes->merge(['class' => 'rounded-2xl border px-4 py-3 text-sm '.$styles]) }}
+    {{ $attributes->merge(['class' => 'rounded-2xl border px-4 py-3 text-[15px] '.$styles]) }}
 >
     {{ $slot }}
 </div>

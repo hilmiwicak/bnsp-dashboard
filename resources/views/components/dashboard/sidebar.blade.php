@@ -17,7 +17,7 @@
     data-sidebar
     class="fixed inset-y-0 left-0 z-40 flex w-[248px] -translate-x-full flex-col overflow-y-auto bg-white transition-transform duration-200 ease-out lg:sticky lg:top-0 lg:z-0 lg:h-screen lg:translate-x-0"
 >
-    <div class="flex items-center gap-3 px-6 pb-8 pt-8">
+    <div class="flex items-center gap-3 px-4 pb-8 pt-8">
         <svg class="h-8 w-8 shrink-0 text-dash-indigo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" />
         </svg>

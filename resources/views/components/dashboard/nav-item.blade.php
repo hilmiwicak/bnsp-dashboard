@@ -23,7 +23,7 @@
         'logout' => '<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />',
     ];
 
-    $classes = 'relative flex w-full items-center gap-4 px-6 py-3 text-left text-[15.5px] font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-dash-primary/40';
+    $classes = 'relative flex w-full items-center gap-2.5 px-4 py-3 text-left text-[14px] font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-dash-primary/40';
 
     $tone = $active ? 'text-dash-primary' : 'text-[#b1b1b1] hover:text-dash-primary';
 @endphp
@@ -34,7 +34,7 @@
             <span class="absolute left-0 top-1/2 h-9 w-[5px] -translate-y-1/2 rounded-r-full bg-dash-primary"></span>
         @endif
 
-        <svg class="h-6 w-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+        <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
             {!! $paths[$icon] ?? $paths['home'] !!}
         </svg>
 
@@ -42,7 +42,7 @@
     </a>
 @else
     <button type="submit" class="{{ $classes }} {{ $tone }}">
-        <svg class="h-6 w-6 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+        <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
             {!! $paths[$icon] ?? $paths['home'] !!}
         </svg>
 

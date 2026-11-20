@@ -1,6 +1,6 @@
 <x-layouts.auth title="Login">
-    <h2 class="text-[28px] font-bold leading-tight tracking-tight text-neutral-800">Hello Again!</h2>
-    <p class="mt-1 text-[17px] text-neutral-600">Welcome Back</p>
+    <h2 class="text-[24px] font-bold leading-tight tracking-tight text-neutral-800 sm:text-[28px]">Hello Again!</h2>
+    <p class="mt-1 text-[15px] text-neutral-600">Welcome Back</p>
 
     @if (session('status'))
         <x-alert class="mt-6">{{ session('status') }}</x-alert>
@@ -33,11 +33,11 @@
         <x-form.button class="mt-7">Login</x-form.button>
     </form>
 
-    <a href="#" class="mt-6 block text-center text-sm text-neutral-500 transition hover:text-neutral-700">
+    <a href="#" class="mt-6 block text-center text-[13px] text-neutral-500 transition hover:text-neutral-700">
         Forgot Password
     </a>
 
-    <p class="mt-3 text-center text-sm text-neutral-500">
+    <p class="mt-3 text-center text-[13px] text-neutral-500">
         Don't have an account?
         <a href="{{ route('register') }}" class="font-medium text-brand-600 transition hover:text-brand-700">Register</a>
     </p>

@@ -25,7 +25,7 @@
             <div class="flex flex-wrap items-center justify-between gap-4 border-b border-dash-line/70 px-6 py-5 lg:px-8">
                 <div>
                     <h2 class="text-[20px] font-semibold tracking-tight text-dash-ink lg:text-[22px]">Daftar Penyewa</h2>
-                    <p class="mt-1 text-sm text-dash-muted">
+                    <p class="mt-1 text-[13px] text-dash-muted">
                         {{ $totalSemua }} penyewa terdaftar pada kantor virtual.
                     </p>
                 </div>
@@ -40,7 +40,7 @@
 
             <form method="GET" action="{{ route('penyewa.index') }}" class="flex flex-wrap items-end gap-3 px-6 py-5 lg:px-8">
                 <div class="min-w-[220px] flex-1">
-                    <label for="q" class="mb-2 block text-sm font-medium text-dash-ink">Pencarian</label>
+                    <label for="q" class="mb-2 block text-[15px] font-medium text-dash-ink">Pencarian</label>
                     <div class="relative">
                         <svg class="pointer-events-none absolute left-4 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-dash-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                             <circle cx="11" cy="11" r="7.25" />
@@ -108,7 +108,7 @@
                     <tbody class="divide-y divide-dash-line/70">
                         @forelse ($penyewa as $item)
                             <tr class="align-middle transition hover:bg-dash-surface/60">
-                                <td class="whitespace-nowrap px-6 py-4 text-sm font-semibold text-dash-ink lg:px-8">
+                                <td class="whitespace-nowrap px-6 py-4 text-[15px] font-semibold text-dash-ink lg:px-8">
                                     {{ $item->kode_penyewa }}
                                 </td>
 
@@ -119,29 +119,29 @@
                                         </span>
                                         <div class="min-w-0">
                                             <p class="truncate text-[15px] font-medium text-dash-ink">{{ $item->nama_pic }}</p>
-                                            <p class="truncate text-xs text-dash-muted">{{ $item->nama_perusahaan }}</p>
+                                            <p class="truncate text-[13px] text-dash-muted">{{ $item->nama_perusahaan }}</p>
                                         </div>
                                     </div>
                                 </td>
 
                                 <td class="px-6 py-4">
-                                    <p class="truncate text-sm text-dash-ink">{{ $item->email }}</p>
-                                    <p class="text-xs text-dash-muted">{{ $item->no_hp }}</p>
+                                    <p class="truncate text-[15px] text-dash-ink">{{ $item->email }}</p>
+                                    <p class="text-[13px] text-dash-muted">{{ $item->no_hp }}</p>
                                 </td>
 
-                                <td class="whitespace-nowrap px-6 py-4 text-sm text-dash-ink">
+                                <td class="whitespace-nowrap px-6 py-4 text-[15px] text-dash-ink">
                                     {{ $item->paket_layanan }}
                                 </td>
 
-                                <td class="whitespace-nowrap px-6 py-4 text-sm text-dash-ink">
+                                <td class="whitespace-nowrap px-6 py-4 text-[15px] text-dash-ink">
                                     {{ $item->tanggal_mulai_sewa->format('d/m/Y') }}
-                                    <span class="block text-xs text-dash-muted">
+                                    <span class="block text-[13px] text-dash-muted">
                                         {{ $item->durasi_sewa }} bulan &middot; s.d. {{ $item->masaSewaBerakhir()->format('d/m/Y') }}
                                     </span>
                                 </td>
 
                                 <td class="whitespace-nowrap px-6 py-4">
-                                    <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold {{ $statusTone[$item->status] ?? 'bg-dash-surface text-dash-muted' }}">
+                                    <span class="inline-flex rounded-full px-3 py-1 text-[13px] font-semibold {{ $statusTone[$item->status] ?? 'bg-dash-surface text-dash-muted' }}">
                                         {{ $item->status }}
                                     </span>
                                 </td>
@@ -184,7 +184,7 @@
                                     <p class="mt-4 text-[15px] font-medium text-dash-ink">
                                         {{ $isFiltered ? 'Tidak ada penyewa yang cocok dengan pencarian.' : 'Belum ada data penyewa.' }}
                                     </p>
-                                    <p class="mt-1 text-sm text-dash-muted">
+                                    <p class="mt-1 text-[13px] text-dash-muted">
                                         {{ $isFiltered ? 'Coba ubah kata kunci atau filter yang digunakan.' : 'Tambahkan penyewa pertama untuk mulai mengelola data kantor virtual.' }}
                                     </p>
 
@@ -204,7 +204,7 @@
 
             @if ($penyewa->total() > 0)
                 <div class="flex flex-wrap items-center justify-between gap-4 border-t border-dash-line/70 px-6 py-4 lg:px-8">
-                    <p class="text-sm text-dash-muted">
+                    <p class="text-[13px] text-dash-muted">
                         Menampilkan {{ $penyewa->firstItem() }}&ndash;{{ $penyewa->lastItem() }} dari {{ $penyewa->total() }} penyewa
                     </p>
 

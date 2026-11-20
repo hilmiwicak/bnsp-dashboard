@@ -20,7 +20,7 @@
 <div class="flex min-h-[215px] flex-col justify-between rounded-[20px] p-6 {{ $frame }}">
     <div class="flex items-start justify-between">
         <div>
-            <p class="text-xs {{ $label }}">Saldo</p>
+            <p class="text-[13px] {{ $label }}">Saldo</p>
             <p class="mt-1 text-xl font-semibold">{{ $balance }}</p>
         </div>
 
@@ -32,17 +32,17 @@
 
     <div class="flex items-center gap-10 pt-6">
         <div>
-            <p class="text-[10px] font-medium uppercase tracking-wider {{ $label }}">Pemegang Kartu</p>
+            <p class="text-[13px] font-medium uppercase tracking-wider {{ $label }}">Pemegang Kartu</p>
             <p class="mt-1 text-[15px] font-semibold">{{ $holder }}</p>
         </div>
         <div>
-            <p class="text-[10px] font-medium uppercase tracking-wider {{ $label }}">Berlaku s.d.</p>
+            <p class="text-[13px] font-medium uppercase tracking-wider {{ $label }}">Berlaku s.d.</p>
             <p class="mt-1 text-[15px] font-semibold">{{ $valid }}</p>
         </div>
     </div>
 
     <div class="mt-5 flex items-center justify-between border-t pt-4 {{ $divider }}">
-        <p class="text-[19px] font-semibold tracking-wide">{{ $number }}</p>
+        <p class="text-xl font-semibold tracking-wide">{{ $number }}</p>
 
         <div class="flex items-center">
             <span class="h-6 w-6 rounded-full {{ $primary ? 'bg-white/40' : 'bg-[#9199af]/40' }}"></span>

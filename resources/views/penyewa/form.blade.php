@@ -1,7 +1,7 @@
 @php
     $card = 'rounded-[20px] bg-white p-6 shadow-[0_4px_20px_rgba(25,35,80,0.03)] lg:p-8';
-    $legend = 'text-[17px] font-semibold tracking-tight text-dash-ink';
-    $note = 'mt-1 text-sm text-dash-muted';
+    $legend = 'text-[20px] font-semibold tracking-tight text-dash-ink lg:text-[22px]';
+    $note = 'mt-1 text-[13px] text-dash-muted';
 @endphp
 
 <form method="POST" action="{{ $action }}" class="space-y-6">

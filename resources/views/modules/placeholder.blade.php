@@ -10,10 +10,10 @@
             <div class="flex flex-wrap items-center justify-between gap-4 border-b border-dash-line/70 px-6 py-5 lg:px-8">
                 <div>
                     <h2 class="text-[20px] font-semibold tracking-tight text-dash-ink lg:text-[22px]">{{ $heading }}</h2>
-                    <p class="mt-1 max-w-[640px] text-sm text-dash-muted">{{ $description }}</p>
+                    <p class="mt-1 max-w-[640px] text-[13px] text-dash-muted">{{ $description }}</p>
                 </div>
 
-                <span class="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#fff5d1] px-4 py-1.5 text-xs font-semibold text-[#b57e00]">
+                <span class="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#fff5d1] px-4 py-1.5 text-[13px] font-semibold text-[#b57e00]">
                     <span class="h-1.5 w-1.5 rounded-full bg-[#ffbb38]"></span>
                     Tahap berikutnya
                 </span>
@@ -22,9 +22,9 @@
             <div class="overflow-x-auto">
                 <table class="w-full min-w-[720px] text-left">
                     <thead>
-                        <tr class="border-b border-dash-line/70 bg-dash-surface/60 text-[13px] uppercase tracking-wide text-dash-muted">
+                        <tr class="border-y border-dash-line/70 bg-dash-surface/60 text-[13px] uppercase tracking-wide text-dash-muted">
                             @foreach ($columns as $column)
-                                <th scope="col" class="px-6 py-4 font-medium first:pl-8 last:pr-8">{{ $column }}</th>
+                                <th scope="col" class="px-6 py-4 font-medium lg:first:pl-8 lg:last:pr-8">{{ $column }}</th>
                             @endforeach
                         </tr>
                     </thead>
@@ -39,7 +39,7 @@
                                 </span>
 
                                 <p class="mt-4 text-[15px] font-medium text-dash-ink">Belum ada data pada modul ini.</p>
-                                <p class="mt-1 text-sm text-dash-muted">
+                                <p class="mt-1 text-[13px] text-dash-muted">
                                     Struktur tabel sudah disiapkan. Input data akan tersedia pada pengembangan berikutnya.
                                 </p>
 

@@ -14,7 +14,7 @@
     ];
 
     $classes = implode(' ', [
-        'h-14 w-full rounded-full border bg-white pl-[3.25rem] pr-6 text-sm text-neutral-800',
+        'h-14 w-full rounded-full border bg-white pl-[3.25rem] pr-6 text-[15px] text-neutral-800',
         'shadow-[0_1px_2px_rgba(16,24,40,0.04)] outline-none transition placeholder:text-neutral-400 focus:ring-4',
         $error
             ? 'border-rose-400 focus:border-rose-400 focus:ring-rose-500/10'
@@ -43,6 +43,6 @@
     </div>
 
     @if ($error)
-        <p id="{{ $name }}-error" class="mt-1.5 pl-5 text-xs font-medium text-rose-600">{{ $error }}</p>
+        <p id="{{ $name }}-error" class="mt-1.5 pl-5 text-[13px] font-medium text-rose-600">{{ $error }}</p>
     @endif
 </div>

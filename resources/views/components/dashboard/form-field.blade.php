@@ -20,7 +20,7 @@
 @endphp
 
 <div>
-    <label for="{{ $name }}" class="mb-2 block text-sm font-medium text-dash-ink">
+    <label for="{{ $name }}" class="mb-2 block text-[15px] font-medium text-dash-ink">
         {{ $label ?? $name }}@if ($required)<span class="text-dash-alert"> *</span>@endif
     </label>
 
@@ -46,8 +46,8 @@
     @endif
 
     @if ($error)
-        <p id="{{ $name }}-error" class="mt-1.5 text-xs font-medium text-rose-600">{{ $error }}</p>
+        <p id="{{ $name }}-error" class="mt-1.5 text-[13px] font-medium text-rose-600">{{ $error }}</p>
     @elseif ($hint)
-        <p class="mt-1.5 text-xs text-dash-muted">{{ $hint }}</p>
+        <p class="mt-1.5 text-[13px] text-dash-muted">{{ $hint }}</p>
     @endif
 </div>

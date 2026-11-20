@@ -33,7 +33,7 @@
 
         <a
             href="#"
-            class="mt-8 inline-flex items-center justify-center rounded-full border border-white/25 bg-[linear-gradient(180deg,#3d93ff_0%,#1877f2_100%)] px-8 py-3 text-sm font-medium text-white shadow-[0_12px_30px_-10px_rgba(8,70,190,0.95)] transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-700"
+            class="mt-8 inline-flex items-center justify-center rounded-full border border-white/25 bg-[linear-gradient(180deg,#3d93ff_0%,#1877f2_100%)] px-8 py-3 text-[15px] font-medium text-white shadow-[0_12px_30px_-10px_rgba(8,70,190,0.95)] transition hover:brightness-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-700"
         >
             Read More
         </a>
