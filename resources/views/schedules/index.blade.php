@@ -1,27 +1,4 @@
 @php
-    $hari = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-
-    $bulan = [
-        1 => 'Januari',
-        2 => 'Februari',
-        3 => 'Maret',
-        4 => 'April',
-        5 => 'Mei',
-        6 => 'Juni',
-        7 => 'Juli',
-        8 => 'Agustus',
-        9 => 'September',
-        10 => 'Oktober',
-        11 => 'November',
-        12 => 'Desember',
-    ];
-
-    $formatTanggal = function (string $tanggal) use ($hari, $bulan): string {
-        $date = \Illuminate\Support\Carbon::parse($tanggal);
-
-        return $hari[$date->dayOfWeek].', '.$date->day.' '.$bulan[$date->month].' '.$date->year;
-    };
-
     $hariIni = now()->toDateString();
     $isFiltered = (bool) $filters['room'] || (bool) $filters['tanggal'];
 @endphp
@@ -122,7 +99,7 @@
                 <div class="flex flex-wrap items-center justify-between gap-3 border-b border-dash-line/70 px-6 py-4 lg:px-8">
                     <div class="flex items-center gap-3">
                         <h2 class="text-[17px] font-semibold tracking-tight text-dash-ink lg:text-[18px]">
-                            {{ $formatTanggal($tanggal) }}
+                            {{ \App\Support\Bulan::tanggalLengkap($tanggal) }}
                         </h2>
 
                         @if ($tanggal === $hariIni)

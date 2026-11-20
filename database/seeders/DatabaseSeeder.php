@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
         $this->call(RoomSeeder::class);
         $this->call(BookingSeeder::class);
         $this->call(ContractSeeder::class);
+        $this->call(InvoiceSeeder::class);
 
         $this->seedAccount('admin@example.com', 'Admin User', UserRole::Admin);
 

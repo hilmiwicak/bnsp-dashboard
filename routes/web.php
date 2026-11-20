@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ContractController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PortalController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\ScheduleController;
@@ -48,14 +49,16 @@ Route::middleware('auth')->group(function () {
             ->parameters(['kontrak-sewa' => 'contract'])
             ->except('show');
 
+        Route::resource('tagihan-pembayaran', InvoiceController::class)
+            ->parameters(['tagihan-pembayaran' => 'invoice'])
+            ->except('show');
+
+        Route::patch('tagihan-pembayaran/{invoice}/lunas', [InvoiceController::class, 'markPaid'])
+            ->name('tagihan-pembayaran.lunas');
+
         // Modul standar kantor virtual selain Data Tenant. Struktur halaman sudah
         // disiapkan (judul, deskripsi, kolom tabel) dan datanya menyusul.
         $modules = [
-            'tagihan-pembayaran' => [
-                'heading' => 'Tagihan & Pembayaran',
-                'description' => 'Terbitkan tagihan bulanan tenant dan catat pembayaran yang sudah diterima.',
-                'columns' => ['No. Tagihan', 'Tenant', 'Periode', 'Jumlah', 'Jatuh Tempo', 'Status'],
-            ],
             'laporan' => [
                 'heading' => 'Laporan',
                 'description' => 'Rekap data tenant, pemesanan, dan pendapatan kantor virtual per periode.',
