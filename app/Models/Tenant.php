@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Database\Factories\PenyewaFactory;
+use Database\Factories\TenantFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 
 #[Fillable([
-    'kode_penyewa',
+    'kode_tenant',
     'nama_pic',
     'nama_perusahaan',
     'nib_npwp',
@@ -24,20 +24,13 @@ use Illuminate\Support\Carbon;
     'durasi_sewa',
     'status',
 ])]
-class Penyewa extends Model
+class Tenant extends Model
 {
-    /** @use HasFactory<PenyewaFactory> */
+    /** @use HasFactory<TenantFactory> */
     use HasFactory;
 
     /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'penyewa';
-
-    /**
-     * Status keanggotaan penyewa.
+     * Status keanggotaan tenant.
      *
      * @var list<string>
      */
@@ -72,7 +65,7 @@ class Penyewa extends Model
     }
 
     /**
-     * Cari penyewa berdasarkan kode, nama PIC, perusahaan, email, atau nomor HP.
+     * Cari tenant berdasarkan kode, nama PIC, perusahaan, email, atau nomor HP.
      */
     public function scopeSearch(Builder $query, ?string $term): Builder
     {
@@ -85,7 +78,7 @@ class Penyewa extends Model
         $like = '%'.$term.'%';
 
         return $query->where(function (Builder $query) use ($like) {
-            $query->where('kode_penyewa', 'like', $like)
+            $query->where('kode_tenant', 'like', $like)
                 ->orWhere('nama_pic', 'like', $like)
                 ->orWhere('nama_perusahaan', 'like', $like)
                 ->orWhere('email', 'like', $like)

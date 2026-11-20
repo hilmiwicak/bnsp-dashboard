@@ -14,7 +14,7 @@ class ModuleNavigationTest extends TestCase
     {
         $labels = [
             'Dashboard',
-            'Data Penyewa',
+            'Data Tenant',
             'Data Ruang & Fasilitas',
             'Pemesanan',
             'Kontrak Sewa',
@@ -66,7 +66,7 @@ class ModuleNavigationTest extends TestCase
 
     public function test_active_menu_item_is_marked_with_aria_current(): void
     {
-        $response = $this->actingAs(User::factory()->create())->get('/penyewa');
+        $response = $this->actingAs(User::factory()->create())->get('/tenants');
 
         $response->assertOk();
         $response->assertSee('aria-current="page"', false);

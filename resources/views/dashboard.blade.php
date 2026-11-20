@@ -62,7 +62,7 @@
         <section class="flex flex-col lg:col-span-8">
             <x-dashboard.section-title title="Kartu Keanggotaan">
                 <x-slot:action>
-                    <a href="{{ route('penyewa.index') }}" class="text-[15px] font-semibold text-dash-primary transition hover:text-dash-blue">Lihat Semua</a>
+                    <a href="{{ route('tenants.index') }}" class="text-[15px] font-semibold text-dash-primary transition hover:text-dash-blue">Lihat Semua</a>
                 </x-slot:action>
             </x-dashboard.section-title>
 

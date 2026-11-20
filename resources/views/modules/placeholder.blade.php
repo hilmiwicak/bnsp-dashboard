@@ -44,7 +44,7 @@
                                 </p>
 
                                 <div class="mt-5 flex justify-center">
-                                    <x-dashboard.button variant="secondary" :href="route('penyewa.index')">Lihat Data Penyewa</x-dashboard.button>
+                                    <x-dashboard.button variant="secondary" :href="route('tenants.index')">Lihat Data Tenant</x-dashboard.button>
                                 </div>
                             </td>
                         </tr>

@@ -15,7 +15,7 @@
     $isFiltered = $filters['q'] !== '' || $filters['status'];
 @endphp
 
-<x-layouts.dashboard title="Data Penyewa" heading="Data Penyewa">
+<x-layouts.dashboard title="Data Tenant" heading="Data Tenant">
     <div class="space-y-6">
         @if (session('status'))
             <x-alert type="success">{{ session('status') }}</x-alert>
@@ -24,21 +24,21 @@
         <section class="rounded-[20px] bg-white shadow-[0_4px_20px_rgba(25,35,80,0.03)]">
             <div class="flex flex-wrap items-center justify-between gap-4 border-b border-dash-line/70 px-6 py-5 lg:px-8">
                 <div>
-                    <h2 class="text-[20px] font-semibold tracking-tight text-dash-ink lg:text-[22px]">Daftar Penyewa</h2>
+                    <h2 class="text-[20px] font-semibold tracking-tight text-dash-ink lg:text-[22px]">Daftar Tenant</h2>
                     <p class="mt-1 text-[13px] text-dash-muted">
-                        {{ $totalSemua }} penyewa terdaftar pada kantor virtual.
+                        {{ $totalSemua }} tenant terdaftar pada kantor virtual.
                     </p>
                 </div>
 
-                <x-dashboard.button :href="route('penyewa.create')" class="shrink-0">
+                <x-dashboard.button :href="route('tenants.create')" class="shrink-0">
                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                     </svg>
-                    Tambah Penyewa
+                    Tambah Tenant
                 </x-dashboard.button>
             </div>
 
-            <form method="GET" action="{{ route('penyewa.index') }}" class="flex flex-wrap items-end gap-3 px-6 py-5 lg:px-8">
+            <form method="GET" action="{{ route('tenants.index') }}" class="flex flex-wrap items-end gap-3 px-6 py-5 lg:px-8">
                 <div class="min-w-[220px] flex-1">
                     <label for="q" class="mb-2 block text-[15px] font-medium text-dash-ink">Pencarian</label>
                     <div class="relative">
@@ -61,7 +61,7 @@
                     <x-dashboard.form-select
                         name="status"
                         label="Status"
-                        :options="\App\Models\Penyewa::STATUS"
+                        :options="\App\Models\Tenant::STATUS"
                         :selected="$filters['status']"
                         placeholder="Semua Status"
                     />
@@ -76,7 +76,7 @@
                     </x-dashboard.button>
 
                     @if ($isFiltered)
-                        <x-dashboard.button variant="secondary" :href="route('penyewa.index')">Reset</x-dashboard.button>
+                        <x-dashboard.button variant="secondary" :href="route('tenants.index')">Reset</x-dashboard.button>
                     @endif
                 </div>
             </form>
@@ -86,7 +86,7 @@
                     <thead>
                         <tr class="border-y border-dash-line/70 bg-dash-surface/60 text-[13px] uppercase tracking-wide text-dash-muted">
                             <th scope="col" class="px-6 py-4 font-medium lg:px-8">Kode</th>
-                            <th scope="col" class="px-6 py-4 font-medium">Penyewa</th>
+                            <th scope="col" class="px-6 py-4 font-medium">Tenant</th>
                             <th scope="col" class="px-6 py-4 font-medium">Kontak</th>
                             <th scope="col" class="px-6 py-4 font-medium">Masa Sewa</th>
                             <th scope="col" class="px-6 py-4 font-medium">Status</th>
@@ -95,10 +95,10 @@
                     </thead>
 
                     <tbody class="divide-y divide-dash-line/70">
-                        @forelse ($penyewa as $item)
+                        @forelse ($tenant as $item)
                             <tr class="align-middle transition hover:bg-dash-surface/60">
                                 <td class="whitespace-nowrap px-6 py-4 text-[15px] font-semibold text-dash-ink lg:px-8">
-                                    {{ $item->kode_penyewa }}
+                                    {{ $item->kode_tenant }}
                                 </td>
 
                                 <td class="px-6 py-4">
@@ -134,7 +134,7 @@
                                 <td class="whitespace-nowrap px-6 py-4 text-right lg:px-8">
                                     <div class="inline-flex items-center gap-2">
                                         <a
-                                            href="{{ route('penyewa.edit', $item) }}"
+                                            href="{{ route('tenants.edit', $item) }}"
                                             class="rounded-full border border-dash-line px-4 py-2 text-[13px] font-medium text-dash-ink transition hover:border-dash-primary hover:text-dash-primary"
                                         >
                                             Edit
@@ -142,8 +142,8 @@
 
                                         <form
                                             method="POST"
-                                            action="{{ route('penyewa.destroy', $item) }}"
-                                            onsubmit="return confirm('Hapus data penyewa ini?')"
+                                            action="{{ route('tenants.destroy', $item) }}"
+                                            onsubmit="return confirm('Hapus data tenant ini?')"
                                         >
                                             @csrf
                                             @method('DELETE')
@@ -167,17 +167,17 @@
                                     </span>
 
                                     <p class="mt-4 text-[15px] font-medium text-dash-ink">
-                                        {{ $isFiltered ? 'Tidak ada penyewa yang cocok dengan pencarian.' : 'Belum ada data penyewa.' }}
+                                        {{ $isFiltered ? 'Tidak ada tenant yang cocok dengan pencarian.' : 'Belum ada data tenant.' }}
                                     </p>
                                     <p class="mt-1 text-[13px] text-dash-muted">
-                                        {{ $isFiltered ? 'Coba ubah kata kunci atau filter yang digunakan.' : 'Tambahkan penyewa pertama untuk mulai mengelola data kantor virtual.' }}
+                                        {{ $isFiltered ? 'Coba ubah kata kunci atau filter yang digunakan.' : 'Tambahkan tenant pertama untuk mulai mengelola data kantor virtual.' }}
                                     </p>
 
                                     <div class="mt-5 flex justify-center">
                                         @if ($isFiltered)
-                                            <x-dashboard.button variant="secondary" :href="route('penyewa.index')">Reset Filter</x-dashboard.button>
+                                            <x-dashboard.button variant="secondary" :href="route('tenants.index')">Reset Filter</x-dashboard.button>
                                         @else
-                                            <x-dashboard.button :href="route('penyewa.create')">Tambah Penyewa</x-dashboard.button>
+                                            <x-dashboard.button :href="route('tenants.create')">Tambah Tenant</x-dashboard.button>
                                         @endif
                                     </div>
                                 </td>
@@ -187,13 +187,13 @@
                 </table>
             </div>
 
-            @if ($penyewa->total() > 0)
+            @if ($tenant->total() > 0)
                 <div class="flex flex-wrap items-center justify-between gap-4 border-t border-dash-line/70 px-6 py-4 lg:px-8">
                     <p class="text-[13px] text-dash-muted">
-                        Menampilkan {{ $penyewa->firstItem() }}&ndash;{{ $penyewa->lastItem() }} dari {{ $penyewa->total() }} penyewa
+                        Menampilkan {{ $tenant->firstItem() }}&ndash;{{ $tenant->lastItem() }} dari {{ $tenant->total() }} tenant
                     </p>
 
-                    {{ $penyewa->links() }}
+                    {{ $tenant->links() }}
                 </div>
             @endif
         </section>

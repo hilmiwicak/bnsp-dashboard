@@ -2,11 +2,11 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Penyewa;
+use App\Models\Tenant;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class PenyewaRequest extends FormRequest
+class TenantRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,28 +23,28 @@ class PenyewaRequest extends FormRequest
      */
     public function rules(): array
     {
-        $ignoreId = $this->penyewaBeingUpdated()?->id;
+        $ignoreId = $this->tenantBeingUpdated()?->id;
 
         return [
-            'kode_penyewa' => [
+            'kode_tenant' => [
                 'required', 'string', 'max:20',
-                Rule::unique('penyewa', 'kode_penyewa')->ignore($ignoreId),
+                Rule::unique('tenants', 'kode_tenant')->ignore($ignoreId),
             ],
             'nama_pic' => ['required', 'string', 'max:255'],
             'nama_perusahaan' => ['required', 'string', 'max:255'],
             'nib_npwp' => ['nullable', 'string', 'max:40'],
             'tempat_lahir' => ['required', 'string', 'max:100'],
             'tanggal_lahir' => ['required', 'date', 'before:today'],
-            'jenis_kelamin' => ['required', Rule::in(Penyewa::JENIS_KELAMIN)],
+            'jenis_kelamin' => ['required', Rule::in(Tenant::JENIS_KELAMIN)],
             'alamat' => ['required', 'string', 'max:500'],
             'no_hp' => ['required', 'string', 'max:20', 'regex:/^[0-9+\-()\s]+$/'],
             'email' => [
                 'required', 'string', 'email', 'max:255',
-                Rule::unique('penyewa', 'email')->ignore($ignoreId),
+                Rule::unique('tenants', 'email')->ignore($ignoreId),
             ],
             'tanggal_mulai_sewa' => ['required', 'date'],
             'durasi_sewa' => ['required', 'integer', 'min:1', 'max:120'],
-            'status' => ['required', Rule::in(Penyewa::STATUS)],
+            'status' => ['required', Rule::in(Tenant::STATUS)],
         ];
     }
 
@@ -69,12 +69,12 @@ class PenyewaRequest extends FormRequest
     }
 
     /**
-     * The penyewa currently being edited, when the route model is already bound.
+     * The tenant currently being edited, when the route model is already bound.
      */
-    private function penyewaBeingUpdated(): ?Penyewa
+    private function tenantBeingUpdated(): ?Tenant
     {
-        $penyewa = $this->route('penyewa');
+        $tenant = $this->route('tenant');
 
-        return $penyewa instanceof Penyewa ? $penyewa : null;
+        return $tenant instanceof Tenant ? $tenant : null;
     }
 }

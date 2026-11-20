@@ -2,51 +2,51 @@
 
 namespace Tests\Feature;
 
-use App\Models\Penyewa;
+use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class PenyewaTest extends TestCase
+class TenantTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_penyewa_pages_require_authentication(): void
+    public function test_tenant_pages_require_authentication(): void
     {
-        $this->get('/penyewa')->assertRedirect('/login');
-        $this->get('/penyewa/create')->assertRedirect('/login');
+        $this->get('/tenants')->assertRedirect('/login');
+        $this->get('/tenants/create')->assertRedirect('/login');
     }
 
-    public function test_index_lists_penyewa_records(): void
+    public function test_index_lists_tenant_records(): void
     {
-        $penyewa = Penyewa::factory()->create([
+        $tenant = Tenant::factory()->create([
             'nama_pic' => 'Budi Santoso',
             'nama_perusahaan' => 'PT Nusantara Digital',
         ]);
 
         $this->actingAs(User::factory()->create())
-            ->get('/penyewa')
+            ->get('/tenants')
             ->assertOk()
-            ->assertSee('Daftar Penyewa')
+            ->assertSee('Daftar Tenant')
             ->assertSee('Budi Santoso')
-            ->assertSee($penyewa->kode_penyewa);
+            ->assertSee($tenant->kode_tenant);
     }
 
     public function test_index_can_be_searched_by_name_or_code(): void
     {
-        Penyewa::factory()->create(['nama_pic' => 'Budi Santoso', 'kode_penyewa' => 'PYW-AAA']);
-        Penyewa::factory()->create(['nama_pic' => 'Siti Rahmawati', 'kode_penyewa' => 'PYW-BBB']);
+        Tenant::factory()->create(['nama_pic' => 'Budi Santoso', 'kode_tenant' => 'TNT-AAA']);
+        Tenant::factory()->create(['nama_pic' => 'Siti Rahmawati', 'kode_tenant' => 'TNT-BBB']);
 
         $user = User::factory()->create();
 
         $this->actingAs($user)
-            ->get('/penyewa?q=Budi')
+            ->get('/tenants?q=Budi')
             ->assertOk()
             ->assertSee('Budi Santoso')
             ->assertDontSee('Siti Rahmawati');
 
         $this->actingAs($user)
-            ->get('/penyewa?q=PYW-BBB')
+            ->get('/tenants?q=TNT-BBB')
             ->assertOk()
             ->assertSee('Siti Rahmawati')
             ->assertDontSee('Budi Santoso');
@@ -54,11 +54,11 @@ class PenyewaTest extends TestCase
 
     public function test_index_can_be_filtered_by_status(): void
     {
-        Penyewa::factory()->create(['nama_pic' => 'Budi Santoso', 'status' => 'Aktif']);
-        Penyewa::factory()->create(['nama_pic' => 'Siti Rahmawati', 'status' => 'Nonaktif']);
+        Tenant::factory()->create(['nama_pic' => 'Budi Santoso', 'status' => 'Aktif']);
+        Tenant::factory()->create(['nama_pic' => 'Siti Rahmawati', 'status' => 'Nonaktif']);
 
         $this->actingAs(User::factory()->create())
-            ->get('/penyewa?status=Nonaktif')
+            ->get('/tenants?status=Nonaktif')
             ->assertOk()
             ->assertSee('Siti Rahmawati')
             ->assertDontSee('Budi Santoso');
@@ -66,32 +66,32 @@ class PenyewaTest extends TestCase
 
     public function test_create_and_edit_screens_are_reachable(): void
     {
-        $penyewa = Penyewa::factory()->create(['nama_pic' => 'Budi Santoso']);
+        $tenant = Tenant::factory()->create(['nama_pic' => 'Budi Santoso']);
 
         $user = User::factory()->create();
 
         $this->actingAs($user)
-            ->get('/penyewa/create')
+            ->get('/tenants/create')
             ->assertOk()
             ->assertSee('Informasi PIC')
             ->assertSee('Detail Sewa');
 
         $this->actingAs($user)
-            ->get("/penyewa/{$penyewa->id}/edit")
+            ->get("/tenants/{$tenant->id}/edit")
             ->assertOk()
-            ->assertSee('Perbarui Data Penyewa')
+            ->assertSee('Perbarui Data Tenant')
             ->assertSee('Budi Santoso');
     }
 
-    public function test_a_penyewa_can_be_stored(): void
+    public function test_a_tenant_can_be_stored(): void
     {
         $this->actingAs(User::factory()->create())
-            ->post('/penyewa', $this->payload())
-            ->assertRedirect('/penyewa')
+            ->post('/tenants', $this->payload())
+            ->assertRedirect('/tenants')
             ->assertSessionHas('status');
 
-        $this->assertDatabaseHas('penyewa', [
-            'kode_penyewa' => 'PYW-100',
+        $this->assertDatabaseHas('tenants', [
+            'kode_tenant' => 'TNT-100',
             'nama_pic' => 'Rina Wulandari',
             'email' => 'rina@ujicoba.id',
             'status' => 'Aktif',
@@ -101,9 +101,9 @@ class PenyewaTest extends TestCase
     public function test_store_validates_required_fields(): void
     {
         $this->actingAs(User::factory()->create())
-            ->post('/penyewa', [])
+            ->post('/tenants', [])
             ->assertSessionHasErrors([
-                'kode_penyewa',
+                'kode_tenant',
                 'nama_pic',
                 'nama_perusahaan',
                 'tempat_lahir',
@@ -117,65 +117,65 @@ class PenyewaTest extends TestCase
                 'status',
             ]);
 
-        $this->assertDatabaseCount('penyewa', 0);
+        $this->assertDatabaseCount('tenants', 0);
     }
 
     public function test_store_rejects_duplicate_code_and_email(): void
     {
-        Penyewa::factory()->create([
-            'kode_penyewa' => 'PYW-100',
+        Tenant::factory()->create([
+            'kode_tenant' => 'TNT-100',
             'email' => 'rina@ujicoba.id',
         ]);
 
         $this->actingAs(User::factory()->create())
-            ->post('/penyewa', $this->payload())
-            ->assertSessionHasErrors(['kode_penyewa', 'email']);
+            ->post('/tenants', $this->payload())
+            ->assertSessionHasErrors(['kode_tenant', 'email']);
 
-        $this->assertDatabaseCount('penyewa', 1);
+        $this->assertDatabaseCount('tenants', 1);
     }
 
     public function test_validation_errors_are_displayed_on_the_form(): void
     {
         $this->actingAs(User::factory()->create())
-            ->post('/penyewa', ['durasi_sewa' => 0]);
+            ->post('/tenants', ['durasi_sewa' => 0]);
 
-        $this->get('/penyewa/create')
+        $this->get('/tenants/create')
             ->assertOk()
             ->assertSee('The durasi sewa field must be at least 1.')
-            ->assertSee('The kode penyewa field is required.');
+            ->assertSee('The kode tenant field is required.');
     }
 
-    public function test_a_penyewa_can_be_updated(): void
+    public function test_a_tenant_can_be_updated(): void
     {
-        $penyewa = Penyewa::factory()->create(['nama_pic' => 'Budi Santoso']);
+        $tenant = Tenant::factory()->create(['nama_pic' => 'Budi Santoso']);
 
         $this->actingAs(User::factory()->create())
-            ->put("/penyewa/{$penyewa->id}", $this->payload([
-                'kode_penyewa' => $penyewa->kode_penyewa,
-                'email' => $penyewa->email,
+            ->put("/tenants/{$tenant->id}", $this->payload([
+                'kode_tenant' => $tenant->kode_tenant,
+                'email' => $tenant->email,
                 'nama_pic' => 'Budi Santoso Wijaya',
                 'durasi_sewa' => 24,
             ]))
-            ->assertRedirect('/penyewa')
+            ->assertRedirect('/tenants')
             ->assertSessionHas('status');
 
-        $this->assertDatabaseHas('penyewa', [
-            'id' => $penyewa->id,
+        $this->assertDatabaseHas('tenants', [
+            'id' => $tenant->id,
             'nama_pic' => 'Budi Santoso Wijaya',
             'durasi_sewa' => 24,
         ]);
     }
 
-    public function test_a_penyewa_can_be_deleted(): void
+    public function test_a_tenant_can_be_deleted(): void
     {
-        $penyewa = Penyewa::factory()->create();
+        $tenant = Tenant::factory()->create();
 
         $this->actingAs(User::factory()->create())
-            ->delete("/penyewa/{$penyewa->id}")
-            ->assertRedirect('/penyewa')
+            ->delete("/tenants/{$tenant->id}")
+            ->assertRedirect('/tenants')
             ->assertSessionHas('status');
 
-        $this->assertDatabaseMissing('penyewa', ['id' => $penyewa->id]);
+        $this->assertDatabaseMissing('tenants', ['id' => $tenant->id]);
     }
 
     /**
@@ -185,7 +185,7 @@ class PenyewaTest extends TestCase
     private function payload(array $overrides = []): array
     {
         return array_merge([
-            'kode_penyewa' => 'PYW-100',
+            'kode_tenant' => 'TNT-100',
             'nama_pic' => 'Rina Wulandari',
             'nama_perusahaan' => 'PT Uji Coba',
             'nib_npwp' => '1234567890123',

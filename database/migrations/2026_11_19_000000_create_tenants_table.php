@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('penyewa', function (Blueprint $table) {
+        Schema::create('tenants', function (Blueprint $table) {
             $table->id();
-            $table->string('kode_penyewa', 20)->unique();
+            $table->string('kode_tenant', 20)->unique();
             $table->string('nama_pic');
             $table->string('nama_perusahaan');
             $table->string('nib_npwp', 40)->nullable();
@@ -38,6 +38,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('penyewa');
+        Schema::dropIfExists('tenants');
     }
 };

@@ -1,7 +1,7 @@
 @php
     $items = [
         ['label' => 'Dashboard', 'icon' => 'home', 'route' => 'dashboard', 'active' => 'dashboard'],
-        ['label' => 'Data Penyewa', 'icon' => 'users', 'route' => 'penyewa.index', 'active' => 'penyewa.*'],
+        ['label' => 'Data Tenant', 'icon' => 'users', 'route' => 'tenants.index', 'active' => 'tenants.*'],
         ['label' => 'Data Ruang & Fasilitas', 'icon' => 'building', 'route' => 'ruang-fasilitas.index', 'active' => 'ruang-fasilitas.*'],
         ['label' => 'Pemesanan', 'icon' => 'receipt', 'route' => 'pemesanan.index', 'active' => 'pemesanan.*'],
         ['label' => 'Kontrak Sewa', 'icon' => 'document', 'route' => 'kontrak-sewa.index', 'active' => 'kontrak-sewa.*'],

@@ -2,19 +2,19 @@
 
 namespace Database\Seeders;
 
-use App\Models\Penyewa;
+use App\Models\Tenant;
 use Illuminate\Database\Seeder;
 
-class PenyewaSeeder extends Seeder
+class TenantSeeder extends Seeder
 {
     /**
-     * Seed contoh data penyewa kantor virtual.
+     * Seed contoh data tenant kantor virtual.
      */
     public function run(): void
     {
         $rows = [
             [
-                'kode_penyewa' => 'PYW-001',
+                'kode_tenant' => 'TNT-001',
                 'nama_pic' => 'Budi Santoso',
                 'nama_perusahaan' => 'PT Nusantara Digital',
                 'nib_npwp' => '8123456789012',
@@ -29,7 +29,7 @@ class PenyewaSeeder extends Seeder
                 'status' => 'Aktif',
             ],
             [
-                'kode_penyewa' => 'PYW-002',
+                'kode_tenant' => 'TNT-002',
                 'nama_pic' => 'Siti Rahmawati',
                 'nama_perusahaan' => 'CV Karya Mandiri',
                 'nib_npwp' => '7345678901234',
@@ -44,7 +44,7 @@ class PenyewaSeeder extends Seeder
                 'status' => 'Aktif',
             ],
             [
-                'kode_penyewa' => 'PYW-003',
+                'kode_tenant' => 'TNT-003',
                 'nama_pic' => 'Andi Pratama',
                 'nama_perusahaan' => 'PT Sinar Konsultan',
                 'nib_npwp' => null,
@@ -59,7 +59,7 @@ class PenyewaSeeder extends Seeder
                 'status' => 'Aktif',
             ],
             [
-                'kode_penyewa' => 'PYW-004',
+                'kode_tenant' => 'TNT-004',
                 'nama_pic' => 'Dewi Lestari',
                 'nama_perusahaan' => 'Startup Kopi Kita',
                 'nib_npwp' => '6590123456789',
@@ -74,7 +74,7 @@ class PenyewaSeeder extends Seeder
                 'status' => 'Menunggu Verifikasi',
             ],
             [
-                'kode_penyewa' => 'PYW-005',
+                'kode_tenant' => 'TNT-005',
                 'nama_pic' => 'Rizky Hidayat',
                 'nama_perusahaan' => 'PT Logistik Cepat',
                 'nib_npwp' => '9012345678901',
@@ -89,7 +89,7 @@ class PenyewaSeeder extends Seeder
                 'status' => 'Aktif',
             ],
             [
-                'kode_penyewa' => 'PYW-006',
+                'kode_tenant' => 'TNT-006',
                 'nama_pic' => 'Maya Anggraini',
                 'nama_perusahaan' => 'Biro Hukum Adil Sejahtera',
                 'nib_npwp' => '4456789012345',
@@ -104,7 +104,7 @@ class PenyewaSeeder extends Seeder
                 'status' => 'Menunggu Verifikasi',
             ],
             [
-                'kode_penyewa' => 'PYW-007',
+                'kode_tenant' => 'TNT-007',
                 'nama_pic' => 'Fajar Nugroho',
                 'nama_perusahaan' => 'PT Arka Teknologi',
                 'nib_npwp' => '5678901234567',
@@ -119,7 +119,7 @@ class PenyewaSeeder extends Seeder
                 'status' => 'Nonaktif',
             ],
             [
-                'kode_penyewa' => 'PYW-008',
+                'kode_tenant' => 'TNT-008',
                 'nama_pic' => 'Nadia Puspita',
                 'nama_perusahaan' => 'Klinik Sehat Bersama',
                 'nib_npwp' => '3345678901234',
@@ -136,8 +136,8 @@ class PenyewaSeeder extends Seeder
         ];
 
         foreach ($rows as $row) {
-            Penyewa::updateOrCreate(
-                ['kode_penyewa' => $row['kode_penyewa']],
+            Tenant::updateOrCreate(
+                ['kode_tenant' => $row['kode_tenant']],
                 $row,
             );
         }
