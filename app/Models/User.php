@@ -51,10 +51,34 @@ class User extends Authenticatable
     }
 
     /**
-     * Apakah akun ini milik tenant (termasuk calon tenant).
+     * Apakah akun ini tenant aktif yang terhubung ke data sewa.
      */
     public function isTenant(): bool
     {
-        return $this->role !== UserRole::Admin;
+        return $this->role === UserRole::Tenant;
+    }
+
+    /**
+     * Apakah akun ini pendaftar yang belum memiliki data sewa.
+     */
+    public function isCustomer(): bool
+    {
+        return $this->role === UserRole::Customer;
+    }
+
+    /**
+     * Apakah akun ini memakai portal (semua role selain admin).
+     */
+    public function canAccessPortal(): bool
+    {
+        return ! $this->isAdmin();
+    }
+
+    /**
+     * Halaman pertama yang dibuka setelah login, sesuai role akun.
+     */
+    public function homePath(): string
+    {
+        return $this->isAdmin() ? route('dashboard') : route('portal');
     }
 }

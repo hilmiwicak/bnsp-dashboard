@@ -22,12 +22,13 @@ class AuthTest extends TestCase
             'name' => 'Budi Santoso',
             'email' => 'budi@example.com',
             'password' => 'rahasia123',
-        ])->assertRedirect('/dashboard');
+        ])->assertRedirect('/portal');
 
         $this->assertAuthenticated();
 
         $user = User::where('email', 'budi@example.com')->firstOrFail();
 
+        $this->assertTrue($user->isCustomer());
         $this->assertNotSame('rahasia123', $user->password);
         $this->assertTrue(password_verify('rahasia123', $user->password));
     }
@@ -93,10 +94,15 @@ class AuthTest extends TestCase
 
     public function test_authenticated_users_are_redirected_away_from_auth_screens(): void
     {
-        $user = User::factory()->create();
+        $admin = User::factory()->create();
 
-        $this->actingAs($user)->get('/login')->assertRedirect('/dashboard');
-        $this->actingAs($user)->get('/register')->assertRedirect('/dashboard');
+        $this->actingAs($admin)->get('/login')->assertRedirect('/dashboard');
+        $this->actingAs($admin)->get('/register')->assertRedirect('/dashboard');
+
+        $customer = User::factory()->customer()->create();
+
+        $this->actingAs($customer)->get('/login')->assertRedirect('/portal');
+        $this->actingAs($customer)->get('/register')->assertRedirect('/portal');
     }
 
     public function test_logout_ends_the_session(): void

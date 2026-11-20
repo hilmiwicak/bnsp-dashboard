@@ -59,9 +59,19 @@ class ModuleNavigationTest extends TestCase
         $this->get('/laporan')->assertRedirect('/login');
     }
 
-    public function test_root_url_leads_to_the_dashboard(): void
+    public function test_root_url_leads_guests_to_the_login_screen(): void
     {
-        $this->get('/')->assertRedirect('/dashboard');
+        $this->get('/')->assertRedirect('/login');
+    }
+
+    public function test_root_url_leads_admins_to_the_dashboard(): void
+    {
+        $this->actingAs(User::factory()->create())->get('/')->assertRedirect('/dashboard');
+    }
+
+    public function test_root_url_leads_tenants_to_the_portal(): void
+    {
+        $this->actingAs(User::factory()->customer()->create())->get('/')->assertRedirect('/portal');
     }
 
     public function test_active_menu_item_is_marked_with_aria_current(): void

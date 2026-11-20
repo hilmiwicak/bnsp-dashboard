@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserRole;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -51,7 +52,7 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard'));
+        return redirect()->intended($user->homePath());
     }
 
     /**
@@ -69,13 +70,16 @@ class AuthController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => password_hash($validated['password'], PASSWORD_DEFAULT),
+            // Pendaftar mandiri masuk sebagai customer sampai ada data sewa
+            // yang diverifikasi admin.
+            'role' => UserRole::Customer,
         ]);
 
         Auth::login($user);
 
         $request->session()->regenerate();
 
-        return redirect()->route('dashboard')->with('status', 'Your account has been created.');
+        return redirect()->route('portal')->with('status', 'Your account has been created.');
     }
 
     /**

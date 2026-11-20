@@ -27,11 +27,25 @@ class UserRoleTest extends TestCase
         $this->assertSame(UserRole::Customer, User::factory()->customer()->create()->role);
     }
 
-    public function test_tenant_helper_covers_both_non_admin_roles(): void
+    public function test_role_helpers_distinguish_each_role(): void
     {
-        $this->assertFalse(User::factory()->create()->isTenant());
-        $this->assertTrue(User::factory()->tenant()->create()->isTenant());
-        $this->assertTrue(User::factory()->customer()->create()->isTenant());
+        $admin = User::factory()->create();
+        $tenant = User::factory()->tenant()->create();
+        $customer = User::factory()->customer()->create();
+
+        $this->assertTrue($admin->isAdmin());
+        $this->assertFalse($admin->isTenant());
+        $this->assertFalse($admin->isCustomer());
+
+        $this->assertTrue($tenant->isTenant());
+        $this->assertFalse($tenant->isCustomer());
+
+        $this->assertTrue($customer->isCustomer());
+        $this->assertFalse($customer->isTenant());
+
+        $this->assertFalse($admin->canAccessPortal());
+        $this->assertTrue($tenant->canAccessPortal());
+        $this->assertTrue($customer->canAccessPortal());
     }
 
     public function test_a_tenant_account_belongs_to_its_tenant_record(): void

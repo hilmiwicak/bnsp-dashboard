@@ -1,5 +1,7 @@
 @php
-    $items = [
+    $isAdmin = auth()->user()?->isAdmin() ?? false;
+
+    $adminItems = [
         ['label' => 'Dashboard', 'icon' => 'home', 'route' => 'dashboard', 'active' => 'dashboard'],
         ['label' => 'Data Tenant', 'icon' => 'users', 'route' => 'tenants.index', 'active' => 'tenants.*'],
         ['label' => 'Data Ruang & Fasilitas', 'icon' => 'building', 'route' => 'ruang-fasilitas.index', 'active' => 'ruang-fasilitas.*'],
@@ -9,6 +11,12 @@
         ['label' => 'Tagihan & Pembayaran', 'icon' => 'banknotes', 'route' => 'tagihan-pembayaran.index', 'active' => 'tagihan-pembayaran.*'],
         ['label' => 'Laporan', 'icon' => 'chart', 'route' => 'laporan.index', 'active' => 'laporan.*'],
     ];
+
+    $portalItems = [
+        ['label' => 'Portal', 'icon' => 'home', 'route' => 'portal', 'active' => 'portal'],
+    ];
+
+    $items = $isAdmin ? $adminItems : $portalItems;
 @endphp
 
 <aside
