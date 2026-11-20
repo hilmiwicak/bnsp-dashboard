@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\PortalController;
 use App\Http\Controllers\RoomController;
+use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\TenantApplicationController;
 use App\Http\Controllers\TenantController;
 use Illuminate\Http\Request;
@@ -39,6 +40,9 @@ Route::middleware('auth')->group(function () {
         Route::patch('pemesanan/{booking}/status', [BookingController::class, 'updateStatus'])
             ->name('pemesanan.status');
 
+        // Jadwal penggunaan ruang diturunkan dari pemesanan yang disetujui.
+        Route::get('jadwal-ruang', [ScheduleController::class, 'index'])->name('jadwal-ruang.index');
+
         // Modul standar kantor virtual selain Data Tenant. Struktur halaman sudah
         // disiapkan (judul, deskripsi, kolom tabel) dan datanya menyusul.
         $modules = [
@@ -46,11 +50,6 @@ Route::middleware('auth')->group(function () {
                 'heading' => 'Kontrak Sewa',
                 'description' => 'Kelola dokumen kontrak sewa aktif, termasuk periode dan status kontrak yang disepakati.',
                 'columns' => ['Nomor Kontrak', 'Tenant', 'Mulai', 'Berakhir', 'Durasi', 'Status'],
-            ],
-            'jadwal-ruang' => [
-                'heading' => 'Jadwal Penggunaan Ruang',
-                'description' => 'Pantau jadwal pemakaian ruang meeting agar tidak terjadi bentrok antar tenant.',
-                'columns' => ['Ruang', 'Tenant', 'Tanggal', 'Jam Mulai', 'Jam Selesai', 'Status'],
             ],
             'tagihan-pembayaran' => [
                 'heading' => 'Tagihan & Pembayaran',

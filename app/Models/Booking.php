@@ -50,6 +50,16 @@ class Booking extends Model
     ];
 
     /**
+     * Status yang tampil pada jadwal penggunaan ruang.
+     *
+     * @var list<string>
+     */
+    public const STATUS_JADWAL = [
+        'Disetujui',
+        'Selesai',
+    ];
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>

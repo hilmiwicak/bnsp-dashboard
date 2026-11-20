@@ -36,7 +36,6 @@ class ModuleNavigationTest extends TestCase
     {
         $slugs = [
             'kontrak-sewa',
-            'jadwal-ruang',
             'tagihan-pembayaran',
             'laporan',
         ];
