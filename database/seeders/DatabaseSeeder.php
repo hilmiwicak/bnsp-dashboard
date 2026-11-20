@@ -15,11 +15,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Akun demo: test@example.com / password. Dibuat sekali saja agar
+        // `php artisan db:seed` aman dijalankan berulang kali.
+        User::query()->firstOrCreate(
+            ['email' => 'test@example.com'],
+            [
+                'name' => 'Test User',
+                'password' => password_hash('password', PASSWORD_DEFAULT),
+            ],
+        );
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        $this->call(PenyewaSeeder::class);
     }
 }
