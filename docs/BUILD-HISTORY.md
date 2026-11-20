@@ -103,6 +103,96 @@ Landing page after login is role-based (`User::homePath()`): admin →
 
 ---
 
+## Test walkthrough
+
+Manual flows for checking the interface. Start from a known state:
+
+```bash
+php artisan migrate:fresh --seed
+```
+
+That gives 8 tenants, 6 rooms, 6 bookings, 6 contracts and 24 invoices, so the
+next generated codes are `TNT-009`, `RNG-007`, `PMN-007`, `KTR-007`, `INV-025`.
+All demo accounts use the password `password`.
+
+### 1. Admin — add a tenant
+
+1. Log in as `admin@example.com`, land on **Ringkasan**.
+2. Open **Data Tenant** — 8 rows, header reads “8 tenant terdaftar”.
+3. Click **Tambah Tenant**.
+4. Fill the form. *Kode Tenant* is prefilled `TNT-009`; complete *Informasi PIC*,
+   *Informasi Perusahaan* and *Detail Sewa* (durasi in months).
+5. Submit **Simpan Data Tenant** — back on the list with a green confirmation
+   banner.
+6. Type the new PIC name into **Pencarian** — only that row remains. Click
+   **Reset** to clear the filter.
+7. Go to **Dashboard** — *Total Tenant* is now 9 and *Tenant Terbaru* lists the
+   new tenant with its status badge.
+
+### 2. Admin — book a room, approve it, see the schedule
+
+1. Open **Pemesanan** → **Tambah Pemesanan** (*kode* prefilled `PMN-007`).
+2. Pick a tenant and a room, set a date a few days ahead, hours `09:00`–`11:00`,
+   status **Menunggu**, then **Simpan Pemesanan**.
+3. In the list the row shows an amber *Menunggu* badge and a **Setujui** button.
+   Click it — the badge turns green *Disetujui*.
+4. Open **Jadwal Penggunaan Ruang** — the booking appears under its date with
+   `09:00 – 11:00`, the room, the tenant and the participant count.
+5. Conflict check: add another booking on the same room and date from `10:00`
+   to `12:00`. Submitting returns a red error on *Jam Mulai* and no row is
+   created.
+6. Back-to-back check: `11:00`–`12:00` on that same room and date is accepted.
+
+### 3. Admin — contract, invoice, payment, report
+
+1. **Kontrak Sewa** → **Tambah Kontrak** (*nomor* prefilled `KTR-007`). Set the
+   period, a value, status **Aktif**, then **Simpan Kontrak**. The *Durasi*
+   column shows the months between the two dates.
+2. **Tagihan & Pembayaran** → **Terbitkan Tagihan** (*nomor* prefilled
+   `INV-025`). Pick the tenant, the current month as *Periode*, a *Jumlah*, the
+   due date, status **Belum Dibayar**, then **Simpan Tagihan**.
+3. The row shows an amber *Belum Dibayar* badge and a **Tandai Lunas** button.
+   Click it — the badge turns green *Lunas* and the *Pembayaran* column fills in
+   today's date.
+4. The outstanding total in the card header drops by the amount you paid.
+5. **Dashboard** — *Pendapatan Lunas* increases and *Riwayat Pendapatan* lifts
+   for the current month.
+6. **Laporan** — the current year's month row shows the booking count and the
+   paid amount; the totals row matches the stat cards.
+
+### 4. Customer — self-register and apply for a tenancy
+
+1. Log out, then **Register** a new account.
+2. You land on **Portal** with the amber *Menunggu Verifikasi* badge and the
+   card “Pengajuan sewa belum dibuat”.
+3. Click **Ajukan Sewa** — the form has no *Kode Tenant* or *Status* field, and
+   *Tanggal Mulai Sewa* cannot be earlier than today.
+4. Submit **Kirim Pengajuan** — back on the portal with a confirmation naming
+   the new tenant code.
+5. The account is now a tenant: visiting `/portal/pengajuan` redirects to
+   `/portal`, and the sidebar lists only **Portal**.
+
+### 5. Admin — verify the applicant, tenant sees active membership
+
+1. Log in as admin, find the new tenant in **Data Tenant**, open **Edit**.
+2. Change *Status Tenant* to **Aktif**, submit **Perbarui Data Tenant**.
+3. **Dashboard** — the *Menunggu Verifikasi* count drops and the “tenant aktif”
+   hint rises.
+4. Log in as that tenant — the portal shows a green *Aktif* badge,
+   “Keanggotaan aktif”, and a *Data Sewa* card with the tenant code, company,
+   PIC, start date, duration and end date.
+
+### 6. Every role — guard and logout
+
+1. As a tenant or customer, open `/dashboard`, `/tenants`, `/pemesanan` and
+   `/laporan` — each returns **403**.
+2. Click **Logout** in the header — redirected to `/login` with a confirmation.
+3. While logged out, open `/portal` — redirected to `/login`.
+4. Log in as admin and open `/portal` — **403**, because the portal is for
+   tenants and customers only.
+
+---
+
 ## Still open
 
 - **Polish** — styled 403 page, README, login rate limiting.
