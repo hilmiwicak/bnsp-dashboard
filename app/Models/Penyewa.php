@@ -1,0 +1,132 @@
+<?php
+
+namespace App\Models;
+
+use Database\Factories\PenyewaFactory;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
+
+#[Fillable([
+    'kode_penyewa',
+    'nama_pic',
+    'nama_perusahaan',
+    'nib_npwp',
+    'tempat_lahir',
+    'tanggal_lahir',
+    'jenis_kelamin',
+    'alamat',
+    'no_hp',
+    'email',
+    'paket_layanan',
+    'tanggal_mulai_sewa',
+    'durasi_sewa',
+    'status',
+])]
+class Penyewa extends Model
+{
+    /** @use HasFactory<PenyewaFactory> */
+    use HasFactory;
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'penyewa';
+
+    /**
+     * Paket layanan yang tersedia pada kantor virtual.
+     *
+     * @var list<string>
+     */
+    public const PAKET_LAYANAN = [
+        'Virtual Office',
+        'Virtual Office Plus',
+        'Private Office',
+        'Ruang Meeting',
+    ];
+
+    /**
+     * Status keanggotaan penyewa.
+     *
+     * @var list<string>
+     */
+    public const STATUS = [
+        'Aktif',
+        'Menunggu Verifikasi',
+        'Nonaktif',
+    ];
+
+    /**
+     * Pilihan jenis kelamin untuk data PIC.
+     *
+     * @var list<string>
+     */
+    public const JENIS_KELAMIN = [
+        'Laki-laki',
+        'Perempuan',
+    ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'tanggal_lahir' => 'date',
+            'tanggal_mulai_sewa' => 'date',
+            'durasi_sewa' => 'integer',
+        ];
+    }
+
+    /**
+     * Cari penyewa berdasarkan kode, nama PIC, perusahaan, email, atau nomor HP.
+     */
+    public function scopeSearch(Builder $query, ?string $term): Builder
+    {
+        $term = trim((string) $term);
+
+        if ($term === '') {
+            return $query;
+        }
+
+        $like = '%'.$term.'%';
+
+        return $query->where(function (Builder $query) use ($like) {
+            $query->where('kode_penyewa', 'like', $like)
+                ->orWhere('nama_pic', 'like', $like)
+                ->orWhere('nama_perusahaan', 'like', $like)
+                ->orWhere('email', 'like', $like)
+                ->orWhere('no_hp', 'like', $like);
+        });
+    }
+
+    /**
+     * Tanggal berakhirnya masa sewa berdasarkan tanggal mulai dan durasi.
+     */
+    public function masaSewaBerakhir(): ?Carbon
+    {
+        if (! $this->tanggal_mulai_sewa) {
+            return null;
+        }
+
+        return $this->tanggal_mulai_sewa->copy()->addMonths((int) $this->durasi_sewa);
+    }
+
+    /**
+     * Inisial nama PIC untuk ditampilkan pada tabel.
+     */
+    public function inisial(): string
+    {
+        return collect(explode(' ', (string) $this->nama_pic))
+            ->filter()
+            ->map(fn (string $part) => mb_substr($part, 0, 1))
+            ->take(2)
+            ->implode('');
+    }
+}

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PenyewaController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => redirect()->route('dashboard'));
@@ -14,6 +15,8 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::view('/dashboard', 'dashboard')->name('dashboard');
+
+    Route::resource('penyewa', PenyewaController::class)->except('show');
 
     // Modul standar kantor virtual selain Data Penyewa. Struktur halaman sudah
     // disiapkan (judul, deskripsi, kolom tabel) dan datanya menyusul.

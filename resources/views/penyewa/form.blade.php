@@ -1,0 +1,182 @@
+@php
+    $card = 'rounded-[20px] bg-white p-6 shadow-[0_4px_20px_rgba(25,35,80,0.03)] lg:p-8';
+    $legend = 'text-[17px] font-semibold tracking-tight text-dash-ink';
+    $note = 'mt-1 text-sm text-dash-muted';
+@endphp
+
+<form method="POST" action="{{ $action }}" class="space-y-6">
+    @csrf
+    @if (! in_array(strtoupper($method), ['GET', 'POST'], true))
+        @method($method)
+    @endif
+
+    <section class="{{ $card }}">
+        <div class="mb-6">
+            <h3 class="{{ $legend }}">Informasi PIC</h3>
+            <p class="{{ $note }}">Data penanggung jawab yang menjadi kontak utama penyewa.</p>
+        </div>
+
+        <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+            <x-dashboard.form-field
+                name="kode_penyewa"
+                label="Kode Penyewa"
+                placeholder="PYW-001"
+                :value="$penyewa->kode_penyewa"
+                :error="$errors->first('kode_penyewa')"
+                required
+            />
+
+            <x-dashboard.form-field
+                name="nama_pic"
+                label="Nama Lengkap PIC"
+                placeholder="Nama lengkap penanggung jawab"
+                :value="$penyewa->nama_pic"
+                :error="$errors->first('nama_pic')"
+                required
+            />
+
+            <x-dashboard.form-field
+                name="tempat_lahir"
+                label="Tempat Lahir"
+                placeholder="Kota kelahiran"
+                :value="$penyewa->tempat_lahir"
+                :error="$errors->first('tempat_lahir')"
+                required
+            />
+
+            <x-dashboard.form-field
+                name="tanggal_lahir"
+                label="Tanggal Lahir"
+                type="date"
+                :value="$penyewa->tanggal_lahir?->format('Y-m-d')"
+                :error="$errors->first('tanggal_lahir')"
+                required
+            />
+
+            <x-dashboard.form-select
+                name="jenis_kelamin"
+                label="Jenis Kelamin"
+                :options="\App\Models\Penyewa::JENIS_KELAMIN"
+                :selected="$penyewa->jenis_kelamin"
+                placeholder="Pilih jenis kelamin"
+                :error="$errors->first('jenis_kelamin')"
+                required
+            />
+
+            <x-dashboard.form-field
+                name="no_hp"
+                label="Nomor HP"
+                type="tel"
+                placeholder="08xxxxxxxxxx"
+                :value="$penyewa->no_hp"
+                :error="$errors->first('no_hp')"
+                required
+            />
+
+            <div class="md:col-span-2">
+                <x-dashboard.form-field
+                    name="email"
+                    label="Email"
+                    type="email"
+                    placeholder="nama@perusahaan.com"
+                    :value="$penyewa->email"
+                    :error="$errors->first('email')"
+                    required
+                />
+            </div>
+        </div>
+    </section>
+
+    <section class="{{ $card }}">
+        <div class="mb-6">
+            <h3 class="{{ $legend }}">Informasi Perusahaan</h3>
+            <p class="{{ $note }}">Identitas badan usaha atau perorangan yang menyewa.</p>
+        </div>
+
+        <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+            <x-dashboard.form-field
+                name="nama_perusahaan"
+                label="Nama Perusahaan"
+                placeholder="PT Contoh Sejahtera"
+                :value="$penyewa->nama_perusahaan"
+                :error="$errors->first('nama_perusahaan')"
+                required
+            />
+
+            <x-dashboard.form-field
+                name="nib_npwp"
+                label="NIB / NPWP"
+                placeholder="Opsional"
+                :value="$penyewa->nib_npwp"
+                :error="$errors->first('nib_npwp')"
+                hint="Boleh dikosongkan bila belum tersedia."
+            />
+
+            <div class="md:col-span-2">
+                <x-dashboard.form-field
+                    name="alamat"
+                    label="Alamat Perusahaan"
+                    type="textarea"
+                    placeholder="Jalan, nomor, kelurahan, kota, kode pos"
+                    :value="$penyewa->alamat"
+                    :error="$errors->first('alamat')"
+                    required
+                />
+            </div>
+        </div>
+    </section>
+
+    <section class="{{ $card }}">
+        <div class="mb-6">
+            <h3 class="{{ $legend }}">Detail Sewa</h3>
+            <p class="{{ $note }}">Paket layanan, periode sewa, dan status keanggotaan penyewa.</p>
+        </div>
+
+        <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+            <x-dashboard.form-select
+                name="paket_layanan"
+                label="Paket Layanan"
+                :options="\App\Models\Penyewa::PAKET_LAYANAN"
+                :selected="$penyewa->paket_layanan"
+                placeholder="Pilih paket layanan"
+                :error="$errors->first('paket_layanan')"
+                required
+            />
+
+            <x-dashboard.form-select
+                name="status"
+                label="Status Penyewa"
+                :options="\App\Models\Penyewa::STATUS"
+                :selected="$penyewa->status"
+                placeholder="Pilih status"
+                :error="$errors->first('status')"
+                required
+            />
+
+            <x-dashboard.form-field
+                name="tanggal_mulai_sewa"
+                label="Tanggal Mulai Sewa"
+                type="date"
+                :value="$penyewa->tanggal_mulai_sewa?->format('Y-m-d')"
+                :error="$errors->first('tanggal_mulai_sewa')"
+                required
+            />
+
+            <x-dashboard.form-field
+                name="durasi_sewa"
+                label="Durasi Sewa"
+                type="number"
+                placeholder="12"
+                :value="$penyewa->durasi_sewa"
+                :error="$errors->first('durasi_sewa')"
+                hint="Diisi dalam satuan bulan, minimal 1 dan maksimal 120."
+                required
+            />
+        </div>
+    </section>
+
+    <div class="flex flex-wrap items-center justify-end gap-3">
+        <x-dashboard.button variant="secondary" :href="route('penyewa.index')">Batal</x-dashboard.button>
+        <x-dashboard.button type="submit">{{ $submitLabel }}</x-dashboard.button>
+    </div>
+</form>

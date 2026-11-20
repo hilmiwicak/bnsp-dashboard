@@ -42,6 +42,10 @@
                                 <p class="mt-1 text-sm text-dash-muted">
                                     Struktur tabel sudah disiapkan. Input data akan tersedia pada pengembangan berikutnya.
                                 </p>
+
+                                <div class="mt-5 flex justify-center">
+                                    <x-dashboard.button variant="secondary" :href="route('penyewa.index')">Lihat Data Penyewa</x-dashboard.button>
+                                </div>
                             </td>
                         </tr>
                     </tbody>

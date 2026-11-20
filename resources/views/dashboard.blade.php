@@ -60,7 +60,11 @@
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-12">
         {{-- Kartu keanggotaan --}}
         <section class="flex flex-col lg:col-span-8">
-            <x-dashboard.section-title title="Kartu Keanggotaan" />
+            <x-dashboard.section-title title="Kartu Keanggotaan">
+                <x-slot:action>
+                    <a href="{{ route('penyewa.index') }}" class="text-[15px] font-semibold text-dash-primary transition hover:text-dash-blue">Lihat Semua</a>
+                </x-slot:action>
+            </x-dashboard.section-title>
 
             <div class="grid flex-1 gap-7 sm:grid-cols-2">
                 <x-dashboard.membership-card />
