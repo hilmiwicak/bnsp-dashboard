@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\ContractController;
 use App\Http\Controllers\PortalController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\ScheduleController;
@@ -43,14 +44,13 @@ Route::middleware('auth')->group(function () {
         // Jadwal penggunaan ruang diturunkan dari pemesanan yang disetujui.
         Route::get('jadwal-ruang', [ScheduleController::class, 'index'])->name('jadwal-ruang.index');
 
+        Route::resource('kontrak-sewa', ContractController::class)
+            ->parameters(['kontrak-sewa' => 'contract'])
+            ->except('show');
+
         // Modul standar kantor virtual selain Data Tenant. Struktur halaman sudah
         // disiapkan (judul, deskripsi, kolom tabel) dan datanya menyusul.
         $modules = [
-            'kontrak-sewa' => [
-                'heading' => 'Kontrak Sewa',
-                'description' => 'Kelola dokumen kontrak sewa aktif, termasuk periode dan status kontrak yang disepakati.',
-                'columns' => ['Nomor Kontrak', 'Tenant', 'Mulai', 'Berakhir', 'Durasi', 'Status'],
-            ],
             'tagihan-pembayaran' => [
                 'heading' => 'Tagihan & Pembayaran',
                 'description' => 'Terbitkan tagihan bulanan tenant dan catat pembayaran yang sudah diterima.',
