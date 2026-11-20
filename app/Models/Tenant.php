@@ -127,4 +127,17 @@ class Tenant extends Model
             ->take(2)
             ->implode('');
     }
+
+    /**
+     * Warna badge yang mewakili status tenant.
+     */
+    public function statusTone(): string
+    {
+        return match ($this->status) {
+            'Aktif' => 'green',
+            'Menunggu Verifikasi' => 'amber',
+            'Nonaktif' => 'gray',
+            default => 'gray',
+        };
+    }
 }

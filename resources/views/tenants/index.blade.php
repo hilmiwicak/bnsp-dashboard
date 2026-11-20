@@ -1,10 +1,4 @@
 @php
-    $statusTone = [
-        'Aktif' => 'bg-[#dcfaf8] text-[#0f9b8f]',
-        'Menunggu Verifikasi' => 'bg-[#fff5d1] text-[#b57e00]',
-        'Nonaktif' => 'bg-[#f2f4f7] text-dash-muted',
-    ];
-
     $avatarTone = [
         'bg-[#e7edff] text-[#396aff]',
         'bg-[#dcfaf8] text-[#16dbcc]',
@@ -126,9 +120,7 @@
                                 </td>
 
                                 <td class="whitespace-nowrap px-6 py-4">
-                                    <span class="inline-flex rounded-full px-3 py-1 text-[13px] font-semibold {{ $statusTone[$item->status] ?? 'bg-dash-surface text-dash-muted' }}">
-                                        {{ $item->status }}
-                                    </span>
+                                    <x-dashboard.badge :tone="$item->statusTone()">{{ $item->status }}</x-dashboard.badge>
                                 </td>
 
                                 <td class="whitespace-nowrap px-6 py-4 text-right lg:px-8">

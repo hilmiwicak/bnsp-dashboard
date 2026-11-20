@@ -27,7 +27,7 @@ class InvoiceSeeder extends Seeder
         $nomor = 1;
 
         foreach ([5, 4, 3, 2, 1, 0] as $bulanLalu) {
-            $periode = now()->subMonths($bulanLalu);
+            $periode = now()->startOfMonth()->subMonths($bulanLalu);
 
             foreach ($tenants as $index => $tenant) {
                 $status = $bulanLalu === 0 ? 'Belum Dibayar' : 'Lunas';

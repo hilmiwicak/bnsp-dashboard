@@ -64,6 +64,14 @@ class Bulan
     }
 
     /**
+     * Nama hari singkat dari hasil Carbon::dayOfWeek, mis. "Sen".
+     */
+    public static function singkatHari(int $hari): string
+    {
+        return mb_substr(self::HARI[$hari] ?? '', 0, 3);
+    }
+
+    /**
      * Ubah periode "YYYY-MM" menjadi label, mis. "November 2026".
      */
     public static function periode(?string $periode): string

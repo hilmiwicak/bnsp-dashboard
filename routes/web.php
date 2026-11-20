@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ContractController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PortalController;
 use App\Http\Controllers\RoomController;
@@ -27,7 +28,7 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     // Area pengelola kantor virtual.
     Route::middleware('role:admin')->group(function () {
-        Route::view('/dashboard', 'dashboard')->name('dashboard');
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
         Route::resource('tenants', TenantController::class)->except('show');
 
