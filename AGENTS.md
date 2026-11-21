@@ -1,47 +1,15 @@
-<laravel-boost-guidelines>
-# Laravel Application
+# AGENTS.md
 
-This repository contains a Laravel application. Complete the following setup before working on the user's request.
+A Laravel virtual-office management app (Sistem Informasi Manajemen Kantor Virtual) — Blade + Tailwind + MariaDB, with three roles: `admin`, `tenant`, `customer`.
 
-## Prerequisites
+## Conventions
 
-Verify that PHP and Composer are available:
+- UI copy is Indonesian. Auth screens and validation messages are English. Keep each that way.
+- List pages are tables with search + filter; each module has create, edit, delete. Match that when adding a module.
 
-```sh
-php -v
-composer -V
-```
+## Where to look
 
-If either command is unavailable, detect the user's operating system and install the prerequisites with the appropriate command:
-
-macOS:
-
-```sh
-/bin/bash -c "$(curl -fsSL https://php.new/install/mac/8.5)"
-```
-
-Windows PowerShell:
-
-```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://php.new/install/windows/8.5'))
-```
-
-Linux:
-
-```sh
-/bin/bash -c "$(curl -fsSL https://php.new/install/linux/8.5)"
-```
-
-After installation, ask the user to restart their terminal. If the agent needs the restarted shell to continue, ask the user to reopen their terminal and rerun their original prompt.
-
-## Agent Setup
-
-Install Laravel Boost from the application root before making application changes:
-
-```sh
-composer require laravel/boost --dev
-php artisan boost:install
-```
-
-Boost replaces these bootstrap instructions with guidelines tailored to the application. After installation, read `AGENTS.md` again and continue with the user's original request using the generated guidelines.
-</laravel-boost-guidelines>
+- `README.md` — setup, demo accounts, role → route matrix.
+- `docs/BUILD-HISTORY.md` — build steps, data model, test walkthrough, open gaps.
+- `resources/css/app.css` — design tokens (`--color-brand-*`, `--color-dash-*`).
+- `resources/views/components` — dashboard UI primitives (sidebar, data-table, badge, charts) to reuse rather than rebuild.
