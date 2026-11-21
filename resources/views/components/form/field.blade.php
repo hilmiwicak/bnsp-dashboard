@@ -1,48 +1,38 @@
 @props([
     'name',
     'type' => 'text',
+    'label' => null,
     'placeholder' => null,
-    'icon' => null,
     'error' => null,
 ])
 
 @php
-    $icons = [
-        'user' => '<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a7.5 7.5 0 0115 0v.75H4.5v-.75z" />',
-        'mail' => '<path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5v10.5H3.75V6.75z" /><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 7.5l8.25 5.25L20.25 7.5" />',
-        'lock' => '<path stroke-linecap="round" stroke-linejoin="round" d="M6.75 10.5V7.5a5.25 5.25 0 0110.5 0v3" /><rect x="4.5" y="10.5" width="15" height="9" rx="2.25" stroke-linecap="round" stroke-linejoin="round" />',
-    ];
-
     $classes = implode(' ', [
-        'h-16 w-full rounded-2xl border bg-white pl-14 pr-6 text-[16px] text-neutral-800',
+        'h-[52px] w-full rounded-[10px] border bg-white px-4 text-[15px] text-neutral-900',
         'shadow-[0_1px_2px_rgba(16,24,40,0.04)] outline-none transition placeholder:text-neutral-400 focus:ring-4',
         $error
             ? 'border-rose-400 focus:border-rose-400 focus:ring-rose-500/10'
-            : 'border-neutral-200 focus:border-brand-400 focus:ring-brand-500/10',
+            : 'border-neutral-300 focus:border-brand-500 focus:ring-brand-500/10',
     ]);
 @endphp
 
 <div>
-    <div class="relative">
-        @if ($icon)
-            <span class="pointer-events-none absolute inset-y-0 left-0 flex w-14 items-center justify-center {{ $error ? 'text-rose-400' : 'text-neutral-400' }}">
-                <svg class="h-[22px] w-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-                    {!! $icons[$icon] ?? $icons['user'] !!}
-                </svg>
-            </span>
-        @endif
+    @if ($label)
+        <label for="{{ $name }}" class="mb-2 block text-[14px] font-medium text-neutral-700">
+            {{ $label }}
+        </label>
+    @endif
 
-        <input
-            id="{{ $name }}"
-            name="{{ $name }}"
-            type="{{ $type }}"
-            @if ($placeholder) placeholder="{{ $placeholder }}" @endif
-            @if ($error) aria-invalid="true" aria-describedby="{{ $name }}-error" @endif
-            {{ $attributes->merge(['class' => $classes]) }}
-        />
-    </div>
+    <input
+        id="{{ $name }}"
+        name="{{ $name }}"
+        type="{{ $type }}"
+        @if ($placeholder) placeholder="{{ $placeholder }}" @endif
+        @if ($error) aria-invalid="true" aria-describedby="{{ $name }}-error" @endif
+        {{ $attributes->merge(['class' => $classes]) }}
+    />
 
     @if ($error)
-        <p id="{{ $name }}-error" class="mt-2 pl-4 text-[13px] font-medium text-rose-600">{{ $error }}</p>
+        <p id="{{ $name }}-error" class="mt-2 text-[13px] font-medium text-rose-600">{{ $error }}</p>
     @endif
 </div>

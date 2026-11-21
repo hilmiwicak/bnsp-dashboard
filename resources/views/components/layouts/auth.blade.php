@@ -10,14 +10,28 @@
     {{ Vite::fonts(['poppins']) }}
 </head>
 <body class="min-h-full bg-white font-sans text-neutral-800">
-    <main class="grid min-h-screen grid-cols-1 lg:grid-cols-[59fr_41fr]">
-        <x-auth.brand-panel />
+    <div class="flex min-h-screen flex-col">
+        <header class="px-6 pt-8 sm:px-10 lg:px-[7%] lg:pt-10">
+            <a
+                href="{{ url('/') }}"
+                class="inline-flex items-center gap-2.5 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500/40 focus-visible:ring-offset-4"
+            >
+                <x-logo class="h-9 w-9" />
+                <span class="text-[19px] font-semibold tracking-tight text-neutral-900">Kantor Virtual</span>
+            </a>
+        </header>
 
-        <section class="flex items-center justify-center px-6 py-16 sm:px-10 lg:px-14 lg:py-0">
-            <div class="w-full max-w-[430px]">
-                {{ $slot }}
+        <main class="flex flex-1 items-center px-6 py-12 sm:px-10 lg:px-[7%] lg:py-16">
+            <div class="grid w-full items-center gap-16 lg:grid-cols-[minmax(0,430px)_minmax(0,1fr)]">
+                <section class="w-full max-w-[430px]">
+                    {{ $slot }}
+                </section>
+
+                <div class="hidden lg:block">
+                    <x-auth.illustration />
+                </div>
             </div>
-        </section>
-    </main>
+        </main>
+    </div>
 </body>
 </html>

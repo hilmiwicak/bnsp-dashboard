@@ -1,6 +1,6 @@
 <x-layouts.auth title="Login">
-    <h2 class="text-[28px] font-bold leading-tight tracking-tight text-neutral-800 sm:text-[32px]">Hello Again!</h2>
-    <p class="mt-2 text-[16px] text-neutral-600">Welcome Back</p>
+    <h1 class="text-[34px] font-bold leading-tight tracking-tight text-neutral-900 sm:text-[40px]">Login</h1>
+    <p class="mt-3 text-[16px] text-neutral-500">Welcome back! Please enter your details.</p>
 
     @if (session('status'))
         <x-alert class="mt-6">{{ session('status') }}</x-alert>
@@ -13,8 +13,8 @@
             <x-form.field
                 name="email"
                 type="email"
-                icon="mail"
-                placeholder="Email Address"
+                label="Email"
+                placeholder="you@company.com"
                 autocomplete="email"
                 :value="old('email')"
                 :error="$errors->first('email')"
@@ -23,8 +23,8 @@
             <x-form.field
                 name="password"
                 type="password"
-                icon="lock"
-                placeholder="Password"
+                label="Password"
+                placeholder="Enter your password"
                 autocomplete="current-password"
                 :error="$errors->first('password')"
             />
@@ -33,12 +33,13 @@
         <x-form.button class="mt-8">Login</x-form.button>
     </form>
 
-    <a href="#" class="mt-7 block text-center text-[14px] text-neutral-500 transition hover:text-neutral-700">
-        Forgot Password
-    </a>
-
-    <p class="mt-3 text-center text-[14px] text-neutral-500">
+    <p class="mt-8 text-center text-[15px] text-neutral-500">
         Don't have an account?
-        <a href="{{ route('register') }}" class="font-medium text-brand-600 transition hover:text-brand-700">Register</a>
+        <a
+            href="{{ route('register') }}"
+            class="font-medium text-brand-600 underline-offset-4 transition hover:text-brand-700 hover:underline"
+        >
+            Sign up
+        </a>
     </p>
 </x-layouts.auth>

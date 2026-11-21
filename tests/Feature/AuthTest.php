@@ -12,8 +12,8 @@ class AuthTest extends TestCase
 
     public function test_login_and_register_screens_are_reachable(): void
     {
-        $this->get('/login')->assertOk()->assertSee('Welcome Back');
-        $this->get('/register')->assertOk()->assertSee('Sign Up to Get Started');
+        $this->get('/login')->assertOk()->assertSee('Please enter your details');
+        $this->get('/register')->assertOk()->assertSee('Sign up to get started');
     }
 
     public function test_registration_stores_a_hashed_password(): void
