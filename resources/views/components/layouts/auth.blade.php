@@ -13,8 +13,8 @@
     <main class="grid min-h-screen grid-cols-1 lg:grid-cols-[59fr_41fr]">
         <x-auth.brand-panel />
 
-        <section class="flex items-center justify-center px-6 py-16 sm:px-10 lg:py-0">
-            <div class="w-full max-w-[340px]">
+        <section class="flex items-center justify-center px-6 py-16 sm:px-10 lg:px-14 lg:py-0">
+            <div class="w-full max-w-[430px]">
                 {{ $slot }}
             </div>
         </section>

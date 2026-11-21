@@ -6,7 +6,7 @@
         'amber' => 'bg-[#fff5d1] text-[#b57e00]',
         'gray' => 'bg-[#f2f4f7] text-dash-muted',
         'rose' => 'bg-rose-50 text-rose-600',
-        'blue' => 'bg-[#e7edff] text-[#396aff]',
+        'violet' => 'bg-[#ece7fe] text-[#6f34e0]',
     ];
 @endphp
 

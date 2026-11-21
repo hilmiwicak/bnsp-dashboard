@@ -3,13 +3,13 @@
     'value',
     'hint' => null,
     'icon' => 'users',
-    'tone' => 'blue',
+    'tone' => 'violet',
 ])
 
 @php
     $tones = [
-        'blue' => 'bg-[#e7edff] text-[#396aff]',
-        'indigo' => 'bg-[#ecebff] text-[#3434e8]',
+        'violet' => 'bg-[#ece7fe] text-[#6f34e0]',
+        'indigo' => 'bg-[#e7dffd] text-[#7c3aed]',
         'teal' => 'bg-[#dcfaf8] text-[#0f9b8f]',
         'amber' => 'bg-[#fff5d1] text-[#b57e00]',
         'rose' => 'bg-rose-50 text-rose-600',
@@ -24,7 +24,7 @@
 @endphp
 
 <div {{ $attributes->merge(['class' => 'flex items-center gap-4 rounded-[20px] bg-white p-5 shadow-[0_4px_20px_rgba(25,35,80,0.03)]']) }}>
-    <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full {{ $tones[$tone] ?? $tones['blue'] }}">
+    <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full {{ $tones[$tone] ?? $tones['violet'] }}">
         <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
             {!! $icons[$icon] ?? $icons['users'] !!}
         </svg>

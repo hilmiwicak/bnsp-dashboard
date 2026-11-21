@@ -18,7 +18,7 @@
             <section class="flex flex-col lg:col-span-8">
                 <x-dashboard.section-title title="Aktivitas Pemesanan">
                     <x-slot:action>
-                        <a href="{{ route('pemesanan.index') }}" class="text-[15px] font-semibold text-dash-primary transition hover:text-dash-blue">Lihat Semua</a>
+                        <a href="{{ route('pemesanan.index') }}" class="text-[15px] font-semibold text-dash-primary transition hover:text-dash-accent">Lihat Semua</a>
                     </x-slot:action>
                 </x-dashboard.section-title>
 
@@ -74,7 +74,7 @@
             <section class="flex flex-col lg:col-span-7">
                 <x-dashboard.section-title title="Riwayat Pendapatan">
                     <x-slot:action>
-                        <a href="{{ route('tagihan-pembayaran.index') }}" class="text-[15px] font-semibold text-dash-primary transition hover:text-dash-blue">Lihat Tagihan</a>
+                        <a href="{{ route('tagihan-pembayaran.index') }}" class="text-[15px] font-semibold text-dash-primary transition hover:text-dash-accent">Lihat Tagihan</a>
                     </x-slot:action>
                 </x-dashboard.section-title>
 
@@ -89,14 +89,14 @@
             <section class="flex flex-col lg:col-span-5">
                 <x-dashboard.section-title title="Tenant Terbaru">
                     <x-slot:action>
-                        <a href="{{ route('tenants.index') }}" class="text-[15px] font-semibold text-dash-primary transition hover:text-dash-blue">Lihat Semua</a>
+                        <a href="{{ route('tenants.index') }}" class="text-[15px] font-semibold text-dash-primary transition hover:text-dash-accent">Lihat Semua</a>
                     </x-slot:action>
                 </x-dashboard.section-title>
 
                 <div class="flex flex-1 flex-col justify-center gap-4 rounded-[20px] bg-white p-6 shadow-[0_4px_20px_rgba(25,35,80,0.03)]">
                     @forelse ($tenantTerbaru as $tenant)
                         <div class="flex items-center gap-3">
-                            <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#e7edff] text-[13px] font-semibold text-[#396aff]">
+                            <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#ece7fe] text-[13px] font-semibold text-[#6f34e0]">
                                 {{ $tenant->inisial() ?: 'TN' }}
                             </span>
 

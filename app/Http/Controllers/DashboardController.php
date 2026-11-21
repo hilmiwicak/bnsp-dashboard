@@ -17,9 +17,9 @@ class DashboardController extends Controller
      * @var array<string, string>
      */
     private const WARNA_STATUS = [
-        'Aktif' => '#3434e8',
+        'Aktif' => '#7c3aed',
         'Menunggu Verifikasi' => '#ffbb38',
-        'Nonaktif' => '#8ba3cb',
+        'Nonaktif' => '#a8a2bb',
     ];
 
     /**
@@ -49,7 +49,7 @@ class DashboardController extends Controller
                     'value' => (string) $totalTenant,
                     'hint' => ($statusTenant['Aktif'] ?? 0).' tenant aktif',
                     'icon' => 'users',
-                    'tone' => 'blue',
+                    'tone' => 'violet',
                 ],
                 [
                     'label' => 'Menunggu Verifikasi',
@@ -100,7 +100,7 @@ class DashboardController extends Controller
             $slices[] = [
                 'label' => $status,
                 'value' => $total,
-                'color' => self::WARNA_STATUS[$status] ?? '#8ba3cb',
+                'color' => self::WARNA_STATUS[$status] ?? '#a8a2bb',
             ];
         }
 
@@ -136,7 +136,7 @@ class DashboardController extends Controller
         return [
             'labels' => $labels,
             'series' => [
-                ['name' => 'Disetujui', 'color' => '#3434e8', 'values' => $disetujui],
+                ['name' => 'Disetujui', 'color' => '#7c3aed', 'values' => $disetujui],
                 ['name' => 'Menunggu', 'color' => '#16dbcc', 'values' => $menunggu],
             ],
         ];

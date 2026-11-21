@@ -49,7 +49,7 @@
             stroke="#f2f4f7"
             stroke-width="1"
         />
-        <text x="{{ $padLeft - 14 }}" y="{{ $gridY + 4 }}" text-anchor="end" fill="#718ebf" font-size="11">
+        <text x="{{ $padLeft - 14 }}" y="{{ $gridY + 4 }}" text-anchor="end" fill="#7c7692" font-size="11">
             {{ number_format($tick * $step) }}
         </text>
     @endfor
@@ -81,7 +81,7 @@
             x="{{ $groupX + $groupWidth / 2 }}"
             y="{{ $chartHeight - 10 }}"
             text-anchor="middle"
-            fill="#718ebf"
+            fill="#7c7692"
             font-size="11"
         >{{ $label }}</text>
     @endforeach

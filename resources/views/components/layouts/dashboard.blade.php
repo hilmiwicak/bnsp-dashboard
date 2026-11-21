@@ -92,7 +92,7 @@
                         </button>
                     </form>
 
-                    <div class="flex h-[44px] w-[44px] items-center justify-center rounded-full bg-[#dfe7f5] text-[13px] font-semibold text-dash-ink sm:h-[52px] sm:w-[52px] lg:h-[60px] lg:w-[60px] lg:text-[15px]">
+                    <div class="flex h-[44px] w-[44px] items-center justify-center rounded-full bg-[#e6e0f3] text-[13px] font-semibold text-dash-ink sm:h-[52px] sm:w-[52px] lg:h-[60px] lg:w-[60px] lg:text-[15px]">
                         {{ $initials ?: 'KV' }}
                     </div>
                 </div>

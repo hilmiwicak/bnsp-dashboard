@@ -71,14 +71,14 @@
 >
     <defs>
         <linearGradient id="balance-history-fill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#1814f3" stop-opacity="0.16" />
-            <stop offset="100%" stop-color="#1814f3" stop-opacity="0" />
+            <stop offset="0%" stop-color="#7c3aed" stop-opacity="0.16" />
+            <stop offset="100%" stop-color="#7c3aed" stop-opacity="0" />
         </linearGradient>
     </defs>
 
     @for ($tick = 0; $tick <= $stepCount; $tick++)
         @php $gridY = $baseline - ($tick / $stepCount) * $plotHeight; @endphp
-        <text x="{{ $padLeft - 12 }}" y="{{ $gridY + 4 }}" text-anchor="end" fill="#718ebf" font-size="11">
+        <text x="{{ $padLeft - 12 }}" y="{{ $gridY + 4 }}" text-anchor="end" fill="#7c7692" font-size="11">
             {{ number_format($tick * $step) }}
         </text>
     @endfor
@@ -89,7 +89,7 @@
             y1="{{ $padTop }}"
             x2="{{ $padLeft + $index * $stepX }}"
             y2="{{ $baseline }}"
-            stroke="#e6eff5"
+            stroke="#ece8f5"
             stroke-width="1"
             stroke-dasharray="4 6"
         />
@@ -97,13 +97,13 @@
             x="{{ $padLeft + $index * $stepX }}"
             y="{{ $chartHeight - 8 }}"
             text-anchor="middle"
-            fill="#718ebf"
+            fill="#7c7692"
             font-size="11"
         >{{ $label }}</text>
     @endforeach
 
     @if ($area !== '')
         <path d="{{ $area }}" fill="url(#balance-history-fill)" />
-        <path d="{{ $line }}" fill="none" stroke="#1814f3" stroke-width="2.5" stroke-linecap="round" />
+        <path d="{{ $line }}" fill="none" stroke="#7c3aed" stroke-width="2.5" stroke-linecap="round" />
     @endif
 </svg>

@@ -66,7 +66,7 @@
             <section class="lg:col-span-8">
                 <div class="h-full rounded-[20px] bg-white p-6 shadow-[0_4px_20px_rgba(25,35,80,0.03)] lg:p-8">
                     <div class="flex flex-wrap items-center gap-4">
-                        <span class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[#e7edff] text-[20px] font-semibold text-[#396aff]">
+                        <span class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[#ece7fe] text-[20px] font-semibold text-[#6f34e0]">
                             {{ $initials ?: 'KV' }}
                         </span>
 

@@ -1,6 +1,6 @@
 @php
     $avatarTone = [
-        'bg-[#e7edff] text-[#396aff]',
+        'bg-[#ece7fe] text-[#6f34e0]',
         'bg-[#dcfaf8] text-[#16dbcc]',
         'bg-[#fff5d1] text-[#ffbb38]',
         'bg-[#fde9f1] text-[#ff82ac]',

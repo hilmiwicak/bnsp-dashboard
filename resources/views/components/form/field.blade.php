@@ -14,7 +14,7 @@
     ];
 
     $classes = implode(' ', [
-        'h-14 w-full rounded-full border bg-white pl-[3.25rem] pr-6 text-[15px] text-neutral-800',
+        'h-16 w-full rounded-2xl border bg-white pl-14 pr-6 text-[16px] text-neutral-800',
         'shadow-[0_1px_2px_rgba(16,24,40,0.04)] outline-none transition placeholder:text-neutral-400 focus:ring-4',
         $error
             ? 'border-rose-400 focus:border-rose-400 focus:ring-rose-500/10'
@@ -25,8 +25,8 @@
 <div>
     <div class="relative">
         @if ($icon)
-            <span class="pointer-events-none absolute inset-y-0 left-0 flex w-[3.25rem] items-center justify-center {{ $error ? 'text-rose-400' : 'text-neutral-400' }}">
-                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <span class="pointer-events-none absolute inset-y-0 left-0 flex w-14 items-center justify-center {{ $error ? 'text-rose-400' : 'text-neutral-400' }}">
+                <svg class="h-[22px] w-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
                     {!! $icons[$icon] ?? $icons['user'] !!}
                 </svg>
             </span>
@@ -43,6 +43,6 @@
     </div>
 
     @if ($error)
-        <p id="{{ $name }}-error" class="mt-1.5 pl-5 text-[13px] font-medium text-rose-600">{{ $error }}</p>
+        <p id="{{ $name }}-error" class="mt-2 pl-4 text-[13px] font-medium text-rose-600">{{ $error }}</p>
     @endif
 </div>

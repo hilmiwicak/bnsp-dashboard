@@ -9,27 +9,27 @@
     --font-inter: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 
-    /* Auth screens palette, sampled from the Kantor Virtual auth prototype */
-    --color-brand-50: #eef5ff;
-    --color-brand-100: #d9e9ff;
-    --color-brand-200: #b9d6ff;
-    --color-brand-300: #85b8ff;
-    --color-brand-400: #4a93ff;
-    --color-brand-500: #0b6df6;
-    --color-brand-600: #0a5ce0;
-    --color-brand-700: #0a4bb5;
-    --color-brand-800: #093a8d;
-    --color-brand-900: #071f63;
+    /* Auth screens palette — violet, taken from the app logo */
+    --color-brand-50: #f6f2ff;
+    --color-brand-100: #ece4ff;
+    --color-brand-200: #dccdff;
+    --color-brand-300: #c2a9ff;
+    --color-brand-400: #a582fb;
+    --color-brand-500: #8250f4;
+    --color-brand-600: #6f34e0;
+    --color-brand-700: #5d28bd;
+    --color-brand-800: #4a2094;
+    --color-brand-900: #2e1465;
 
-    /* Dashboard palette, sampled from the dashboard reference */
-    --color-dash-surface: #f5f7fa;
-    --color-dash-ink: #343c6a;
-    --color-dash-muted: #718ebf;
-    --color-dash-soft: #8ba3cb;
-    --color-dash-line: #e6eff5;
-    --color-dash-primary: #2d60ff;
-    --color-dash-indigo: #3434e8;
-    --color-dash-blue: #1814f3;
+    /* Dashboard palette, shifted off blue to match the logo */
+    --color-dash-surface: #f7f6fb;
+    --color-dash-ink: #2f2a45;
+    --color-dash-muted: #7c7692;
+    --color-dash-soft: #a8a2bb;
+    --color-dash-line: #ece8f5;
+    --color-dash-primary: #8250f4;
+    --color-dash-indigo: #7c3aed;
+    --color-dash-accent: #5d28bd;
     --color-dash-teal: #16dbcc;
     --color-dash-pink: #ff82ac;
     --color-dash-alert: #ff4b4a;
