@@ -31,6 +31,7 @@ class Contract extends Model
      */
     public const STATUS = [
         'Aktif',
+        'Menunggu Verifikasi',
         'Berakhir',
         'Dibatalkan',
     ];
@@ -93,6 +94,7 @@ class Contract extends Model
     {
         return match ($this->status) {
             'Aktif' => 'green',
+            'Menunggu Verifikasi' => 'amber',
             'Berakhir' => 'gray',
             'Dibatalkan' => 'rose',
             default => 'gray',

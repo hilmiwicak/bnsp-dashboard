@@ -21,8 +21,6 @@ class TenantSeeder extends Seeder
                 'alamat' => 'Jl. Sudirman Kav. 52-53, Jakarta Selatan, 12190',
                 'no_hp' => '081234567890',
                 'email' => 'budi@nusantaradigital.co.id',
-                'tanggal_mulai_sewa' => '2025-01-15',
-                'durasi_sewa' => 24,
                 'status' => 'Aktif',
             ],
             [
@@ -33,8 +31,6 @@ class TenantSeeder extends Seeder
                 'alamat' => 'Jl. Asia Afrika No. 118, Bandung, 40112',
                 'no_hp' => '081298765432',
                 'email' => 'siti@karyamandiri.id',
-                'tanggal_mulai_sewa' => '2025-03-01',
-                'durasi_sewa' => 12,
                 'status' => 'Aktif',
             ],
             [
@@ -45,8 +41,6 @@ class TenantSeeder extends Seeder
                 'alamat' => 'Jl. Basuki Rahmat No. 45, Surabaya, 60271',
                 'no_hp' => '081377889900',
                 'email' => 'andi@sinarkonsultan.com',
-                'tanggal_mulai_sewa' => '2025-05-10',
-                'durasi_sewa' => 12,
                 'status' => 'Aktif',
             ],
             [
@@ -57,8 +51,6 @@ class TenantSeeder extends Seeder
                 'alamat' => 'Jl. Malioboro No. 72, Yogyakarta, 55271',
                 'no_hp' => '085712345678',
                 'email' => 'dewi@kopikita.co',
-                'tanggal_mulai_sewa' => '2025-07-01',
-                'durasi_sewa' => 6,
                 'status' => 'Menunggu Verifikasi',
             ],
             [
@@ -69,8 +61,6 @@ class TenantSeeder extends Seeder
                 'alamat' => 'Jl. Gatot Subroto KM 7, Medan, 20112',
                 'no_hp' => '081166778899',
                 'email' => 'rizky@logistikcepat.id',
-                'tanggal_mulai_sewa' => '2024-11-20',
-                'durasi_sewa' => 24,
                 'status' => 'Aktif',
             ],
             [
@@ -81,8 +71,6 @@ class TenantSeeder extends Seeder
                 'alamat' => 'Jl. Pandanaran No. 21, Semarang, 50241',
                 'no_hp' => '082133445566',
                 'email' => 'maya@adilsejahtera.co.id',
-                'tanggal_mulai_sewa' => '2025-08-01',
-                'durasi_sewa' => 12,
                 'status' => 'Menunggu Verifikasi',
             ],
             [
@@ -93,8 +81,6 @@ class TenantSeeder extends Seeder
                 'alamat' => 'Jl. Ijen No. 90, Malang, 65115',
                 'no_hp' => '081255667788',
                 'email' => 'fajar@arkateknologi.com',
-                'tanggal_mulai_sewa' => '2025-09-12',
-                'durasi_sewa' => 3,
                 'status' => 'Nonaktif',
             ],
             [
@@ -105,8 +91,6 @@ class TenantSeeder extends Seeder
                 'alamat' => 'Jl. Teuku Umar No. 55, Denpasar, 80113',
                 'no_hp' => '081799887766',
                 'email' => 'nadia@sehatbersama.id',
-                'tanggal_mulai_sewa' => '2025-02-05',
-                'durasi_sewa' => 18,
                 'status' => 'Aktif',
             ],
         ];

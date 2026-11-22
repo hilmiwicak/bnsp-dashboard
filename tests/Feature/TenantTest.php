@@ -75,7 +75,7 @@ class TenantTest extends TestCase
             ->get('/tenants/create')
             ->assertOk()
             ->assertSee('Informasi PIC')
-            ->assertSee('Detail Sewa')
+            ->assertSee('Status Keanggotaan')
             ->assertSee('value="'.Tenant::nextKodeTenant().'"', false);
 
         $this->actingAs($user)
@@ -111,8 +111,6 @@ class TenantTest extends TestCase
                 'alamat',
                 'no_hp',
                 'email',
-                'tanggal_mulai_sewa',
-                'durasi_sewa',
                 'status',
             ]);
 
@@ -136,12 +134,12 @@ class TenantTest extends TestCase
     public function test_validation_errors_are_displayed_on_the_form(): void
     {
         $this->actingAs(User::factory()->create())
-            ->post('/tenants', ['durasi_sewa' => 0]);
+            ->post('/tenants', []);
 
         $this->get('/tenants/create')
             ->assertOk()
-            ->assertSee('The durasi sewa field must be at least 1.')
-            ->assertSee('The kode tenant field is required.');
+            ->assertSee('The kode tenant field is required.')
+            ->assertSee('The nama lengkap PIC field is required.');
     }
 
     public function test_a_tenant_can_be_updated(): void
@@ -153,7 +151,6 @@ class TenantTest extends TestCase
                 'kode_tenant' => $tenant->kode_tenant,
                 'email' => $tenant->email,
                 'nama_pic' => 'Budi Santoso Wijaya',
-                'durasi_sewa' => 24,
             ]))
             ->assertRedirect('/tenants')
             ->assertSessionHas('status');
@@ -161,16 +158,32 @@ class TenantTest extends TestCase
         $this->assertDatabaseHas('tenants', [
             'id' => $tenant->id,
             'nama_pic' => 'Budi Santoso Wijaya',
-            'durasi_sewa' => 24,
         ]);
+    }
+
+    public function test_verifying_a_tenant_activates_its_pending_contract(): void
+    {
+        $tenant = Tenant::factory()->create(['status' => 'Menunggu Verifikasi']);
+
+        $contract = Contract::factory()->create([
+            'tenant_id' => $tenant->id,
+            'status' => 'Menunggu Verifikasi',
+        ]);
+
+        $this->actingAs(User::factory()->create())
+            ->put("/tenants/{$tenant->id}", $this->payload([
+                'kode_tenant' => $tenant->kode_tenant,
+                'email' => $tenant->email,
+                'status' => 'Aktif',
+            ]))
+            ->assertRedirect('/tenants');
+
+        $this->assertSame('Aktif', $contract->fresh()->status);
     }
 
     public function test_index_shows_the_period_from_the_active_contract(): void
     {
-        $tenant = Tenant::factory()->create([
-            'tanggal_mulai_sewa' => '2020-01-01',
-            'durasi_sewa' => 12,
-        ]);
+        $tenant = Tenant::factory()->create();
 
         Contract::factory()->create([
             'tenant_id' => $tenant->id,
@@ -191,7 +204,7 @@ class TenantTest extends TestCase
             ->assertOk()
             ->assertSee('01/02/2025')
             ->assertSee('31/01/2026')
-            ->assertDontSee('01/01/2020');
+            ->assertDontSee('01/01/2024');
     }
 
     public function test_a_tenant_can_be_deleted(): void
@@ -220,8 +233,6 @@ class TenantTest extends TestCase
             'alamat' => 'Jl. Uji No. 1, Bogor',
             'no_hp' => '081200011122',
             'email' => 'rina@ujicoba.id',
-            'tanggal_mulai_sewa' => '2025-01-01',
-            'durasi_sewa' => 12,
             'status' => 'Aktif',
         ], $overrides);
     }

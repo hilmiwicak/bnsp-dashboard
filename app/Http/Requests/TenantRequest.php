@@ -39,8 +39,6 @@ class TenantRequest extends FormRequest
                 'required', 'string', 'email', 'max:255',
                 Rule::unique('tenants', 'email')->ignore($ignoreId),
             ],
-            'tanggal_mulai_sewa' => ['required', 'date'],
-            'durasi_sewa' => ['required', 'integer', 'min:1', 'max:120'],
             'status' => ['required', Rule::in(Tenant::STATUS)],
         ];
     }
@@ -57,8 +55,6 @@ class TenantRequest extends FormRequest
             'nama_perusahaan' => 'nama perusahaan',
             'nib_npwp' => 'NIB/NPWP',
             'no_hp' => 'nomor HP',
-            'tanggal_mulai_sewa' => 'tanggal mulai sewa',
-            'durasi_sewa' => 'durasi sewa',
         ];
     }
 

@@ -6,6 +6,7 @@ use App\Enums\UserRole;
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Tests\TestCase;
 
 class TenantApplicationTest extends TestCase
@@ -31,9 +32,10 @@ class TenantApplicationTest extends TestCase
     public function test_submitting_the_form_creates_a_pending_tenant_and_links_the_account(): void
     {
         $user = User::factory()->customer()->create(['name' => 'Dewi Lestari']);
+        $payload = $this->payload();
 
         $this->actingAs($user)
-            ->post('/portal/pengajuan', $this->payload())
+            ->post('/portal/pengajuan', $payload)
             ->assertRedirect('/portal')
             ->assertSessionHas('status');
 
@@ -43,6 +45,15 @@ class TenantApplicationTest extends TestCase
         $this->assertSame('TNT-001', $tenant->kode_tenant);
         $this->assertSame($tenant->id, $user->fresh()->tenant_id);
         $this->assertSame(UserRole::Tenant, $user->fresh()->role);
+
+        $contract = $tenant->contracts()->firstOrFail();
+
+        $this->assertSame('Menunggu Verifikasi', $contract->status);
+        $this->assertSame($payload['tanggal_mulai_sewa'], $contract->tanggal_mulai->toDateString());
+        $this->assertSame(
+            Carbon::parse($payload['tanggal_mulai_sewa'])->addMonths(12)->toDateString(),
+            $contract->tanggal_berakhir->toDateString(),
+        );
     }
 
     public function test_the_portal_then_shows_the_submitted_tenancy(): void

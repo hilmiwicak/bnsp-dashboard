@@ -114,8 +114,8 @@ Manual flows for checking the interface. Start from a known state:
 php artisan migrate:fresh --seed
 ```
 
-That gives 8 tenants, 6 rooms, 6 bookings, 6 contracts and 24 invoices, so the
-next generated codes are `TNT-009`, `RNG-007`, `PMN-007`, `KTR-007`, `INV-025`.
+That gives 8 tenants, 6 rooms, 6 bookings, 7 contracts and 24 invoices, so the
+next generated codes are `TNT-009`, `RNG-007`, `PMN-007`, `KTR-008`, `INV-025`.
 All demo accounts use the password `password`.
 
 ### 1. Admin — add a tenant
@@ -124,7 +124,7 @@ All demo accounts use the password `password`.
 2. Open **Data Tenant** — 8 rows, header reads “8 tenant terdaftar”.
 3. Click **Tambah Tenant**.
 4. Fill the form. *Kode Tenant* is prefilled `TNT-009`; complete *Informasi PIC*,
-   *Informasi Perusahaan* and *Detail Sewa* (durasi in months).
+   *Informasi Perusahaan* and the tenant *Status*.
 5. Submit **Simpan Data Tenant** — back on the list with a green confirmation
    banner.
 6. Type the new PIC name into **Pencarian** — only that row remains. Click
@@ -148,7 +148,7 @@ All demo accounts use the password `password`.
 
 ### 3. Admin — contract, invoice, payment, report
 
-1. **Kontrak Sewa** → **Tambah Kontrak** (*nomor* prefilled `KTR-007`). Set the
+1. **Kontrak Sewa** → **Tambah Kontrak** (*nomor* prefilled `KTR-008`). Set the
    period, a value, status **Aktif**, then **Simpan Kontrak**. The *Durasi*
    column shows the months between the two dates.
 2. **Tagihan & Pembayaran** → **Terbitkan Tagihan** (*nomor* prefilled
@@ -178,7 +178,8 @@ All demo accounts use the password `password`.
 ### 5. Admin — verify the applicant, tenant sees active membership
 
 1. Log in as admin, find the new tenant in **Data Tenant**, open **Edit**.
-2. Change *Status Tenant* to **Aktif**, submit **Perbarui Data Tenant**.
+2. Change *Status Tenant* to **Aktif**, submit **Perbarui Data Tenant**. This also
+   activates the tenant's pending contract.
 3. **Dashboard** — the *Menunggu Verifikasi* count drops and the “tenant aktif”
    hint rises.
 4. Log in as that tenant — the portal shows a green *Aktif* badge,

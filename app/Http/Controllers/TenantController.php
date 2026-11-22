@@ -45,7 +45,6 @@ class TenantController extends Controller
             'tenant' => new Tenant([
                 'kode_tenant' => Tenant::nextKodeTenant(),
                 'status' => 'Menunggu Verifikasi',
-                'durasi_sewa' => 12,
             ]),
         ]);
     }
@@ -76,6 +75,13 @@ class TenantController extends Controller
     public function update(TenantRequest $request, Tenant $tenant): RedirectResponse
     {
         $tenant->update($request->validated());
+
+        // Verifikasi tenant sekaligus mengaktifkan kontrak pengajuannya.
+        if ($tenant->status === 'Aktif') {
+            $tenant->contracts()
+                ->where('status', 'Menunggu Verifikasi')
+                ->update(['status' => 'Aktif']);
+        }
 
         return redirect()
             ->route('tenants.index')

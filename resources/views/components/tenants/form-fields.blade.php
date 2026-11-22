@@ -2,7 +2,8 @@
     'tenant',
     'showKodeTenant' => true,
     'showStatus' => true,
-    'detailNote' => 'Perkiraan periode sewa awal. Periode yang berlaku mengikuti data Kontrak Sewa.',
+    'showPeriodRequest' => false,
+    'detailNote' => 'Status keanggotaan tenant.',
 ])
 
 @php
@@ -101,7 +102,7 @@
 
 <section class="{{ $card }}">
     <div class="mb-6">
-        <h3 class="{{ $legend }}">Detail Sewa</h3>
+        <h3 class="{{ $legend }}">{{ $showPeriodRequest ? 'Detail Sewa' : 'Status Keanggotaan' }}</h3>
         <p class="{{ $note }}">{{ $detailNote }}</p>
     </div>
 
@@ -118,24 +119,26 @@
             />
         @endif
 
-        <x-dashboard.form-field
-            name="tanggal_mulai_sewa"
-            label="Tanggal Mulai Sewa"
-            type="date"
-            :value="$tenant->tanggal_mulai_sewa?->format('Y-m-d')"
-            :error="$errors->first('tanggal_mulai_sewa')"
-            required
-        />
+        @if ($showPeriodRequest)
+            <x-dashboard.form-field
+                name="tanggal_mulai_sewa"
+                label="Tanggal Mulai Sewa"
+                type="date"
+                :value="now()->format('Y-m-d')"
+                :error="$errors->first('tanggal_mulai_sewa')"
+                required
+            />
 
-        <x-dashboard.form-field
-            name="durasi_sewa"
-            label="Durasi Sewa"
-            type="number"
-            placeholder="12"
-            :value="$tenant->durasi_sewa"
-            :error="$errors->first('durasi_sewa')"
-            hint="Diisi dalam satuan bulan, minimal 1 dan maksimal 120."
-            required
-        />
+            <x-dashboard.form-field
+                name="durasi_sewa"
+                label="Durasi Sewa"
+                type="number"
+                placeholder="12"
+                :value="12"
+                :error="$errors->first('durasi_sewa')"
+                hint="Diisi dalam satuan bulan, minimal 1 dan maksimal 120."
+                required
+            />
+        @endif
     </div>
 </section>

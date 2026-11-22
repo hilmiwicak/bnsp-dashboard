@@ -26,8 +26,6 @@ class TenantFactory extends Factory
             'alamat' => fake()->address(),
             'no_hp' => fake()->numerify('08##########'),
             'email' => fake()->unique()->safeEmail(),
-            'tanggal_mulai_sewa' => fake()->dateTimeBetween('-18 months', 'now')->format('Y-m-d'),
-            'durasi_sewa' => fake()->randomElement([3, 6, 12, 24]),
             'status' => fake()->randomElement(Tenant::STATUS),
         ];
     }

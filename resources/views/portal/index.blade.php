@@ -40,16 +40,17 @@
         ->take(2)
         ->implode('');
 
-    // Periode sewa yang ditampilkan mengikuti kontrak aktif, bukan input tenant.
-    $activeContract = $tenant?->activeContract;
+    // Periode sewa yang ditampilkan mengikuti kontrak terbaru (aktif atau
+    // menunggu verifikasi), bukan input tenant.
+    $currentContract = $tenant?->currentContract;
 
     $details = $tenant ? [
         'Kode Tenant' => $tenant->kode_tenant,
         'Perusahaan' => $tenant->nama_perusahaan,
         'PIC' => $tenant->nama_pic,
-        'Mulai Sewa' => $activeContract?->tanggal_mulai?->format('d M Y'),
-        'Durasi' => $activeContract ? $activeContract->durasiBulan().' bulan' : null,
-        'Berakhir' => $activeContract?->tanggal_berakhir?->format('d M Y'),
+        'Mulai Sewa' => $currentContract?->tanggal_mulai?->format('d M Y'),
+        'Durasi' => $currentContract ? $currentContract->durasiBulan().' bulan' : null,
+        'Berakhir' => $currentContract?->tanggal_berakhir?->format('d M Y'),
     ] : [];
 
     $steps = [

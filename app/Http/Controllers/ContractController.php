@@ -7,6 +7,7 @@ use App\Models\Contract;
 use App\Models\Tenant;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\View\View;
 
@@ -122,18 +123,21 @@ class ContractController extends Controller
     }
 
     /**
-     * Tanggal mulai sewa tenant, dipakai untuk mengisi otomatis tanggal mulai kontrak.
+     * Saran tanggal mulai kontrak baru: sehari setelah kontrak terakhir tenant.
+     * Dipakai untuk mengisi otomatis tanggal mulai saat tenant dipilih.
      *
      * @return array<int, string>
      */
     private function tenantStartDates(): array
     {
-        return Tenant::query()
+        return Contract::query()
+            ->whereIn('status', ['Aktif', 'Berakhir'])
+            ->selectRaw('tenant_id, MAX(tanggal_berakhir) as berakhir')
+            ->groupBy('tenant_id')
             ->get()
-            ->mapWithKeys(fn (Tenant $tenant) => [
-                $tenant->id => $tenant->tanggal_mulai_sewa?->format('Y-m-d'),
+            ->mapWithKeys(fn (Contract $contract) => [
+                $contract->tenant_id => Carbon::parse($contract->berakhir)->addDay()->format('Y-m-d'),
             ])
-            ->filter()
             ->all();
     }
 }

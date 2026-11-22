@@ -47,7 +47,7 @@ class ContractSeeder extends Seeder
                 'tanggal_mulai' => now()->subMonths(2)->toDateString(),
                 'tanggal_berakhir' => now()->addMonths(10)->toDateString(),
                 'nilai_sewa' => 30000000,
-                'status' => 'Aktif',
+                'status' => 'Menunggu Verifikasi',
                 'catatan' => null,
             ],
             [
@@ -67,6 +67,15 @@ class ContractSeeder extends Seeder
                 'nilai_sewa' => 12000000,
                 'status' => 'Dibatalkan',
                 'catatan' => 'Dibatalkan karena tenant mengundurkan diri.',
+            ],
+            [
+                'nomor_kontrak' => 'KTR-007',
+                'tenant' => 'TNT-006',
+                'tanggal_mulai' => now()->addWeeks(2)->toDateString(),
+                'tanggal_berakhir' => now()->addWeeks(2)->addMonths(12)->toDateString(),
+                'nilai_sewa' => 0,
+                'status' => 'Menunggu Verifikasi',
+                'catatan' => 'Pengajuan sewa menunggu verifikasi admin.',
             ],
         ];
 

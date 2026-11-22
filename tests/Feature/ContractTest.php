@@ -183,12 +183,18 @@ class ContractTest extends TestCase
 
     public function test_create_page_exposes_tenant_start_dates_for_prefill(): void
     {
-        Tenant::factory()->create(['tanggal_mulai_sewa' => '2021-03-04']);
+        $tenant = Tenant::factory()->create();
+
+        Contract::factory()->create([
+            'tenant_id' => $tenant->id,
+            'status' => 'Aktif',
+            'tanggal_berakhir' => '2025-12-31',
+        ]);
 
         $this->actingAs(User::factory()->create())
             ->get('/kontrak-sewa/create')
             ->assertOk()
-            ->assertSee('2021-03-04');
+            ->assertSee('2026-01-01');
     }
 
     public function test_the_contract_duration_is_derived_from_its_dates(): void

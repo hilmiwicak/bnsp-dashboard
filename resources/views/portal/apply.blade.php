@@ -13,6 +13,7 @@
                 :tenant="$tenant"
                 :show-kode-tenant="false"
                 :show-status="false"
+                :show-period-request="true"
                 detail-note="Perkiraan periode sewa yang diajukan. Tanggal mulai sewa tidak boleh sebelum hari ini."
             />
 

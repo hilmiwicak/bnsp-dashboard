@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Support\Carbon;
 
 #[Fillable([
     'kode_tenant',
@@ -20,8 +19,6 @@ use Illuminate\Support\Carbon;
     'alamat',
     'no_hp',
     'email',
-    'tanggal_mulai_sewa',
-    'durasi_sewa',
     'status',
 ])]
 class Tenant extends Model
@@ -41,24 +38,19 @@ class Tenant extends Model
     ];
 
     /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'tanggal_mulai_sewa' => 'date',
-            'durasi_sewa' => 'integer',
-        ];
-    }
-
-    /**
      * Pemesanan ruang yang diajukan tenant ini.
      */
     public function bookings(): HasMany
     {
         return $this->hasMany(Booking::class);
+    }
+
+    /**
+     * Seluruh kontrak sewa yang pernah dimiliki tenant.
+     */
+    public function contracts(): HasMany
+    {
+        return $this->hasMany(Contract::class);
     }
 
     /**
@@ -68,6 +60,16 @@ class Tenant extends Model
     {
         return $this->hasOne(Contract::class)
             ->where('status', 'Aktif')
+            ->orderByDesc('tanggal_mulai');
+    }
+
+    /**
+     * Kontrak terbaru yang masih berlaku atau menunggu verifikasi.
+     */
+    public function currentContract(): HasOne
+    {
+        return $this->hasOne(Contract::class)
+            ->whereIn('status', ['Aktif', 'Menunggu Verifikasi'])
             ->orderByDesc('tanggal_mulai');
     }
 
@@ -99,14 +101,6 @@ class Tenant extends Model
                 ->orWhere('email', 'like', $like)
                 ->orWhere('no_hp', 'like', $like);
         });
-    }
-
-    /**
-     * Tanggal berakhirnya masa sewa yang berlaku, diambil dari kontrak aktif.
-     */
-    public function masaSewaBerakhir(): ?Carbon
-    {
-        return $this->activeContract?->tanggal_berakhir;
     }
 
     /**
