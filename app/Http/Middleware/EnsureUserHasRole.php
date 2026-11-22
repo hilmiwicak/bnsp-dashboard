@@ -11,7 +11,7 @@ class EnsureUserHasRole
 {
     /**
      * Batasi akses halaman hanya untuk role yang diizinkan, mis. `role:admin`
-     * atau `role:tenant,customer`.
+     * atau `role:tenant`.
      */
     public function handle(Request $request, Closure $next, string ...$roles): Response
     {

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\UserRole;
 use App\Http\Requests\TenantApplicationRequest;
 use App\Models\Contract;
 use App\Models\Tenant;
@@ -16,7 +15,7 @@ use Illuminate\View\View;
 class TenantApplicationController extends Controller
 {
     /**
-     * Formulir pengajuan sewa untuk customer yang belum punya data tenant.
+     * Formulir pengajuan sewa untuk tenant yang belum punya data tenant.
      */
     public function create(Request $request): View|RedirectResponse
     {
@@ -66,9 +65,8 @@ class TenantApplicationController extends Controller
             return $tenant;
         });
 
-        // Akun pendaftar resmi menjadi tenant dan terhubung ke data sewanya.
+        // Akun tenant terhubung ke data sewanya, menunggu verifikasi admin.
         $user->update([
-            'role' => UserRole::Tenant,
             'tenant_id' => $tenant->id,
         ]);
 

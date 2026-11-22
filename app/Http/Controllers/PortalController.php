@@ -8,7 +8,7 @@ use Illuminate\View\View;
 class PortalController extends Controller
 {
     /**
-     * Beranda mandiri untuk tenant dan customer.
+     * Beranda mandiri untuk tenant.
      */
     public function index(Request $request): View
     {

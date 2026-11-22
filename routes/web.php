@@ -61,11 +61,11 @@ Route::middleware('auth')->group(function () {
         Route::get('laporan', [ReportController::class, 'index'])->name('laporan.index');
     });
 
-    // Portal untuk tenant dan customer.
-    Route::middleware('role:tenant,customer')->group(function () {
+    // Portal untuk tenant.
+    Route::middleware('role:tenant')->group(function () {
         Route::get('/portal', [PortalController::class, 'index'])->name('portal');
 
-        // Pengajuan sewa mandiri bagi customer yang belum punya data tenant.
+        // Pengajuan sewa mandiri bagi tenant yang belum punya data tenant.
         Route::get('/portal/pengajuan', [TenantApplicationController::class, 'create'])->name('portal.apply');
         Route::post('/portal/pengajuan', [TenantApplicationController::class, 'store'])->name('portal.apply.store');
     });

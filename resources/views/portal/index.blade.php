@@ -2,8 +2,8 @@
     $user = $user ?? auth()->user();
     $tenant = $user->tenant;
 
-    // Customer belum punya data sewa, sehingga statusnya dianggap menunggu
-    // verifikasi sampai admin membuatkan data tenant.
+    // Akun tenant yang belum punya data sewa dianggap menunggu verifikasi
+    // sampai admin membuatkan data tenant.
     $status = $tenant?->status ?? 'Menunggu Verifikasi';
 
     $states = [
