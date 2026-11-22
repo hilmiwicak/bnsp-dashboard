@@ -115,3 +115,23 @@
         <x-dashboard.button type="submit">{{ $submitLabel }}</x-dashboard.button>
     </div>
 </form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const tenantSelect = document.getElementById('tenant_id');
+        const startInput = document.getElementById('tanggal_mulai');
+        const tenantStarts = @json($tenantStarts ?? []);
+
+        if (! tenantSelect || ! startInput) {
+            return;
+        }
+
+        tenantSelect.addEventListener('change', function () {
+            const startDate = tenantStarts[tenantSelect.value];
+
+            if (startDate) {
+                startInput.value = startDate;
+            }
+        });
+    });
+</script>

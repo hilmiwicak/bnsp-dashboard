@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Contract;
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -162,6 +163,35 @@ class TenantTest extends TestCase
             'nama_pic' => 'Budi Santoso Wijaya',
             'durasi_sewa' => 24,
         ]);
+    }
+
+    public function test_index_shows_the_period_from_the_active_contract(): void
+    {
+        $tenant = Tenant::factory()->create([
+            'tanggal_mulai_sewa' => '2020-01-01',
+            'durasi_sewa' => 12,
+        ]);
+
+        Contract::factory()->create([
+            'tenant_id' => $tenant->id,
+            'status' => 'Aktif',
+            'tanggal_mulai' => '2024-01-01',
+            'tanggal_berakhir' => '2024-12-31',
+        ]);
+
+        Contract::factory()->create([
+            'tenant_id' => $tenant->id,
+            'status' => 'Aktif',
+            'tanggal_mulai' => '2025-02-01',
+            'tanggal_berakhir' => '2026-01-31',
+        ]);
+
+        $this->actingAs(User::factory()->create())
+            ->get('/tenants')
+            ->assertOk()
+            ->assertSee('01/02/2025')
+            ->assertSee('31/01/2026')
+            ->assertDontSee('01/01/2020');
     }
 
     public function test_a_tenant_can_be_deleted(): void

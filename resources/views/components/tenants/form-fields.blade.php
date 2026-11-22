@@ -2,7 +2,7 @@
     'tenant',
     'showKodeTenant' => true,
     'showStatus' => true,
-    'detailNote' => 'Periode sewa dan status keanggotaan tenant.',
+    'detailNote' => 'Perkiraan periode sewa awal. Periode yang berlaku mengikuti data Kontrak Sewa.',
 ])
 
 @php

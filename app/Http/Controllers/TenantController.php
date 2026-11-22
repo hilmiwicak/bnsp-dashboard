@@ -21,6 +21,7 @@ class TenantController extends Controller
         ];
 
         $tenant = Tenant::query()
+            ->with('activeContract')
             ->search($filters['q'])
             ->when($filters['status'], fn ($query, $status) => $query->where('status', $status))
             ->orderByDesc('created_at')

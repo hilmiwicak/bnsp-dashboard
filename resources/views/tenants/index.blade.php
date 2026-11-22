@@ -113,10 +113,14 @@
                                 </td>
 
                                 <td class="whitespace-nowrap px-6 py-4 text-sm text-dash-ink">
-                                    {{ $item->tanggal_mulai_sewa->format('d/m/Y') }}
-                                    <span class="block text-[13px] text-dash-muted">
-                                        {{ $item->durasi_sewa }} bulan &middot; s.d. {{ $item->masaSewaBerakhir()->format('d/m/Y') }}
-                                    </span>
+                                    @if ($item->activeContract)
+                                        {{ $item->activeContract->tanggal_mulai->format('d/m/Y') }}
+                                        <span class="block text-[13px] text-dash-muted">
+                                            {{ $item->activeContract->durasiBulan() }} bulan &middot; s.d. {{ $item->activeContract->tanggal_berakhir->format('d/m/Y') }}
+                                        </span>
+                                    @else
+                                        <span class="text-[13px] text-dash-muted">Belum ada kontrak aktif</span>
+                                    @endif
                                 </td>
 
                                 <td class="whitespace-nowrap px-6 py-4">

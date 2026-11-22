@@ -52,6 +52,7 @@ class ContractController extends Controller
                 'status' => 'Aktif',
             ]),
             'tenants' => $this->tenantOptions(),
+            'tenantStarts' => $this->tenantStartDates(),
         ]);
     }
 
@@ -75,6 +76,7 @@ class ContractController extends Controller
         return view('contracts.edit', [
             'contract' => $contract,
             'tenants' => $this->tenantOptions(),
+            'tenantStarts' => $this->tenantStartDates(),
         ]);
     }
 
@@ -117,5 +119,21 @@ class ContractController extends Controller
             ->mapWithKeys(fn (Tenant $tenant) => [
                 $tenant->id => "{$tenant->kode_tenant} — {$tenant->nama_perusahaan}",
             ]);
+    }
+
+    /**
+     * Tanggal mulai sewa tenant, dipakai untuk mengisi otomatis tanggal mulai kontrak.
+     *
+     * @return array<int, string>
+     */
+    private function tenantStartDates(): array
+    {
+        return Tenant::query()
+            ->get()
+            ->mapWithKeys(fn (Tenant $tenant) => [
+                $tenant->id => $tenant->tanggal_mulai_sewa?->format('Y-m-d'),
+            ])
+            ->filter()
+            ->all();
     }
 }

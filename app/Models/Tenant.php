@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 
 #[Fillable([
@@ -61,6 +62,16 @@ class Tenant extends Model
     }
 
     /**
+     * Kontrak aktif terbaru milik tenant. Menjadi sumber periode sewa yang berlaku.
+     */
+    public function activeContract(): HasOne
+    {
+        return $this->hasOne(Contract::class)
+            ->where('status', 'Aktif')
+            ->orderByDesc('tanggal_mulai');
+    }
+
+    /**
      * Kode tenant berikutnya untuk pengajuan mandiri, mis. TNT-009.
      */
     public static function nextKodeTenant(): string
@@ -91,15 +102,11 @@ class Tenant extends Model
     }
 
     /**
-     * Tanggal berakhirnya masa sewa berdasarkan tanggal mulai dan durasi.
+     * Tanggal berakhirnya masa sewa yang berlaku, diambil dari kontrak aktif.
      */
     public function masaSewaBerakhir(): ?Carbon
     {
-        if (! $this->tanggal_mulai_sewa) {
-            return null;
-        }
-
-        return $this->tanggal_mulai_sewa->copy()->addMonths((int) $this->durasi_sewa);
+        return $this->activeContract?->tanggal_berakhir;
     }
 
     /**

@@ -181,6 +181,16 @@ class ContractTest extends TestCase
         $this->assertDatabaseMissing('contracts', ['id' => $contract->id]);
     }
 
+    public function test_create_page_exposes_tenant_start_dates_for_prefill(): void
+    {
+        Tenant::factory()->create(['tanggal_mulai_sewa' => '2021-03-04']);
+
+        $this->actingAs(User::factory()->create())
+            ->get('/kontrak-sewa/create')
+            ->assertOk()
+            ->assertSee('2021-03-04');
+    }
+
     public function test_the_contract_duration_is_derived_from_its_dates(): void
     {
         $contract = Contract::factory()->create([
