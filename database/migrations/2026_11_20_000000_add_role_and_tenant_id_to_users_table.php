@@ -13,8 +13,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->enum('role', ['admin', 'tenant', 'customer'])
-                ->default('customer')
+            $table->enum('role', ['admin', 'tenant'])
+                ->default('tenant')
                 ->after('password');
 
             // Satu akun hanya mewakili satu PIC dari satu perusahaan tenant,
