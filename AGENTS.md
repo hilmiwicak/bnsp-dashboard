@@ -1,6 +1,6 @@
 # AGENTS.md
 
-A Laravel virtual-office management app (Sistem Informasi Manajemen Kantor Virtual) — Blade + Tailwind + MariaDB, with three roles: `admin`, `tenant`, `customer`.
+A Laravel virtual-office management app (Sistem Informasi Manajemen Kantor Virtual) — Blade + Tailwind + MariaDB, with two roles: `admin` (pengelola/pemilik) and `tenant` (penyewa).
 
 ## Conventions
 
