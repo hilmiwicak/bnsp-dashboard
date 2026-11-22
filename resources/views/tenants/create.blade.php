@@ -2,7 +2,8 @@
     <div class="mx-auto max-w-[980px]">
         <p class="mb-6 text-[15px] text-dash-muted">
             Lengkapi data tenant kantor virtual di bawah ini. Kolom bertanda
-            <span class="text-dash-alert">*</span> wajib diisi.
+            <span class="text-dash-alert">*</span> wajib diisi. Akun login PIC dibuat
+            otomatis dengan password sementara yang ditampilkan sekali setelah data disimpan.
         </p>
 
         @include('tenants.form', [

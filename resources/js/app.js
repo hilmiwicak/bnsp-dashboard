@@ -15,3 +15,37 @@ if (sidebar && backdrop && toggle) {
 
     backdrop.addEventListener('click', () => setOpen(false));
 }
+
+// Salin nilai field sekali-tampil (kredensial tenant) ke clipboard.
+document.querySelectorAll('[data-copy]').forEach((button) => {
+    button.addEventListener('click', async () => {
+        const field = document.getElementById(button.dataset.copy);
+        if (!field) return;
+
+        const value = 'value' in field ? field.value : field.textContent.trim();
+
+        try {
+            await navigator.clipboard.writeText(value);
+        } catch {
+            // Fallback untuk browser tanpa Clipboard API (mis. non-HTTPS).
+            const helper = document.createElement('textarea');
+            helper.value = value;
+            helper.setAttribute('readonly', '');
+            helper.style.position = 'fixed';
+            helper.style.opacity = '0';
+            document.body.appendChild(helper);
+            helper.select();
+            document.execCommand('copy');
+            helper.remove();
+        }
+
+        const label = button.querySelector('[data-copy-label]');
+        if (!label) return;
+
+        const original = label.textContent;
+        label.textContent = 'Tersalin';
+        setTimeout(() => {
+            label.textContent = original;
+        }, 1500);
+    });
+});

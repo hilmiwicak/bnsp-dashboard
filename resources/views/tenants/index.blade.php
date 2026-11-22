@@ -15,6 +15,66 @@
             <x-alert type="success">{{ session('status') }}</x-alert>
         @endif
 
+        @if ($kredensial = session('kredensial'))
+            <section class="rounded-[20px] border border-[#d9cffb] bg-[#f4f0ff] p-6 lg:p-8">
+                <h2 class="text-[17px] font-semibold text-[#2e1465]">Akun login tenant dibuat</h2>
+                <p class="mt-1 max-w-[620px] text-[13px] leading-relaxed text-[#5d28bd]">
+                    Sampaikan kredensial ini kepada PIC {{ $kredensial['kode_tenant'] }}. Password
+                    hanya ditampilkan sekali di halaman ini dan tidak dapat dilihat lagi setelahnya.
+                </p>
+
+                <div class="mt-5 grid gap-4 sm:grid-cols-2">
+                    <div>
+                        <label for="kredensial-email" class="mb-2 block text-[13px] font-medium text-[#2e1465]">Email</label>
+                        <div class="flex items-center gap-2">
+                            <input
+                                id="kredensial-email"
+                                type="text"
+                                readonly
+                                autocomplete="off"
+                                value="{{ $kredensial['email'] }}"
+                                class="h-[46px] w-full rounded-xl border border-[#d9cffb] bg-white px-4 font-mono text-[14px] text-dash-ink outline-none"
+                            />
+                            <button
+                                type="button"
+                                data-copy="kredensial-email"
+                                class="inline-flex h-[46px] shrink-0 items-center gap-1.5 rounded-xl border border-[#d9cffb] bg-white px-4 text-[13px] font-medium text-[#5d28bd] transition hover:border-[#8250f4] hover:text-[#6f34e0]"
+                            >
+                                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
+                                </svg>
+                                <span data-copy-label>Salin</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="kredensial-password" class="mb-2 block text-[13px] font-medium text-[#2e1465]">Password sementara</label>
+                        <div class="flex items-center gap-2">
+                            <input
+                                id="kredensial-password"
+                                type="password"
+                                readonly
+                                autocomplete="new-password"
+                                value="{{ $kredensial['password'] }}"
+                                class="h-[46px] w-full rounded-xl border border-[#d9cffb] bg-white px-4 font-mono text-[14px] tracking-[0.2em] text-dash-ink outline-none"
+                            />
+                            <button
+                                type="button"
+                                data-copy="kredensial-password"
+                                class="inline-flex h-[46px] shrink-0 items-center gap-1.5 rounded-xl bg-[#6f34e0] px-4 text-[13px] font-medium text-white transition hover:bg-[#5d28bd]"
+                            >
+                                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
+                                </svg>
+                                <span data-copy-label>Salin</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        @endif
+
         <section class="rounded-[20px] bg-white shadow-[0_4px_20px_rgba(25,35,80,0.03)]">
             <div class="flex flex-wrap items-center justify-between gap-4 border-b border-dash-line/70 px-6 py-5 lg:px-8">
                 <div>

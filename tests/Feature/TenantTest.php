@@ -137,16 +137,26 @@ class TenantTest extends TestCase
         $this->assertAuthenticatedAs($account);
     }
 
-    public function test_the_generated_password_is_only_shown_once(): void
+    public function test_the_generated_password_is_shown_once(): void
     {
         $response = $this->actingAs(User::factory()->create())
             ->post('/tenants', $this->payload());
 
         $password = $response->getSession()->get('kredensial')['password'];
 
-        // Permintaan berikutnya tidak lagi membawa kredensial.
+        // Tampil pada permintaan pertama setelah redirect.
         $this->get('/tenants')
             ->assertOk()
+            ->assertSee('Akun login tenant dibuat')
+            ->assertSee('Password sementara')
+            ->assertSee('rina@ujicoba.id')
+            ->assertSee('type="password"', false)
+            ->assertSee($password);
+
+        // Hilang setelah dibaca sekali.
+        $this->get('/tenants')
+            ->assertOk()
+            ->assertDontSee('Password sementara')
             ->assertDontSee($password);
     }
 
