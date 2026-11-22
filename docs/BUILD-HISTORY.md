@@ -37,13 +37,13 @@ The mentor's prompts, in order:
 9. **Typography pass** — refined type scale and spacing across all views.
 10. **Scope trim** — dropped *paket layanan* and *layanan tambahan* entirely
     (no column, no menu, no module).
-11. **Roles and rename** — added `admin` / `tenant` / `customer` roles with a
+11. **Roles and rename** — added `admin` / `tenant` roles with a
     nullable `users.tenant_id`, and renamed the `penyewa` entity to `tenant`
     throughout (table, model, controller, request, views, routes, tests).
 12. **Authorization and routing** — role middleware, `/dashboard` for admins,
-    `/portal` for tenants and customers, `403` for the wrong role.
-13. **Tenant portal** — real content for non-admin accounts, plus a self-service
-    tenancy application that promotes a `customer` to `tenant`.
+    `/portal` for tenants, `403` for the wrong role.
+13. **Tenant portal** — real content for tenant accounts, plus a self-service
+    tenancy application that links a new `tenant` account to its tenancy record.
 14. **Ruang & Fasilitas** — `rooms` table and full CRUD, with tipe and status
     filters.
 15. **Pemesanan** — `bookings` table and full CRUD, with double-booking
@@ -70,26 +70,28 @@ The mentor's prompts, in order:
 ## What each role can do
 
 Access is enforced by `EnsureUserHasRole` (alias `role`): a wrong role gets
-`403`, a guest is redirected to `/login`.
+`403`, a guest is redirected to `/login`. `admin` is the pengelola
+(owner/operator) of the virtual office; `tenant` is the company renting space
+from it.
 
-| Capability | Routes | Guest | Admin | Tenant | Customer |
-|---|---|---|---|---|---|
-| Login | `GET /login` · `POST /login` | yes | — | — | — |
-| Register | `GET /register` · `POST /register` | yes | — | — | — |
-| Logout | `POST /logout` | — | yes | yes | yes |
-| Dashboard | `GET /dashboard` | → `/login` | read | 403 | 403 |
-| Data Tenant | `GET /tenants` · `GET /tenants/create` · `POST /tenants` · `GET /tenants/{tenant}/edit` · `PUT /tenants/{tenant}` · `DELETE /tenants/{tenant}` | → `/login` | **CRUD** | 403 | 403 |
-| Data Ruang & Fasilitas | `GET /ruang-fasilitas` · `GET /ruang-fasilitas/create` · `POST /ruang-fasilitas` · `GET /ruang-fasilitas/{room}/edit` · `PUT /ruang-fasilitas/{room}` · `DELETE /ruang-fasilitas/{room}` | → `/login` | **CRUD** | 403 | 403 |
-| Pemesanan | `GET /pemesanan` · `GET /pemesanan/create` · `POST /pemesanan` · `GET /pemesanan/{booking}/edit` · `PUT /pemesanan/{booking}` · `DELETE /pemesanan/{booking}` · `PATCH /pemesanan/{booking}/status` | → `/login` | **CRUD** + approve | 403 | 403 |
-| Kontrak Sewa | `GET /kontrak-sewa` · `GET /kontrak-sewa/create` · `POST /kontrak-sewa` · `GET /kontrak-sewa/{contract}/edit` · `PUT /kontrak-sewa/{contract}` · `DELETE /kontrak-sewa/{contract}` | → `/login` | **CRUD** | 403 | 403 |
-| Jadwal Penggunaan Ruang | `GET /jadwal-ruang` | → `/login` | read | 403 | 403 |
-| Tagihan & Pembayaran | `GET /tagihan-pembayaran` · `GET /tagihan-pembayaran/create` · `POST /tagihan-pembayaran` · `GET /tagihan-pembayaran/{invoice}/edit` · `PUT /tagihan-pembayaran/{invoice}` · `DELETE /tagihan-pembayaran/{invoice}` · `PATCH /tagihan-pembayaran/{invoice}/lunas` | → `/login` | **CRUD** + tandai lunas | 403 | 403 |
-| Laporan | `GET /laporan` | → `/login` | read | 403 | 403 |
-| Portal | `GET /portal` | → `/login` | 403 | read | read |
-| Pengajuan sewa | `GET /portal/pengajuan` · `POST /portal/pengajuan` | → `/login` | 403 | ↪ `/portal` | create |
+| Capability | Routes | Guest | Admin | Tenant |
+|---|---|---|---|---|
+| Login | `GET /login` · `POST /login` | yes | — | — |
+| Register | `GET /register` · `POST /register` | yes | — | — |
+| Logout | `POST /logout` | — | yes | yes |
+| Dashboard | `GET /dashboard` | → `/login` | read | 403 |
+| Data Tenant | `GET /tenants` · `GET /tenants/create` · `POST /tenants` · `GET /tenants/{tenant}/edit` · `PUT /tenants/{tenant}` · `DELETE /tenants/{tenant}` | → `/login` | **CRUD** | 403 |
+| Data Ruang & Fasilitas | `GET /ruang-fasilitas` · `GET /ruang-fasilitas/create` · `POST /ruang-fasilitas` · `GET /ruang-fasilitas/{room}/edit` · `PUT /ruang-fasilitas/{room}` · `DELETE /ruang-fasilitas/{room}` | → `/login` | **CRUD** | 403 |
+| Pemesanan | `GET /pemesanan` · `GET /pemesanan/create` · `POST /pemesanan` · `GET /pemesanan/{booking}/edit` · `PUT /pemesanan/{booking}` · `DELETE /pemesanan/{booking}` · `PATCH /pemesanan/{booking}/status` | → `/login` | **CRUD** + approve | 403 |
+| Kontrak Sewa | `GET /kontrak-sewa` · `GET /kontrak-sewa/create` · `POST /kontrak-sewa` · `GET /kontrak-sewa/{contract}/edit` · `PUT /kontrak-sewa/{contract}` · `DELETE /kontrak-sewa/{contract}` | → `/login` | **CRUD** | 403 |
+| Jadwal Penggunaan Ruang | `GET /jadwal-ruang` | → `/login` | read | 403 |
+| Tagihan & Pembayaran | `GET /tagihan-pembayaran` · `GET /tagihan-pembayaran/create` · `POST /tagihan-pembayaran` · `GET /tagihan-pembayaran/{invoice}/edit` · `PUT /tagihan-pembayaran/{invoice}` · `DELETE /tagihan-pembayaran/{invoice}` · `PATCH /tagihan-pembayaran/{invoice}/lunas` | → `/login` | **CRUD** + tandai lunas | 403 |
+| Laporan | `GET /laporan` | → `/login` | read | 403 |
+| Portal | `GET /portal` | → `/login` | 403 | read |
+| Pengajuan sewa | `GET /portal/pengajuan` · `POST /portal/pengajuan` | → `/login` | 403 | ↪ `/portal` |
 
 Landing page after login is role-based (`User::homePath()`): admin →
-`/dashboard`, tenant and customer → `/portal`.
+`/dashboard`, tenant → `/portal`.
 
 ---
 
@@ -163,7 +165,7 @@ All demo accounts use the password `password`.
 6. **Laporan** — the current year's month row shows the booking count and the
    paid amount; the totals row matches the stat cards.
 
-### 4. Customer — self-register and apply for a tenancy
+### 4. Tenant — self-register and apply for a tenancy
 
 1. Log out, then **Register** a new account.
 2. You land on **Portal** with the amber *Menunggu Verifikasi* badge and the
@@ -188,12 +190,12 @@ All demo accounts use the password `password`.
 
 ### 6. Every role — guard and logout
 
-1. As a tenant or customer, open `/dashboard`, `/tenants`, `/pemesanan` and
+1. As a tenant, open `/dashboard`, `/tenants`, `/pemesanan` and
    `/laporan` — each returns **403**.
 2. Click **Logout** in the header — redirected to `/login` with a confirmation.
 3. While logged out, open `/portal` — redirected to `/login`.
 4. Log in as admin and open `/portal` — **403**, because the portal is for
-   tenants and customers only.
+   tenants only.
 
 ---
 
@@ -203,5 +205,5 @@ All demo accounts use the password `password`.
 - **Tenant self-service** — tenants cannot book a room, view their own invoices,
   or edit their data; those modules are admin-only.
 - **User management** — `users` has no CRUD screen; roles are set by the seeder
-  or by the customer → tenant promotion.
+  or by the tenant application flow.
 - **Contracts are not linked to a room** — see the relations note above.
