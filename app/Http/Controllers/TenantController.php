@@ -41,7 +41,11 @@ class TenantController extends Controller
     public function create(): View
     {
         return view('tenants.create', [
-            'tenant' => new Tenant(['status' => 'Menunggu Verifikasi', 'durasi_sewa' => 12]),
+            'tenant' => new Tenant([
+                'kode_tenant' => Tenant::nextKodeTenant(),
+                'status' => 'Menunggu Verifikasi',
+                'durasi_sewa' => 12,
+            ]),
         ]);
     }
 

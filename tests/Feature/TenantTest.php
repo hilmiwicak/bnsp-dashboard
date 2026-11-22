@@ -74,7 +74,8 @@ class TenantTest extends TestCase
             ->get('/tenants/create')
             ->assertOk()
             ->assertSee('Informasi PIC')
-            ->assertSee('Detail Sewa');
+            ->assertSee('Detail Sewa')
+            ->assertSee('value="'.Tenant::nextKodeTenant().'"', false);
 
         $this->actingAs($user)
             ->get("/tenants/{$tenant->id}/edit")
