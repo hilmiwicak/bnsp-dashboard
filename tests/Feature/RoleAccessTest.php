@@ -25,7 +25,6 @@ class RoleAccessTest extends TestCase
     {
         $accounts = [
             User::factory()->tenant()->create(),
-            User::factory()->customer()->create(),
         ];
 
         foreach ($accounts as $user) {
@@ -42,9 +41,9 @@ class RoleAccessTest extends TestCase
             ->assertForbidden();
     }
 
-    public function test_customer_sees_the_pending_state_on_the_portal(): void
+    public function test_tenant_without_tenancy_sees_the_pending_state_on_the_portal(): void
     {
-        $this->actingAs(User::factory()->customer()->create())
+        $this->actingAs(User::factory()->tenant()->create())
             ->get('/portal')
             ->assertOk()
             ->assertSee('Pengajuan sewa belum dibuat')
@@ -74,7 +73,7 @@ class RoleAccessTest extends TestCase
 
     public function test_portal_sidebar_only_lists_the_portal_menu(): void
     {
-        $response = $this->actingAs(User::factory()->customer()->create())->get('/portal');
+        $response = $this->actingAs(User::factory()->tenant()->create())->get('/portal');
 
         $response->assertOk();
         $response->assertSee('Portal');
@@ -96,25 +95,20 @@ class RoleAccessTest extends TestCase
             ->get('/portal')
             ->assertOk()
             ->assertSee($logoutUrl, false);
-
-        $this->actingAs(User::factory()->customer()->create())
-            ->get('/portal')
-            ->assertOk()
-            ->assertSee($logoutUrl, false);
     }
 
-    public function test_login_sends_a_customer_to_the_portal(): void
+    public function test_login_sends_a_tenant_to_the_portal(): void
     {
-        $customer = User::factory()->customer()->create([
+        $account = User::factory()->tenant()->create([
             'password' => password_hash('secret123', PASSWORD_DEFAULT),
         ]);
 
         $this->post('/login', [
-            'email' => $customer->email,
+            'email' => $account->email,
             'password' => 'secret123',
         ])->assertRedirect('/portal');
 
-        $this->assertAuthenticatedAs($customer);
+        $this->assertAuthenticatedAs($account);
     }
 
     public function test_self_registration_creates_a_customer_account(): void

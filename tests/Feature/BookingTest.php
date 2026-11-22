@@ -17,7 +17,7 @@ class BookingTest extends TestCase
     {
         $this->get('/pemesanan')->assertRedirect('/login');
 
-        $this->actingAs(User::factory()->customer()->create())
+        $this->actingAs(User::factory()->tenant()->create())
             ->get('/pemesanan')
             ->assertForbidden();
     }

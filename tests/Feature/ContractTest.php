@@ -16,7 +16,7 @@ class ContractTest extends TestCase
     {
         $this->get('/kontrak-sewa')->assertRedirect('/login');
 
-        $this->actingAs(User::factory()->customer()->create())
+        $this->actingAs(User::factory()->tenant()->create())
             ->get('/kontrak-sewa')
             ->assertForbidden();
     }

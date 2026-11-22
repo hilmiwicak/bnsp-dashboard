@@ -17,7 +17,7 @@ class ScheduleTest extends TestCase
     {
         $this->get('/jadwal-ruang')->assertRedirect('/login');
 
-        $this->actingAs(User::factory()->customer()->create())
+        $this->actingAs(User::factory()->tenant()->create())
             ->get('/jadwal-ruang')
             ->assertForbidden();
     }

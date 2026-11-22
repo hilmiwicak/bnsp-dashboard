@@ -17,7 +17,7 @@ class DashboardTest extends TestCase
     {
         $this->get('/dashboard')->assertRedirect('/login');
 
-        $this->actingAs(User::factory()->customer()->create())
+        $this->actingAs(User::factory()->tenant()->create())
             ->get('/dashboard')
             ->assertForbidden();
     }

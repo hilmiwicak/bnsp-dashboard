@@ -16,7 +16,7 @@ class InvoiceTest extends TestCase
     {
         $this->get('/tagihan-pembayaran')->assertRedirect('/login');
 
-        $this->actingAs(User::factory()->customer()->create())
+        $this->actingAs(User::factory()->tenant()->create())
             ->get('/tagihan-pembayaran')
             ->assertForbidden();
     }

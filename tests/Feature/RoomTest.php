@@ -15,7 +15,7 @@ class RoomTest extends TestCase
     {
         $this->get('/ruang-fasilitas')->assertRedirect('/login');
 
-        $this->actingAs(User::factory()->customer()->create())
+        $this->actingAs(User::factory()->tenant()->create())
             ->get('/ruang-fasilitas')
             ->assertForbidden();
     }

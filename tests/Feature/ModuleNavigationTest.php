@@ -70,7 +70,7 @@ class ModuleNavigationTest extends TestCase
 
     public function test_root_url_leads_tenants_to_the_portal(): void
     {
-        $this->actingAs(User::factory()->customer()->create())->get('/')->assertRedirect('/portal');
+        $this->actingAs(User::factory()->tenant()->create())->get('/')->assertRedirect('/portal');
     }
 
     public function test_active_menu_item_is_marked_with_aria_current(): void

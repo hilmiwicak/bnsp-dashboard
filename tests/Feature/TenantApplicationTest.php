@@ -13,9 +13,9 @@ class TenantApplicationTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_customer_can_open_the_application_form(): void
+    public function test_tenant_can_open_the_application_form(): void
     {
-        $this->actingAs(User::factory()->customer()->create([
+        $this->actingAs(User::factory()->tenant()->create([
             'name' => 'Dewi Lestari',
             'email' => 'dewi@example.com',
         ]))
@@ -31,7 +31,7 @@ class TenantApplicationTest extends TestCase
 
     public function test_submitting_the_form_creates_a_pending_tenant_and_links_the_account(): void
     {
-        $user = User::factory()->customer()->create(['name' => 'Dewi Lestari']);
+        $user = User::factory()->tenant()->create(['name' => 'Dewi Lestari']);
         $payload = $this->payload();
 
         $this->actingAs($user)
@@ -58,7 +58,7 @@ class TenantApplicationTest extends TestCase
 
     public function test_the_portal_then_shows_the_submitted_tenancy(): void
     {
-        $user = User::factory()->customer()->create();
+        $user = User::factory()->tenant()->create();
 
         $this->actingAs($user)->post('/portal/pengajuan', $this->payload());
 
@@ -72,7 +72,7 @@ class TenantApplicationTest extends TestCase
 
     public function test_application_is_validated(): void
     {
-        $this->actingAs(User::factory()->customer()->create())
+        $this->actingAs(User::factory()->tenant()->create())
             ->post('/portal/pengajuan', [])
             ->assertSessionHasErrors([
                 'nama_pic',
@@ -89,7 +89,7 @@ class TenantApplicationTest extends TestCase
 
     public function test_validation_errors_are_shown_on_the_application_form(): void
     {
-        $this->actingAs(User::factory()->customer()->create())
+        $this->actingAs(User::factory()->tenant()->create())
             ->post('/portal/pengajuan', ['durasi_sewa' => 0]);
 
         $this->get('/portal/pengajuan')
@@ -100,7 +100,7 @@ class TenantApplicationTest extends TestCase
 
     public function test_the_start_date_cannot_be_in_the_past(): void
     {
-        $this->actingAs(User::factory()->customer()->create())
+        $this->actingAs(User::factory()->tenant()->create())
             ->post('/portal/pengajuan', $this->payload([
                 'tanggal_mulai_sewa' => now()->subMonth()->toDateString(),
             ]))
@@ -113,7 +113,7 @@ class TenantApplicationTest extends TestCase
     {
         Tenant::factory()->create(['email' => 'dewi@example.com']);
 
-        $this->actingAs(User::factory()->customer()->create())
+        $this->actingAs(User::factory()->tenant()->create())
             ->post('/portal/pengajuan', $this->payload())
             ->assertSessionHasErrors(['email']);
     }
@@ -144,7 +144,7 @@ class TenantApplicationTest extends TestCase
 
     public function test_the_portal_links_to_the_application_form(): void
     {
-        $this->actingAs(User::factory()->customer()->create())
+        $this->actingAs(User::factory()->tenant()->create())
             ->get('/portal')
             ->assertOk()
             ->assertSee('Ajukan Sewa');

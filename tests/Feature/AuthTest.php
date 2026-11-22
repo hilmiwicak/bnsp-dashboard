@@ -99,7 +99,7 @@ class AuthTest extends TestCase
         $this->actingAs($admin)->get('/login')->assertRedirect('/dashboard');
         $this->actingAs($admin)->get('/register')->assertRedirect('/dashboard');
 
-        $customer = User::factory()->customer()->create();
+        $customer = User::factory()->tenant()->create();
 
         $this->actingAs($customer)->get('/login')->assertRedirect('/portal');
         $this->actingAs($customer)->get('/register')->assertRedirect('/portal');
@@ -121,7 +121,7 @@ class AuthTest extends TestCase
         $accounts = [
             User::factory()->create(),
             User::factory()->tenant()->create(),
-            User::factory()->customer()->create(),
+            User::factory()->tenant()->create(),
         ];
 
         foreach ($accounts as $user) {
