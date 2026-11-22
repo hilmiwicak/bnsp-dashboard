@@ -64,6 +64,16 @@ The mentor's prompts, in order:
 22. **PIC detail trim** — dropped *Tempat Lahir*, *Tanggal Lahir* and *Jenis
     Kelamin* from the tenant PIC data; a PIC is now only name, email and phone
     number.
+23. **Two-role model** — removed the `customer` role; an account is either
+    `admin` or `tenant`. "Registered but no tenancy yet" is now just a `tenant`
+    with a null `users.tenant_id`, so the self-service application links the
+    account to its new tenancy record instead of promoting it.
+24. **Tenant login accounts** — creating a tenant from *Data Tenant* now also
+    provisions a login account for the PIC. A 12-character temporary password
+    is generated and shown **once** on the tenant list with a copy button; only
+    its hash is stored. If an account with that email already exists and is not
+    linked to another tenancy, it is linked instead of duplicated. Editing a
+    tenant keeps the linked account's name and email in sync.
 
 ---
 
@@ -204,6 +214,10 @@ All demo accounts use the password `password`.
 - **Polish** — styled 403 page, README, login rate limiting.
 - **Tenant self-service** — tenants cannot book a room, view their own invoices,
   or edit their data; those modules are admin-only.
-- **User management** — `users` has no CRUD screen; roles are set by the seeder
-  or by the tenant application flow.
+- **User management** — `users` has no CRUD screen. Accounts come from
+  self-registration, the seeder, or automatic provisioning when an admin creates
+  a tenant.
+- **Change password** — there is no self-service password change. The temporary
+  password shown once at tenant creation is the only credential the admin can
+  hand over; a change-password screen is the next step.
 - **Contracts are not linked to a room** — see the relations note above.
