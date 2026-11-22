@@ -16,9 +16,6 @@ use Illuminate\Support\Carbon;
     'nama_pic',
     'nama_perusahaan',
     'nib_npwp',
-    'tempat_lahir',
-    'tanggal_lahir',
-    'jenis_kelamin',
     'alamat',
     'no_hp',
     'email',
@@ -43,16 +40,6 @@ class Tenant extends Model
     ];
 
     /**
-     * Pilihan jenis kelamin untuk data PIC.
-     *
-     * @var list<string>
-     */
-    public const JENIS_KELAMIN = [
-        'Laki-laki',
-        'Perempuan',
-    ];
-
-    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
@@ -60,7 +47,6 @@ class Tenant extends Model
     protected function casts(): array
     {
         return [
-            'tanggal_lahir' => 'date',
             'tanggal_mulai_sewa' => 'date',
             'durasi_sewa' => 'integer',
         ];

@@ -61,6 +61,9 @@ The mentor's prompts, in order:
     outstanding bills, plus a booking status breakdown.
 21. **Logout for every role** — a logout control in the shared dashboard header,
     with the sidebar one pinned so a long menu cannot hide it.
+22. **PIC detail trim** — dropped *Tempat Lahir*, *Tanggal Lahir* and *Jenis
+    Kelamin* from the tenant PIC data; a PIC is now only name, email and phone
+    number.
 
 ---
 

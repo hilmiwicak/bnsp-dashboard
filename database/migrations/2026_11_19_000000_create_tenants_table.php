@@ -17,9 +17,6 @@ return new class extends Migration
             $table->string('nama_pic');
             $table->string('nama_perusahaan');
             $table->string('nib_npwp', 40)->nullable();
-            $table->string('tempat_lahir', 100);
-            $table->date('tanggal_lahir');
-            $table->enum('jenis_kelamin', ['Laki-laki', 'Perempuan']);
             $table->text('alamat');
             $table->string('no_hp', 20);
             $table->string('email')->unique();

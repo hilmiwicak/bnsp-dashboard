@@ -39,34 +39,6 @@
         />
 
         <x-dashboard.form-field
-            name="tempat_lahir"
-            label="Tempat Lahir"
-            placeholder="Kota kelahiran"
-            :value="$tenant->tempat_lahir"
-            :error="$errors->first('tempat_lahir')"
-            required
-        />
-
-        <x-dashboard.form-field
-            name="tanggal_lahir"
-            label="Tanggal Lahir"
-            type="date"
-            :value="$tenant->tanggal_lahir?->format('Y-m-d')"
-            :error="$errors->first('tanggal_lahir')"
-            required
-        />
-
-        <x-dashboard.form-select
-            name="jenis_kelamin"
-            label="Jenis Kelamin"
-            :options="\App\Models\Tenant::JENIS_KELAMIN"
-            :selected="$tenant->jenis_kelamin"
-            placeholder="Pilih jenis kelamin"
-            :error="$errors->first('jenis_kelamin')"
-            required
-        />
-
-        <x-dashboard.form-field
             name="no_hp"
             label="Nomor HP"
             type="tel"
@@ -76,17 +48,15 @@
             required
         />
 
-        <div class="md:col-span-2">
-            <x-dashboard.form-field
-                name="email"
-                label="Email"
-                type="email"
-                placeholder="nama@perusahaan.com"
-                :value="$tenant->email"
-                :error="$errors->first('email')"
-                required
-            />
-        </div>
+        <x-dashboard.form-field
+            name="email"
+            label="Email"
+            type="email"
+            placeholder="nama@perusahaan.com"
+            :value="$tenant->email"
+            :error="$errors->first('email')"
+            required
+        />
     </div>
 </section>
 

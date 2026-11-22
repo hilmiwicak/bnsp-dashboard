@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Tenant;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -27,9 +26,6 @@ class TenantApplicationRequest extends FormRequest
             'nama_pic' => ['required', 'string', 'max:255'],
             'nama_perusahaan' => ['required', 'string', 'max:255'],
             'nib_npwp' => ['nullable', 'string', 'max:40'],
-            'tempat_lahir' => ['required', 'string', 'max:100'],
-            'tanggal_lahir' => ['required', 'date', 'before:today'],
-            'jenis_kelamin' => ['required', Rule::in(Tenant::JENIS_KELAMIN)],
             'alamat' => ['required', 'string', 'max:500'],
             'no_hp' => ['required', 'string', 'max:20', 'regex:/^[0-9+\-()\s]+$/'],
             'email' => [
@@ -52,9 +48,6 @@ class TenantApplicationRequest extends FormRequest
             'nama_pic' => 'nama lengkap PIC',
             'nama_perusahaan' => 'nama perusahaan',
             'nib_npwp' => 'NIB/NPWP',
-            'tempat_lahir' => 'tempat lahir',
-            'tanggal_lahir' => 'tanggal lahir',
-            'jenis_kelamin' => 'jenis kelamin',
             'no_hp' => 'nomor HP',
             'tanggal_mulai_sewa' => 'tanggal mulai sewa',
             'durasi_sewa' => 'durasi sewa',
