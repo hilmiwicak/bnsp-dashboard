@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserRole;
 use App\Http\Requests\TenantRequest;
 use App\Models\Tenant;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class TenantController extends Controller
@@ -50,15 +54,56 @@ class TenantController extends Controller
     }
 
     /**
-     * Simpan data tenant baru.
+     * Simpan data tenant baru beserta akun login PIC-nya.
      */
     public function store(TenantRequest $request): RedirectResponse
     {
-        $tenant = Tenant::create($request->validated());
+        $validated = $request->validated();
+        $password = null;
 
-        return redirect()
+        $tenant = DB::transaction(function () use ($validated, &$password) {
+            $tenant = Tenant::create($validated);
+
+            $account = User::query()->where('email', $validated['email'])->first();
+
+            if ($account) {
+                // PIC sudah punya akun (mendaftar sendiri lebih dulu): hubungkan
+                // ke data tenant ini tanpa mengganti password lamanya.
+                $account->update([
+                    'name' => $validated['nama_pic'],
+                    'role' => UserRole::Tenant,
+                    'tenant_id' => $tenant->id,
+                ]);
+            } else {
+                $password = Str::password(12, symbols: false);
+
+                User::create([
+                    'name' => $validated['nama_pic'],
+                    'email' => $validated['email'],
+                    'password' => password_hash($password, PASSWORD_DEFAULT),
+                    'role' => UserRole::Tenant,
+                    'tenant_id' => $tenant->id,
+                ]);
+            }
+
+            return $tenant;
+        });
+
+        $redirect = redirect()
             ->route('tenants.index')
             ->with('status', "Data tenant {$tenant->nama_pic} berhasil ditambahkan.");
+
+        // Password sementara hanya dikirim sekali lewat session, tidak disimpan
+        // dalam bentuk terbaca di mana pun.
+        if ($password === null) {
+            return $redirect;
+        }
+
+        return $redirect->with('kredensial', [
+            'kode_tenant' => $tenant->kode_tenant,
+            'email' => $validated['email'],
+            'password' => $password,
+        ]);
     }
 
     /**
@@ -75,6 +120,14 @@ class TenantController extends Controller
     public function update(TenantRequest $request, Tenant $tenant): RedirectResponse
     {
         $tenant->update($request->validated());
+
+        // Jaga agar akun login PIC tetap sinkron dengan data tenant.
+        User::query()
+            ->where('tenant_id', $tenant->id)
+            ->update([
+                'name' => $tenant->nama_pic,
+                'email' => $tenant->email,
+            ]);
 
         // Verifikasi tenant sekaligus mengaktifkan kontrak pengajuannya.
         if ($tenant->status === 'Aktif') {

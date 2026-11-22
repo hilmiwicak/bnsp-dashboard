@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Enums\UserRole;
 use App\Models\Contract;
 use App\Models\Tenant;
 use App\Models\User;
@@ -100,6 +101,90 @@ class TenantTest extends TestCase
         ]);
     }
 
+    public function test_creating_a_tenant_provisions_a_login_account(): void
+    {
+        $this->actingAs(User::factory()->create())
+            ->post('/tenants', $this->payload())
+            ->assertRedirect('/tenants')
+            ->assertSessionHas('kredensial');
+
+        $tenant = Tenant::where('kode_tenant', 'TNT-100')->firstOrFail();
+        $account = User::where('email', 'rina@ujicoba.id')->firstOrFail();
+
+        $this->assertSame(UserRole::Tenant, $account->role);
+        $this->assertSame($tenant->id, $account->tenant_id);
+        $this->assertSame('Rina Wulandari', $account->name);
+    }
+
+    public function test_the_generated_password_is_hashed_and_usable_for_login(): void
+    {
+        $response = $this->actingAs(User::factory()->create())
+            ->post('/tenants', $this->payload());
+
+        $password = $response->getSession()->get('kredensial')['password'];
+        $account = User::where('email', 'rina@ujicoba.id')->firstOrFail();
+
+        $this->assertNotSame($password, $account->password);
+        $this->assertTrue(password_verify($password, $account->password));
+
+        $this->post('/logout');
+
+        $this->post('/login', [
+            'email' => 'rina@ujicoba.id',
+            'password' => $password,
+        ])->assertRedirect('/portal');
+
+        $this->assertAuthenticatedAs($account);
+    }
+
+    public function test_the_generated_password_is_only_shown_once(): void
+    {
+        $response = $this->actingAs(User::factory()->create())
+            ->post('/tenants', $this->payload());
+
+        $password = $response->getSession()->get('kredensial')['password'];
+
+        // Permintaan berikutnya tidak lagi membawa kredensial.
+        $this->get('/tenants')
+            ->assertOk()
+            ->assertDontSee($password);
+    }
+
+    public function test_creating_a_tenant_links_an_existing_unlinked_account(): void
+    {
+        $account = User::factory()->tenant()->create([
+            'name' => 'Nama Lama',
+            'email' => 'rina@ujicoba.id',
+        ]);
+
+        $this->actingAs(User::factory()->create())
+            ->post('/tenants', $this->payload())
+            ->assertRedirect('/tenants')
+            ->assertSessionMissing('kredensial');
+
+        $tenant = Tenant::where('kode_tenant', 'TNT-100')->firstOrFail();
+
+        $this->assertSame($tenant->id, $account->fresh()->tenant_id);
+        $this->assertSame('Rina Wulandari', $account->fresh()->name);
+        $this->assertSame(1, User::where('email', 'rina@ujicoba.id')->count());
+    }
+
+    public function test_store_rejects_an_email_linked_to_another_tenant(): void
+    {
+        $other = Tenant::factory()->create();
+
+        User::factory()->tenant()->create([
+            'email' => 'rina@ujicoba.id',
+            'tenant_id' => $other->id,
+        ]);
+
+        $this->actingAs(User::factory()->create())
+            ->post('/tenants', $this->payload())
+            ->assertSessionHasErrors(['email']);
+
+        $this->assertDatabaseMissing('tenants', ['kode_tenant' => 'TNT-100']);
+    }
+
     public function test_store_validates_required_fields(): void
     {
         $this->actingAs(User::factory()->create())
@@ -159,6 +244,31 @@ class TenantTest extends TestCase
             'id' => $tenant->id,
             'nama_pic' => 'Budi Santoso Wijaya',
         ]);
+    }
+
+    public function test_updating_a_tenant_syncs_its_login_account(): void
+    {
+        $tenant = Tenant::factory()->create([
+            'nama_pic' => 'Budi Santoso',
+            'email' => 'budi@ujicoba.id',
+        ]);
+
+        $account = User::factory()->tenant()->create([
+            'name' => 'Budi Santoso',
+            'email' => 'budi@ujicoba.id',
+            'tenant_id' => $tenant->id,
+        ]);
+
+        $this->actingAs(User::factory()->create())
+            ->put("/tenants/{$tenant->id}", $this->payload([
+                'kode_tenant' => $tenant->kode_tenant,
+                'nama_pic' => 'Budi Santoso Wijaya',
+                'email' => 'budi.baru@ujicoba.id',
+            ]))
+            ->assertRedirect('/tenants');
+
+        $this->assertSame('Budi Santoso Wijaya', $account->fresh()->name);
+        $this->assertSame('budi.baru@ujicoba.id', $account->fresh()->email);
     }
 
     public function test_verifying_a_tenant_activates_its_pending_contract(): void

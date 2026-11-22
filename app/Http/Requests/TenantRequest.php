@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use App\Models\Tenant;
+use App\Models\User;
+use Closure;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -38,6 +40,7 @@ class TenantRequest extends FormRequest
             'email' => [
                 'required', 'string', 'email', 'max:255',
                 Rule::unique('tenants', 'email')->ignore($ignoreId),
+                $this->emailMustNotBelongToAnotherAccount(...),
             ],
             'status' => ['required', Rule::in(Tenant::STATUS)],
         ];
@@ -56,6 +59,33 @@ class TenantRequest extends FormRequest
             'nib_npwp' => 'NIB/NPWP',
             'no_hp' => 'nomor HP',
         ];
+    }
+
+    /**
+     * Tolak email milik akun yang sudah terhubung ke tenant lain.
+     */
+    private function emailMustNotBelongToAnotherAccount(string $attribute, mixed $value, Closure $fail): void
+    {
+        $account = User::query()->where('email', $value)->first();
+
+        if (! $account) {
+            return;
+        }
+
+        $current = $this->tenantBeingUpdated();
+
+        // Akun milik tenant ini sendiri — tidak masalah.
+        if ($current && $account->tenant_id === $current->id) {
+            return;
+        }
+
+        // Saat menambah tenant baru, akun yang belum terhubung boleh dipakai
+        // dan akan dihubungkan otomatis ke data tenant baru.
+        if (! $current && $account->tenant_id === null) {
+            return;
+        }
+
+        $fail('This email is already linked to another account.');
     }
 
     /**
