@@ -25,10 +25,10 @@ Indonesian and follows a clean, modern dashboard design.
 Additional behaviour:
 
 - **Authentication** — register, login, logout, with hashed passwords.
-- **Roles** — `admin`, `tenant`, `customer`, enforced per route.
-- **Tenant portal** — non-admin accounts get a portal instead of the admin area.
-- **Self-service application** — a customer can apply for a tenancy, which
-  creates the tenant record and promotes the account to `tenant`.
+- **Roles** — `admin` and `tenant`, enforced per route.
+- **Tenant portal** — tenants get a portal instead of the admin area.
+- **Self-service application** — a tenant account with no tenancy record yet can
+  apply, which creates the tenant record and links it to the account.
 - **Booking conflict detection** — overlapping bookings on the same room and
   date are rejected; back-to-back slots are allowed.
 - **No external chart library** — the bar, pie and line charts are hand-built
@@ -41,8 +41,12 @@ Additional behaviour:
 | Role | Lands on | Access |
 |---|---|---|
 | `admin` | `/dashboard` | Full CRUD on tenants, rooms, bookings, contracts and invoices |
-| `tenant` | `/portal` | Read-only view of their own tenancy |
-| `customer` | `/portal` | Read-only portal plus the tenancy application form |
+| `tenant` | `/portal` | Read-only view of their own tenancy, plus the tenancy application form |
+
+`admin` is the pengelola (owner/operator) of the virtual office; `tenant` is the
+company renting space from it. A newly registered account is a `tenant` that is
+not yet linked to a tenancy (`tenant_id` is null) — it stays in that state until
+it submits an application and an admin verifies it.
 
 Wrong role gets `403`; guests are redirected to `/login`. The full role × route
 matrix is in [`docs/BUILD-HISTORY.md`](docs/BUILD-HISTORY.md).
@@ -124,7 +128,7 @@ All demo accounts use the password `password`.
 |---|---|---|
 | `admin@example.com` | Admin | Full management area |
 | `tenant@example.com` | Tenant | Linked to tenant `TNT-001` |
-| `customer@example.com` | Customer | Can submit a tenancy application |
+| `pendaftar@example.com` | Tenant | Not linked to a tenancy — can submit an application |
 
 ---
 
@@ -151,7 +155,7 @@ Code style:
 
 ```
 app/
-  Enums/UserRole.php              admin / tenant / customer
+  Enums/UserRole.php              admin / tenant
   Http/Controllers/               one controller per module
   Http/Middleware/                EnsureUserHasRole (alias: role)
   Http/Requests/                  validation per entity
