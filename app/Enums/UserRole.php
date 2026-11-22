@@ -5,15 +5,14 @@ namespace App\Enums;
 /**
  * Jenis akun yang bisa masuk ke sistem kantor virtual.
  *
- * - Admin    : pengelola kantor virtual (operator), akses penuh.
- * - Tenant   : tenant aktif, terhubung ke satu baris tabel tenant.
- * - Customer : pendaftar baru yang belum memiliki data sewa.
+ * - Admin  : pengelola kantor virtual (pemilik/operator), akses penuh.
+ * - Tenant : penyewa kantor virtual. Akun boleh belum terhubung ke data
+ *            sewa selama pengajuannya belum diverifikasi admin.
  */
 enum UserRole: string
 {
     case Admin = 'admin';
     case Tenant = 'tenant';
-    case Customer = 'customer';
 
     /**
      * Label yang ditampilkan di antarmuka.
@@ -23,7 +22,6 @@ enum UserRole: string
         return match ($this) {
             self::Admin => 'Admin',
             self::Tenant => 'Tenant',
-            self::Customer => 'Customer',
         };
     }
 

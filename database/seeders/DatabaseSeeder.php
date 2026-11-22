@@ -36,7 +36,7 @@ class DatabaseSeeder extends Seeder
             Tenant::where('kode_tenant', 'TNT-001')->value('id'),
         );
 
-        $this->seedAccount('customer@example.com', 'Rina Wulandari', UserRole::Customer);
+        $this->seedAccount('pendaftar@example.com', 'Rina Wulandari', UserRole::Tenant);
     }
 
     /**

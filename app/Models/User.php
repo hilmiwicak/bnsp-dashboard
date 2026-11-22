@@ -59,14 +59,6 @@ class User extends Authenticatable
     }
 
     /**
-     * Apakah akun ini pendaftar yang belum memiliki data sewa.
-     */
-    public function isCustomer(): bool
-    {
-        return $this->role === UserRole::Customer;
-    }
-
-    /**
      * Apakah akun ini memakai portal (semua role selain admin).
      */
     public function canAccessPortal(): bool

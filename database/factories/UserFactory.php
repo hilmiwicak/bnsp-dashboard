@@ -22,7 +22,7 @@ class UserFactory extends Factory
      * Define the model's default state.
      *
      * Akun default adalah admin karena sebagian besar halaman memerlukan
-     * akses pengelola; gunakan state tenant() / customer() untuk akun lain.
+     * akses pengelola; gunakan state tenant() untuk akun penyewa.
      *
      * @return array<string, mixed>
      */
@@ -49,23 +49,12 @@ class UserFactory extends Factory
     }
 
     /**
-     * Akun tenant aktif.
+     * Akun tenant — boleh belum terhubung ke data sewa.
      */
     public function tenant(): static
     {
         return $this->state(fn (array $attributes) => [
             'role' => UserRole::Tenant,
-        ]);
-    }
-
-    /**
-     * Akun pendaftar yang belum menjadi tenant.
-     */
-    public function customer(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'role' => UserRole::Customer,
-            'tenant_id' => null,
         ]);
     }
 }

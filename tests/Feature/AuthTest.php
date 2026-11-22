@@ -99,10 +99,10 @@ class AuthTest extends TestCase
         $this->actingAs($admin)->get('/login')->assertRedirect('/dashboard');
         $this->actingAs($admin)->get('/register')->assertRedirect('/dashboard');
 
-        $customer = User::factory()->tenant()->create();
+        $account = User::factory()->tenant()->create();
 
-        $this->actingAs($customer)->get('/login')->assertRedirect('/portal');
-        $this->actingAs($customer)->get('/register')->assertRedirect('/portal');
+        $this->actingAs($account)->get('/login')->assertRedirect('/portal');
+        $this->actingAs($account)->get('/register')->assertRedirect('/portal');
     }
 
     public function test_logout_ends_the_session(): void
