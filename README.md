@@ -29,6 +29,10 @@ Additional behaviour:
 - **Tenant portal** — tenants get a portal instead of the admin area.
 - **Self-service application** — a tenant account with no tenancy record yet can
   apply, which creates the tenant record and links it to the account.
+- **Tenant login accounts** — creating a tenant from *Data Tenant* also provisions
+  a PIC login account with a 12-character temporary password. The password is
+  shown once (copyable, masked) and stored only as a hash; an existing unlinked
+  account with the same email is linked instead of duplicated.
 - **Booking conflict detection** — overlapping bookings on the same room and
   date are rejected; back-to-back slots are allowed.
 - **No external chart library** — the bar, pie and line charts are hand-built
