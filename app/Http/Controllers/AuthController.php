@@ -70,9 +70,9 @@ class AuthController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => password_hash($validated['password'], PASSWORD_DEFAULT),
-            // Pendaftar mandiri masuk sebagai customer sampai ada data sewa
-            // yang diverifikasi admin.
-            'role' => UserRole::Customer,
+            // Pendaftar mandiri langsung berstatus tenant; data sewanya dibuat
+            // lewat formulir pengajuan dan diverifikasi admin.
+            'role' => UserRole::Tenant,
         ]);
 
         Auth::login($user);

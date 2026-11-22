@@ -111,7 +111,7 @@ class RoleAccessTest extends TestCase
         $this->assertAuthenticatedAs($account);
     }
 
-    public function test_self_registration_creates_a_customer_account(): void
+    public function test_self_registration_creates_a_tenant_account(): void
     {
         $this->post('/register', [
             'name' => 'Dewi Lestari',
@@ -119,6 +119,6 @@ class RoleAccessTest extends TestCase
             'password' => 'rahasia123',
         ])->assertRedirect('/portal');
 
-        $this->assertTrue(User::where('email', 'dewi@example.com')->firstOrFail()->isCustomer());
+        $this->assertTrue(User::where('email', 'dewi@example.com')->firstOrFail()->isTenant());
     }
 }

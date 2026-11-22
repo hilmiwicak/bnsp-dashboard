@@ -28,7 +28,7 @@ class AuthTest extends TestCase
 
         $user = User::where('email', 'budi@example.com')->firstOrFail();
 
-        $this->assertTrue($user->isCustomer());
+        $this->assertTrue($user->isTenant());
         $this->assertNotSame('rahasia123', $user->password);
         $this->assertTrue(password_verify('rahasia123', $user->password));
     }
