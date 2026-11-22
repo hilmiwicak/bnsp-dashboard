@@ -119,11 +119,15 @@ class TenantController extends Controller
      */
     public function update(TenantRequest $request, Tenant $tenant): RedirectResponse
     {
+        $previousEmail = $tenant->email;
+
         $tenant->update($request->validated());
 
-        // Jaga agar akun login PIC tetap sinkron dengan data tenant.
+        // Sinkronkan akun login PIC utama saja — akun PIC lain yang berbagi
+        // tenancy ini tidak boleh ikut berubah (dan akan bentrok emailnya).
         User::query()
             ->where('tenant_id', $tenant->id)
+            ->where('email', $previousEmail)
             ->update([
                 'name' => $tenant->nama_pic,
                 'email' => $tenant->email,

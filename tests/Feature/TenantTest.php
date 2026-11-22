@@ -281,6 +281,36 @@ class TenantTest extends TestCase
         $this->assertSame('budi.baru@ujicoba.id', $account->fresh()->email);
     }
 
+    public function test_updating_a_tenant_leaves_other_pic_accounts_alone(): void
+    {
+        $tenant = Tenant::factory()->create([
+            'nama_pic' => 'Budi Santoso',
+            'email' => 'budi@ujicoba.id',
+        ]);
+
+        $primary = User::factory()->tenant()->create([
+            'email' => 'budi@ujicoba.id',
+            'tenant_id' => $tenant->id,
+        ]);
+
+        $second = User::factory()->tenant()->create([
+            'email' => 'siti@ujicoba.id',
+            'tenant_id' => $tenant->id,
+        ]);
+
+        $this->actingAs(User::factory()->create())
+            ->put("/tenants/{$tenant->id}", $this->payload([
+                'kode_tenant' => $tenant->kode_tenant,
+                'nama_pic' => 'Budi Santoso Wijaya',
+                'email' => 'budi.baru@ujicoba.id',
+            ]))
+            ->assertRedirect('/tenants');
+
+        $this->assertSame('budi.baru@ujicoba.id', $primary->fresh()->email);
+        $this->assertSame('Budi Santoso Wijaya', $primary->fresh()->name);
+        $this->assertSame('siti@ujicoba.id', $second->fresh()->email);
+    }
+
     public function test_verifying_a_tenant_activates_its_pending_contract(): void
     {
         $tenant = Tenant::factory()->create(['status' => 'Menunggu Verifikasi']);
