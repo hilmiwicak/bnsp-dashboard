@@ -93,6 +93,18 @@
                 :error="$errors->first('status')"
                 required
             />
+
+            <div class="md:col-span-2">
+                <x-dashboard.form-field
+                    name="catatan"
+                    label="Catatan"
+                    type="textarea"
+                    placeholder="Alasan nominal tagihan, mis. 3 pemesanan disetujui bulan November"
+                    :value="$invoice->catatan"
+                    :error="$errors->first('catatan')"
+                    hint="Boleh dikosongkan. Berguna untuk menjelaskan dasar nominal."
+                />
+            </div>
         </div>
     </section>
 

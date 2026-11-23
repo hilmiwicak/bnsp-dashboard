@@ -245,6 +245,38 @@ class InvoiceTest extends TestCase
      * @param  array<string, mixed>  $overrides
      * @return array<string, mixed>
      */
+    public function test_an_invoice_can_carry_an_explanation_note(): void
+    {
+        $tenant = Tenant::factory()->create();
+
+        $this->actingAs(User::factory()->create())
+            ->post('/tagihan-pembayaran', $this->payload([
+                'tenant_id' => $tenant->id,
+                'catatan' => '3 pemesanan disetujui bulan November.',
+            ]))
+            ->assertRedirect('/tagihan-pembayaran');
+
+        $this->assertDatabaseHas('invoices', [
+            'nomor_tagihan' => 'INV-100',
+            'catatan' => '3 pemesanan disetujui bulan November.',
+        ]);
+
+        $this->actingAs(User::factory()->create())
+            ->get('/tagihan-pembayaran')
+            ->assertOk()
+            ->assertSee('3 pemesanan disetujui bulan November.');
+    }
+
+    public function test_the_note_is_optional(): void
+    {
+        $this->actingAs(User::factory()->create())
+            ->post('/tagihan-pembayaran', $this->payload())
+            ->assertRedirect('/tagihan-pembayaran')
+            ->assertSessionHasNoErrors();
+
+        $this->assertNull(Invoice::where('nomor_tagihan', 'INV-100')->firstOrFail()->catatan);
+    }
+
     private function payload(array $overrides = []): array
     {
         return array_merge([

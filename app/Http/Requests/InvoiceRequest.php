@@ -36,6 +36,7 @@ class InvoiceRequest extends FormRequest
             'jatuh_tempo' => ['required', 'date'],
             'tanggal_bayar' => ['nullable', 'date'],
             'status' => ['required', Rule::in(Invoice::STATUS)],
+            'catatan' => ['nullable', 'string', 'max:500'],
         ];
     }
 

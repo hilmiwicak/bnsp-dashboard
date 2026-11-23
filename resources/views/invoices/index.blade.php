@@ -111,6 +111,15 @@
 
                             <td class="whitespace-nowrap px-6 py-4 text-[15px] font-medium text-dash-ink">
                                 {{ $invoice->jumlahRupiah() }}
+
+                                @if ($invoice->catatan)
+                                    <span
+                                        class="block max-w-[240px] truncate text-[13px] font-normal text-dash-muted"
+                                        title="{{ $invoice->catatan }}"
+                                    >
+                                        {{ $invoice->catatan }}
+                                    </span>
+                                @endif
                             </td>
 
                             <td class="whitespace-nowrap px-6 py-4 text-[15px] text-dash-ink">

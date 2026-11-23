@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'jatuh_tempo',
     'tanggal_bayar',
     'status',
+    'catatan',
 ])]
 class Invoice extends Model
 {
