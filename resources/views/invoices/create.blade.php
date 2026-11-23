@@ -18,6 +18,13 @@
                     Pilih tenant dan periode, lalu sistem menghitung ulang tarif pemesanan
                     yang sudah disetujui pada bulan tersebut.
                 </p>
+                <p class="mt-2 text-[13px] leading-relaxed text-dash-muted">
+                    Isi <span class="font-medium text-dash-ink">Periode</span> dengan bulan yang sama
+                    seperti tanggal pemesanan, memakai format
+                    <span class="font-mono">YYYY-MM</span> (contoh: <span class="font-mono">2026-11</span>).
+                    Satu tagihan hanya mencakup satu bulan — untuk menagih dua bulan,
+                    terbitkan dua tagihan terpisah.
+                </p>
             </div>
 
             <form

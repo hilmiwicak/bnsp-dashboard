@@ -94,6 +94,15 @@ class InvoiceSuggestionTest extends TestCase
             ->assertSee('Sudah ada 1 tagihan');
     }
 
+    public function test_the_create_page_explains_the_period_format(): void
+    {
+        $this->actingAs(User::factory()->create())
+            ->get('/tagihan-pembayaran/create')
+            ->assertOk()
+            ->assertSee('Satu tagihan hanya mencakup satu bulan')
+            ->assertSee('YYYY-MM');
+    }
+
     public function test_the_amount_starts_at_zero_until_it_is_calculated(): void
     {
         $this->actingAs(User::factory()->create())

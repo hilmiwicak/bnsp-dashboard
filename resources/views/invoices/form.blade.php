@@ -42,7 +42,7 @@
                 type="month"
                 :value="$invoice->periode"
                 :error="$errors->first('periode')"
-                hint="Bulan penagihan, mis. November 2026."
+                hint="Satu tagihan hanya untuk satu bulan. Samakan dengan bulan tanggal pemesanan, format YYYY-MM, mis. 2026-11."
                 required
             />
 
