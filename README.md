@@ -48,10 +48,13 @@ Additional behaviour:
 - **Room rate snapshot** — each booking freezes the room rate at the moment it is
   recorded, so later price changes do not rewrite what an old booking is worth.
 - **Invoice suggestion** — *Terbitkan Tagihan* can compute the amount from a
-  tenant's `Disetujui` and `Selesai` bookings in the chosen `YYYY-MM` period,
-  prorating partial hours to the minute and using each booking's snapshotted rate.
-  The total pre-fills *Jumlah Tagihan* and stays editable, and the form warns when
-  that tenant already has an invoice for the period.
+  tenant's `Disetujui` and `Selesai` bookings in the chosen month, prorating
+  partial hours to the minute and using each booking's snapshotted rate. The total
+  pre-fills *Jumlah Tagihan* and stays editable, and the form warns when that
+  tenant already has an invoice for the period. Pick a *Dari Bulan* and, optionally,
+  a *Sampai Bulan* to issue one invoice per month in one action — months that
+  already have an invoice or no bookings are skipped. Months are chosen from a
+  list, never typed.
 - **Invoice note** — `invoices.catatan` records why a figure was set.
 - **No external chart library** — the bar, pie and line charts are hand-built
   SVG components.
