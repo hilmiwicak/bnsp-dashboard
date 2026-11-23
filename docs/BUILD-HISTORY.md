@@ -88,7 +88,7 @@ The mentor's prompts, in order:
     that has never had a contract is unrestricted.
 27. **Starting contract on tenant creation** — *Tambah Tenant* now also asks for
     *Tanggal Mulai Sewa* and *Durasi Sewa* and records the opening contract in the
-    same transaction, with `nilai_sewa` 0. The contract status follows the tenant
+    same transaction. The contract status follows the tenant
     status: `Aktif` when the tenant is created active, otherwise `Menunggu
     Verifikasi`. Editing a tenant never touches its contracts.
 28. **Room capacity check** — a new `FitsRoomCapacity` rule compares
@@ -96,11 +96,29 @@ The mentor's prompts, in order:
     booking on both the admin form and the tenant request page. Previously the
     count was capped at a hardcoded 500 with no relation to the room. Neighbouring
     tests now pin `kapasitas` so the outcome is deterministic.
-26. **Seeder covers every tenant** — each seeded tenant (`TNT-001` … `TNT-008`)
+29. **Seeder covers every tenant** — each seeded tenant (`TNT-001` … `TNT-008`)
     now gets a PIC login account on its own PIC email, linked to that tenancy,
     instead of only `TNT-001` having one. The accounts use the demo password
     `password`, and re-running the seeder matches on email so nothing is
     duplicated and no existing password is overwritten.
+30. **Contracts drop the rent value** — the unused `nilai_sewa` column is gone.
+    It was never read by the dashboard, the report or any invoice, so it was a
+    second price that could disagree with the invoices. Money now lives in one
+    place: `invoices`.
+31. **Room rate snapshot per booking** — `bookings.harga_per_jam` stores the room
+    rate at the moment the booking is recorded and is backfilled from `rooms`.
+    Raising a room's price later no longer changes what an older booking is worth.
+    Swapping a booking to a different room refreshes the snapshot.
+32. **Suggested invoice amount** — *Terbitkan Tagihan* gains a **Hitung** panel:
+    pick a tenant and an `YYYY-MM` period and `App\Support\TagihanRuang` sums
+    every booking with status `Disetujui` or `Selesai` in that month, prorating
+    partial hours to the minute (`tarif × menit / 60`, rounded per booking) and
+    using the snapshotted rate. The total pre-fills *Jumlah Tagihan*, which stays
+    editable, and a warning appears when an invoice already exists for that tenant
+    and period.
+33. **Invoice explanation note** — `invoices.catatan` is a free-text field, like
+    `contracts.catatan`, so the admin can record why a nominal was set. It shows
+    under the amount on the invoice list.
 
 ---
 
@@ -141,8 +159,10 @@ Landing page after login is role-based (`User::homePath()`): admin →
   `bookings` (`tenant_id` + `room_id`), i.e. a many-to-many relationship with
   booking data as the pivot.
 - `tenants` → `contracts` — one tenant may hold several contracts over time.
-  A contract records the period and value, not a specific room.
-- `tenants` → `invoices` — one invoice per tenant per billing period (`YYYY-MM`).
+  A contract records only the period and its status, not a specific room and no
+  longer a price.
+- `tenants` → `invoices` — an invoice bills one tenant for one `YYYY-MM` period.
+  The period is **not unique**, so the create form warns when one already exists.
 
 ---
 
@@ -192,11 +212,13 @@ PIC account on its own email (e.g. `budi@nusantaradigital.co.id` for
 ### 3. Admin — contract, invoice, payment, report
 
 1. **Kontrak Sewa** → **Tambah Kontrak** (*nomor* prefilled `KTR-008`). Set the
-   period, a value, status **Aktif**, then **Simpan Kontrak**. The *Durasi*
-   column shows the months between the two dates.
+   period and status **Aktif**, then **Simpan Kontrak**. The *Durasi* column shows
+   the months between the two dates. Contracts carry no price any more.
 2. **Tagihan & Pembayaran** → **Terbitkan Tagihan** (*nomor* prefilled
-   `INV-025`). Pick the tenant, the current month as *Periode*, a *Jumlah*, the
-   due date, status **Belum Dibayar**, then **Simpan Tagihan**.
+   `INV-025`). In the **Hitung dari Pemakaian Ruang** panel pick a tenant and the
+   current month, then **Hitung** — the total of that tenant's `Disetujui` and
+   `Selesai` bookings appears and *Jumlah Tagihan* fills in. Adjust it if you
+   like, add a *Catatan* explaining the figure, then **Simpan Tagihan**.
 3. The row shows an amber *Belum Dibayar* badge and a **Tandai Lunas** button.
    Click it — the badge turns green *Lunas* and the *Pembayaran* column fills in
    today's date.
@@ -265,6 +287,3 @@ PIC account on its own email (e.g. `budi@nusantaradigital.co.id` for
   password shown once at tenant creation is the only credential the admin can
   hand over; a change-password screen is the next step.
 - **Contracts are not linked to a room** — see the relations note above.
-- **Generated contracts carry `nilai_sewa` 0** — both the self-service application
-  and *Tambah Tenant* record the period but not the price; the real rent is set
-  in **Kontrak Sewa**.
