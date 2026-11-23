@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Models\Booking;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Carbon;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
@@ -48,6 +49,13 @@ class PortalBookingRequest extends FormRequest
                 return;
             }
 
+            // Tanggal harus berada di dalam periode sewa yang berlaku.
+            if ($pesan = $this->periodErrorMessage()) {
+                $validator->errors()->add('tanggal', $pesan);
+
+                return;
+            }
+
             $bentrok = Booking::query()
                 ->where('room_id', $this->input('room_id'))
                 ->overlapping(
@@ -64,6 +72,29 @@ class PortalBookingRequest extends FormRequest
                 );
             }
         });
+    }
+
+    /**
+     * Pesan galat bila tanggal di luar periode sewa, atau null bila tidak ada
+     * kontrak sama sekali. Tenant tanpa kontrak tidak dibatasi.
+     */
+    private function periodErrorMessage(): ?string
+    {
+        $contract = $this->user()?->tenant?->currentContract;
+
+        if (! $contract) {
+            return null;
+        }
+
+        $tanggal = Carbon::parse((string) $this->input('tanggal'));
+
+        if ($tanggal->betweenIncluded($contract->tanggal_mulai, $contract->tanggal_berakhir)) {
+            return null;
+        }
+
+        return 'Tanggal harus berada dalam periode sewa Anda ('
+            .$contract->tanggal_mulai->format('d/m/Y').' – '
+            .$contract->tanggal_berakhir->format('d/m/Y').').';
     }
 
     /**

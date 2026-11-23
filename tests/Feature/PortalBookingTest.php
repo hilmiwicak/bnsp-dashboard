@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Booking;
+use App\Models\Contract;
 use App\Models\Room;
 use App\Models\Tenant;
 use App\Models\User;
@@ -125,6 +126,64 @@ class PortalBookingTest extends TestCase
         $this->assertDatabaseCount('bookings', 0);
     }
 
+    public function test_a_request_within_the_contract_period_is_accepted(): void
+    {
+        $room = Room::factory()->create(['status' => 'Tersedia']);
+        $tenant = Tenant::factory()->create();
+
+        $this->contractFor($tenant);
+
+        $this->actingAs($this->tenantUser($tenant))
+            ->post('/portal/ruang', $this->payload($room))
+            ->assertRedirect('/portal/ruang')
+            ->assertSessionHasNoErrors();
+
+        $this->assertDatabaseCount('bookings', 1);
+    }
+
+    public function test_a_request_after_the_contract_ends_is_rejected(): void
+    {
+        $room = Room::factory()->create(['status' => 'Tersedia']);
+        $tenant = Tenant::factory()->create();
+
+        $this->contractFor($tenant, now()->subYear(), now()->subDay());
+
+        $this->actingAs($this->tenantUser($tenant))
+            ->post('/portal/ruang', $this->payload($room))
+            ->assertSessionHasErrors(['tanggal']);
+
+        $this->assertDatabaseCount('bookings', 0);
+    }
+
+    public function test_a_request_before_the_contract_starts_is_rejected(): void
+    {
+        $room = Room::factory()->create(['status' => 'Tersedia']);
+        $tenant = Tenant::factory()->create();
+
+        $this->contractFor($tenant, now()->addDays(10), now()->addYear());
+
+        $this->actingAs($this->tenantUser($tenant))
+            ->post('/portal/ruang', $this->payload($room))
+            ->assertSessionHasErrors(['tanggal']);
+
+        $this->assertDatabaseCount('bookings', 0);
+    }
+
+    public function test_a_tenant_without_a_contract_is_not_restricted(): void
+    {
+        $room = Room::factory()->create(['status' => 'Tersedia']);
+        $tenant = Tenant::factory()->create();
+
+        $this->actingAs($this->tenantUser($tenant))
+            ->post('/portal/ruang', $this->payload($room, [
+                'tanggal' => now()->addDays(90)->toDateString(),
+            ]))
+            ->assertRedirect('/portal/ruang')
+            ->assertSessionHasNoErrors();
+
+        $this->assertDatabaseCount('bookings', 1);
+    }
+
     public function test_the_page_only_lists_the_tenant_own_requests(): void
     {
         $tenant = Tenant::factory()->create();
@@ -173,6 +232,19 @@ class PortalBookingTest extends TestCase
     {
         return User::factory()->tenant()->create([
             'tenant_id' => ($tenant ?? Tenant::factory()->create())->id,
+        ]);
+    }
+
+    /**
+     * Kontrak aktif yang berlaku sebagai periode sewa tenant.
+     */
+    private function contractFor(Tenant $tenant, $mulai = null, $berakhir = null): Contract
+    {
+        return Contract::factory()->create([
+            'tenant_id' => $tenant->id,
+            'tanggal_mulai' => ($mulai ?? now()->subMonth())->toDateString(),
+            'tanggal_berakhir' => ($berakhir ?? now()->addYear())->toDateString(),
+            'status' => 'Aktif',
         ]);
     }
 
