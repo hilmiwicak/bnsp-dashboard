@@ -63,19 +63,6 @@
                 hint="Harus sama atau setelah tanggal mulai."
                 required
             />
-
-            <div class="md:col-span-2">
-                <x-dashboard.form-field
-                    name="nilai_sewa"
-                    label="Nilai Sewa"
-                    type="number"
-                    placeholder="12000000"
-                    :value="$contract->nilai_sewa"
-                    :error="$errors->first('nilai_sewa')"
-                    hint="Diisi dalam rupiah, tanpa titik atau koma."
-                    required
-                />
-            </div>
         </div>
     </section>
 

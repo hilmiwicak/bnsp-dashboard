@@ -15,7 +15,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'tenant_id',
     'tanggal_mulai',
     'tanggal_berakhir',
-    'nilai_sewa',
     'status',
     'catatan',
 ])]
@@ -46,7 +45,6 @@ class Contract extends Model
         return [
             'tanggal_mulai' => 'date',
             'tanggal_berakhir' => 'date',
-            'nilai_sewa' => 'integer',
         ];
     }
 
@@ -99,14 +97,6 @@ class Contract extends Model
             'Dibatalkan' => 'rose',
             default => 'gray',
         };
-    }
-
-    /**
-     * Nilai sewa dalam format rupiah.
-     */
-    public function nilaiSewa(): string
-    {
-        return 'Rp'.number_format($this->nilai_sewa, 0, ',', '.');
     }
 
     /**

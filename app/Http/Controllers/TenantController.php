@@ -78,7 +78,6 @@ class TenantController extends Controller
                 'nomor_kontrak' => Contract::nextKodeKontrak(),
                 'tanggal_mulai' => $mulai,
                 'tanggal_berakhir' => $mulai->copy()->addMonths((int) $periode['durasi_sewa']),
-                'nilai_sewa' => 0,
                 // Kontrak mengikuti status tenant saat dicatat.
                 'status' => $data['status'] === 'Aktif' ? 'Aktif' : 'Menunggu Verifikasi',
             ]);

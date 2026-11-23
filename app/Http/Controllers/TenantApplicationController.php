@@ -58,7 +58,6 @@ class TenantApplicationController extends Controller
                 'nomor_kontrak' => Contract::nextKodeKontrak(),
                 'tanggal_mulai' => $mulai,
                 'tanggal_berakhir' => $mulai->copy()->addMonths((int) $validated['durasi_sewa']),
-                'nilai_sewa' => 0,
                 'status' => 'Menunggu Verifikasi',
             ]);
 

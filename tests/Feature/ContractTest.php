@@ -28,7 +28,6 @@ class ContractTest extends TestCase
         Contract::factory()->create([
             'nomor_kontrak' => 'KTR-900',
             'tenant_id' => $tenant->id,
-            'nilai_sewa' => 12000000,
         ]);
 
         $this->actingAs(User::factory()->create())
@@ -36,8 +35,7 @@ class ContractTest extends TestCase
             ->assertOk()
             ->assertSee('Daftar Kontrak Sewa')
             ->assertSee('KTR-900')
-            ->assertSee('PT Nusantara Digital')
-            ->assertSee('Rp12.000.000');
+            ->assertSee('PT Nusantara Digital');
     }
 
     public function test_index_can_be_searched_and_filtered(): void
@@ -121,7 +119,6 @@ class ContractTest extends TestCase
                 'tenant_id',
                 'tanggal_mulai',
                 'tanggal_berakhir',
-                'nilai_sewa',
                 'status',
             ]);
 
@@ -227,7 +224,6 @@ class ContractTest extends TestCase
             'tenant_id' => Tenant::factory()->create()->id,
             'tanggal_mulai' => '2026-01-01',
             'tanggal_berakhir' => '2026-12-31',
-            'nilai_sewa' => 18000000,
             'status' => 'Aktif',
             'catatan' => 'Kontrak tahunan.',
         ], $overrides);

@@ -23,7 +23,6 @@ class ContractFactory extends Factory
             'tenant_id' => Tenant::factory(),
             'tanggal_mulai' => now()->subMonths(3)->toDateString(),
             'tanggal_berakhir' => now()->addMonths(9)->toDateString(),
-            'nilai_sewa' => fake()->numberBetween(12, 60) * 500000,
             'status' => 'Aktif',
             'catatan' => null,
         ];

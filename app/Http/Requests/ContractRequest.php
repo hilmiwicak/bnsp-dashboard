@@ -33,7 +33,6 @@ class ContractRequest extends FormRequest
             'tenant_id' => ['required', 'integer', 'exists:tenants,id'],
             'tanggal_mulai' => ['required', 'date'],
             'tanggal_berakhir' => ['required', 'date', 'after_or_equal:tanggal_mulai'],
-            'nilai_sewa' => ['required', 'integer', 'min:0', 'max:100000000000'],
             'status' => ['required', Rule::in(Contract::STATUS)],
             'catatan' => ['nullable', 'string', 'max:500'],
         ];
@@ -51,7 +50,6 @@ class ContractRequest extends FormRequest
             'tenant_id' => 'tenant',
             'tanggal_mulai' => 'tanggal mulai',
             'tanggal_berakhir' => 'tanggal berakhir',
-            'nilai_sewa' => 'nilai sewa',
         ];
     }
 

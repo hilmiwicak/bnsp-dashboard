@@ -49,7 +49,6 @@ class ContractController extends Controller
                 'nomor_kontrak' => Contract::nextKodeKontrak(),
                 'tanggal_mulai' => now(),
                 'tanggal_berakhir' => now()->addYear(),
-                'nilai_sewa' => 12000000,
                 'status' => 'Aktif',
             ]),
             'tenants' => $this->tenantOptions(),
