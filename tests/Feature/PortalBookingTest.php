@@ -147,6 +147,15 @@ class PortalBookingTest extends TestCase
             ->assertDontSee('PMN-LAIN');
     }
 
+    public function test_the_portal_links_to_the_room_page(): void
+    {
+        $this->actingAs($this->tenantUser())
+            ->get('/portal')
+            ->assertOk()
+            ->assertSee('Pesan Ruang')
+            ->assertSee('Ruang &amp; Fasilitas', false);
+    }
+
     public function test_admins_cannot_open_the_room_page(): void
     {
         $this->actingAs(User::factory()->create())

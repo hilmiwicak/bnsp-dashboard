@@ -14,6 +14,7 @@
 
     $portalItems = [
         ['label' => 'Portal', 'icon' => 'home', 'route' => 'portal', 'active' => 'portal'],
+        ['label' => 'Ruang & Fasilitas', 'icon' => 'building', 'route' => 'portal.ruang', 'active' => 'portal.ruang*'],
     ];
 
     $items = $isAdmin ? $adminItems : $portalItems;
