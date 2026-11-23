@@ -19,7 +19,7 @@ Indonesian and follows a clean, modern dashboard design.
 | **Pemesanan** | Full CRUD for room bookings, with double-booking detection and one-click approval |
 | **Kontrak Sewa** | Full CRUD for tenancy contracts; duration is derived from the contract period |
 | **Jadwal Penggunaan Ruang** | Read-only schedule, built from approved bookings and grouped by date |
-| **Tagihan & Pembayaran** | Full CRUD for monthly invoices, with one-click settlement and an outstanding total |
+| **Tagihan & Pembayaran** | Full CRUD for monthly invoices, with one-click settlement, an outstanding total, and an amount suggested from the tenant's approved bookings |
 | **Laporan** | Yearly report: bookings, paid revenue and outstanding bills per month, plus a booking status breakdown |
 
 Additional behaviour:
@@ -45,6 +45,14 @@ Additional behaviour:
   date are rejected; back-to-back slots are allowed.
 - **Capacity check** — a booking's participant count cannot exceed the capacity of
   the selected room, on both the admin form and the tenant request page.
+- **Room rate snapshot** — each booking freezes the room rate at the moment it is
+  recorded, so later price changes do not rewrite what an old booking is worth.
+- **Invoice suggestion** — *Terbitkan Tagihan* can compute the amount from a
+  tenant's `Disetujui` and `Selesai` bookings in the chosen `YYYY-MM` period,
+  prorating partial hours to the minute and using each booking's snapshotted rate.
+  The total pre-fills *Jumlah Tagihan* and stays editable, and the form warns when
+  that tenant already has an invoice for the period.
+- **Invoice note** — `invoices.catatan` records why a figure was set.
 - **No external chart library** — the bar, pie and line charts are hand-built
   SVG components.
 
