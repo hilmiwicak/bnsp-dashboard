@@ -32,10 +32,14 @@ Additional behaviour:
 - **Tenant login accounts** — creating a tenant from *Data Tenant* also provisions
   a PIC login account with a 12-character temporary password. The password is
   shown once (copyable, masked) and stored only as a hash; an existing unlinked
-  account with the same email is linked instead of duplicated.
+  account with the same email is linked instead of duplicated. The tenant's
+  starting contract is recorded in the same step, so its rent period is filled
+  in from day one.
 - **Room requests** — a tenant sees the available rooms and can request a booking.
   The request is stored as `Menunggu` and appears in the admin's *Pemesanan* list
   for approval; the admin still picks rooms for bookings they create themselves.
+  A request must fall inside the tenant's active contract period — tenants with
+  no contract yet are not restricted.
 - **Booking conflict detection** — overlapping bookings on the same room and
   date are rejected; back-to-back slots are allowed.
 - **No external chart library** — the bar, pie and line charts are hand-built
