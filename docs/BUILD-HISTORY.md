@@ -74,6 +74,12 @@ The mentor's prompts, in order:
     its hash is stored. If an account with that email already exists and is not
     linked to another tenancy, it is linked instead of duplicated. Editing a
     tenant keeps the linked account's name and email in sync.
+25. **Tenant room requests** — tenants get `/portal/ruang`: the available rooms,
+    a request form (room, date, time window, participant count, notes) and their
+    own last ten requests with status. A request is always stored as `Menunggu`
+    with `tenant_id` taken from the account, never from the form, and overlapping
+    slots are rejected by the same rule the admin form uses. The admin approves
+    it from *Pemesanan*; once approved it appears on *Jadwal Penggunaan Ruang*.
 
 ---
 
@@ -99,6 +105,7 @@ from it.
 | Laporan | `GET /laporan` | → `/login` | read | 403 |
 | Portal | `GET /portal` | → `/login` | 403 | read |
 | Pengajuan sewa | `GET /portal/pengajuan` · `POST /portal/pengajuan` | → `/login` | 403 | ↪ `/portal` |
+| Permintaan ruang | `GET /portal/ruang` · `POST /portal/ruang` | → `/login` | 403 | create |
 
 Landing page after login is role-based (`User::homePath()`): admin →
 `/dashboard`, tenant → `/portal`.
@@ -198,7 +205,19 @@ All demo accounts use the password `password`.
    “Keanggotaan aktif”, and a *Data Sewa* card with the tenant code, company,
    PIC, start date, duration and end date.
 
-### 6. Every role — guard and logout
+### 6. Tenant — request a room, admin approves
+
+1. Log in as a tenant with a verified tenancy, then open **Ruang & Fasilitas**
+   in the sidebar.
+2. The page lists the rooms with status **Tersedia**, plus **Permintaan Saya**.
+3. Pick a room, a date from today onward and a time window, then **Kirim
+   Permintaan** — the request appears with an amber *Menunggu* badge.
+4. Submitting an overlapping window on the same room is rejected; a room that is
+   not *Tersedia* cannot be selected.
+5. Log in as admin, open **Pemesanan**, and approve it. The booking now shows on
+   **Jadwal Penggunaan Ruang**, and the tenant sees the green *Disetujui* badge.
+
+### 7. Every role — guard and logout
 
 1. As a tenant, open `/dashboard`, `/tenants`, `/pemesanan` and
    `/laporan` — each returns **403**.
@@ -212,8 +231,8 @@ All demo accounts use the password `password`.
 ## Still open
 
 - **Polish** — styled 403 page, README, login rate limiting.
-- **Tenant self-service** — tenants cannot book a room, view their own invoices,
-  or edit their data; those modules are admin-only.
+- **Tenant self-service** — tenants can request room bookings but cannot view
+  their own invoices or edit their data; those modules are admin-only.
 - **User management** — `users` has no CRUD screen. Accounts come from
   self-registration, the seeder, or automatic provisioning when an admin creates
   a tenant.
