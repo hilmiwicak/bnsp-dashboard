@@ -67,7 +67,7 @@ class InvoiceController extends Controller
                 'nomor_tagihan' => Invoice::nextKodeTagihan(),
                 'tenant_id' => $tenantId,
                 'periode' => $periodeValid ? $periode : now()->format('Y-m'),
-                'jumlah' => $saran['total'] ?? 2500000,
+                'jumlah' => $saran['total'] ?? 0,
                 'jatuh_tempo' => now()->endOfMonth(),
                 'status' => 'Belum Dibayar',
             ]),

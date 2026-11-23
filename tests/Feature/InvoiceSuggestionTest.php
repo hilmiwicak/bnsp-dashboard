@@ -94,6 +94,15 @@ class InvoiceSuggestionTest extends TestCase
             ->assertSee('Sudah ada 1 tagihan');
     }
 
+    public function test_the_amount_starts_at_zero_until_it_is_calculated(): void
+    {
+        $this->actingAs(User::factory()->create())
+            ->get('/tagihan-pembayaran/create')
+            ->assertOk()
+            ->assertSee('id="jumlah"', false)
+            ->assertSee('value="0"', false);
+    }
+
     public function test_an_empty_period_shows_no_suggestion(): void
     {
         $tenant = Tenant::factory()->create();
