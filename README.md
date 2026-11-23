@@ -33,6 +33,9 @@ Additional behaviour:
   a PIC login account with a 12-character temporary password. The password is
   shown once (copyable, masked) and stored only as a hash; an existing unlinked
   account with the same email is linked instead of duplicated.
+- **Room requests** — a tenant sees the available rooms and can request a booking.
+  The request is stored as `Menunggu` and appears in the admin's *Pemesanan* list
+  for approval; the admin still picks rooms for bookings they create themselves.
 - **Booking conflict detection** — overlapping bookings on the same room and
   date are rejected; back-to-back slots are allowed.
 - **No external chart library** — the bar, pie and line charts are hand-built
@@ -45,7 +48,7 @@ Additional behaviour:
 | Role | Lands on | Access |
 |---|---|---|
 | `admin` | `/dashboard` | Full CRUD on tenants, rooms, bookings, contracts and invoices |
-| `tenant` | `/portal` | Read-only view of their own tenancy, plus the tenancy application form |
+| `tenant` | `/portal` | Read-only view of their own tenancy, the tenancy application form, and room booking requests |
 
 `admin` is the pengelola (owner/operator) of the virtual office; `tenant` is the
 company renting space from it. A newly registered account is a `tenant` that is
