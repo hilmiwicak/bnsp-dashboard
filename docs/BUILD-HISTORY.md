@@ -80,6 +80,16 @@ The mentor's prompts, in order:
     with `tenant_id` taken from the account, never from the form, and overlapping
     slots are rejected by the same rule the admin form uses. The admin approves
     it from *Pemesanan*; once approved it appears on *Jadwal Penggunaan Ruang*.
+26. **Requests bounded by the rent period** — a room request must fall inside the
+    tenant's current contract (`Aktif` or `Menunggu Verifikasi`). The rejection
+    message names the exact window. A tenant with *no* current contract — never had
+    one, or its contract already ended — is not restricted, so admin-created
+    tenants are never locked out. Tightening that last case is a known trade-off.
+27. **Starting contract on tenant creation** — *Tambah Tenant* now also asks for
+    *Tanggal Mulai Sewa* and *Durasi Sewa* and records the opening contract in the
+    same transaction, with `nilai_sewa` 0. The contract status follows the tenant
+    status: `Aktif` when the tenant is created active, otherwise `Menunggu
+    Verifikasi`. Editing a tenant never touches its contracts.
 26. **Seeder covers every tenant** — each seeded tenant (`TNT-001` … `TNT-008`)
     now gets a PIC login account on its own PIC email, linked to that tenancy,
     instead of only `TNT-001` having one. The accounts use the demo password
@@ -150,9 +160,10 @@ PIC account on its own email (e.g. `budi@nusantaradigital.co.id` for
 2. Open **Data Tenant** — 8 rows, header reads “8 tenant terdaftar”.
 3. Click **Tambah Tenant**.
 4. Fill the form. *Kode Tenant* is prefilled `TNT-009`; complete *Informasi PIC*,
-   *Informasi Perusahaan* and the tenant *Status*.
+   *Informasi Perusahaan*, the tenant *Status*, then *Detail Sewa* — *Tanggal
+   Mulai Sewa* and *Durasi Sewa* in months.
 5. Submit **Simpan Data Tenant** — back on the list with a green confirmation
-   banner.
+   banner and the new tenant's **Masa Sewa** already filled from the contract.
 6. Type the new PIC name into **Pencarian** — only that row remains. Click
    **Reset** to clear the filter.
 7. Go to **Dashboard** — *Total Tenant* is now 9 and *Tenant Terbaru* lists the
@@ -217,10 +228,11 @@ PIC account on its own email (e.g. `budi@nusantaradigital.co.id` for
 1. Log in as a tenant with a verified tenancy, then open **Ruang & Fasilitas**
    in the sidebar.
 2. The page lists the rooms with status **Tersedia**, plus **Permintaan Saya**.
-3. Pick a room, a date from today onward and a time window, then **Kirim
-   Permintaan** — the request appears with an amber *Menunggu* badge.
+3. Pick a room, a date from today onward and inside your contract period, then
+   **Kirim Permintaan** — the request appears with an amber *Menunggu* badge.
 4. Submitting an overlapping window on the same room is rejected; a room that is
-   not *Tersedia* cannot be selected.
+   not *Tersedia* cannot be selected, and a date outside the contract period is
+   rejected with the allowed window in the message.
 5. Log in as admin, open **Pemesanan**, and approve it. The booking now shows on
    **Jadwal Penggunaan Ruang**, and the tenant sees the green *Disetujui* badge.
 
@@ -247,3 +259,6 @@ PIC account on its own email (e.g. `budi@nusantaradigital.co.id` for
   password shown once at tenant creation is the only credential the admin can
   hand over; a change-password screen is the next step.
 - **Contracts are not linked to a room** — see the relations note above.
+- **Generated contracts carry `nilai_sewa` 0** — both the self-service application
+  and *Tambah Tenant* record the period but not the price; the real rent is set
+  in **Kontrak Sewa**.
