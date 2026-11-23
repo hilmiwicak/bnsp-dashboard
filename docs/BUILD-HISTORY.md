@@ -81,10 +81,11 @@ The mentor's prompts, in order:
     slots are rejected by the same rule the admin form uses. The admin approves
     it from *Pemesanan*; once approved it appears on *Jadwal Penggunaan Ruang*.
 26. **Requests bounded by the rent period** — a room request must fall inside the
-    tenant's current contract (`Aktif` or `Menunggu Verifikasi`). The rejection
-    message names the exact window. A tenant with *no* current contract — never had
-    one, or its contract already ended — is not restricted, so admin-created
-    tenants are never locked out. Tightening that last case is a known trade-off.
+    tenant's current contract (`Aktif` or `Menunggu Verifikasi`), and the rejection
+    message names the exact window. A tenancy whose contracts have all ended
+    (`Berakhir`) or were cancelled (`Dibatalkan`) can no longer request rooms at
+    all — the portal answers *“Masa sewa Anda sudah berakhir”*. Only an account
+    that has never had a contract is unrestricted.
 27. **Starting contract on tenant creation** — *Tambah Tenant* now also asks for
     *Tanggal Mulai Sewa* and *Durasi Sewa* and records the opening contract in the
     same transaction, with `nilai_sewa` 0. The contract status follows the tenant
