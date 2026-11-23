@@ -7,6 +7,7 @@ use App\Models\Invoice;
 use App\Models\Room;
 use App\Models\Tenant;
 use App\Models\User;
+use App\Support\Bulan;
 use App\Support\TagihanRuang;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -94,13 +95,16 @@ class InvoiceSuggestionTest extends TestCase
             ->assertSee('Sudah ada 1 tagihan');
     }
 
-    public function test_the_create_page_explains_the_period_format(): void
+    public function test_the_period_fields_are_month_pickers(): void
     {
+        $bulanIni = Bulan::periode(now()->format('Y-m'));
+
         $this->actingAs(User::factory()->create())
             ->get('/tagihan-pembayaran/create')
             ->assertOk()
-            ->assertSee('YYYY-MM')
-            ->assertSee('beberapa bulan sekaligus');
+            ->assertSee('Dari Bulan')
+            ->assertSee('Sampai Bulan')
+            ->assertSee($bulanIni);
     }
 
     public function test_the_amount_starts_at_zero_until_it_is_calculated(): void

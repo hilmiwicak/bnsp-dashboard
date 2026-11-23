@@ -19,11 +19,10 @@
                     yang sudah disetujui pada bulan tersebut.
                 </p>
                 <p class="mt-2 text-[13px] leading-relaxed text-dash-muted">
-                    Isi <span class="font-medium text-dash-ink">Periode</span> dengan bulan yang sama
-                    seperti tanggal pemesanan, memakai format
-                    <span class="font-mono">YYYY-MM</span> (contoh: <span class="font-mono">2026-11</span>).
-                    Kosongkan <span class="font-medium text-dash-ink">Sampai</span> untuk menagih satu
-                    bulan saja, atau isi dengan bulan terakhir untuk menagih beberapa bulan sekaligus.
+                    <span class="font-medium text-dash-ink">Dari Bulan</span> adalah bulan pertama yang
+                    ditagih, <span class="font-medium text-dash-ink">Sampai Bulan</span> adalah bulan
+                    terakhir. Kosongkan <span class="font-medium text-dash-ink">Sampai Bulan</span> bila
+                    hanya ingin menagih satu bulan. Pilih bulan yang sama dengan tanggal pemesanan.
                 </p>
             </div>
 
@@ -40,18 +39,20 @@
                     placeholder="Pilih tenant"
                 />
 
-                <x-dashboard.form-field
+                <x-dashboard.form-select
                     name="periode"
-                    label="Periode"
-                    type="month"
-                    :value="$filter['periode']"
+                    label="Dari Bulan"
+                    :options="$bulanOpsi"
+                    :selected="$filter['periode']"
+                    placeholder="Pilih bulan"
                 />
 
-                <x-dashboard.form-field
+                <x-dashboard.form-select
                     name="periode_akhir"
-                    label="Sampai"
-                    type="month"
-                    :value="$filter['periode_akhir']"
+                    label="Sampai Bulan"
+                    :options="$bulanOpsi"
+                    :selected="$filter['periode_akhir']"
+                    placeholder="Satu bulan saja"
                 />
 
                 <x-dashboard.button type="submit" class="sm:mb-0">

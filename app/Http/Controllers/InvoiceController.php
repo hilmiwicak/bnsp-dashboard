@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\InvoiceRequest;
 use App\Models\Invoice;
 use App\Models\Tenant;
+use App\Support\Bulan;
 use App\Support\TagihanRuang;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -103,6 +104,10 @@ class InvoiceController extends Controller
             'rentang' => $rentang,
             'totalRentang' => $totalRentang,
             'periodeAda' => $periodeAda,
+            'bulanOpsi' => $this->bulanOptions(
+                $periodeValid ? $periode : null,
+                $akhirValid ? $periodeAkhir : null,
+            ),
             'filter' => [
                 'tenant_id' => $tenantId,
                 'periode' => $periodeValid ? $periode : '',
@@ -195,6 +200,36 @@ class InvoiceController extends Controller
     }
 
     /**
+     * Pilihan bulan untuk pemilih periode, 24 bulan ke belakang dan 12 ke depan.
+     * Nilai yang sedang terpilih selalu ikut disertakan.
+     *
+     * @return Collection<string, string>
+     */
+    private function bulanOptions(?string ...$termasuk): Collection
+    {
+        $kursor = now()->startOfMonth()->subMonths(24);
+        $opsi = [];
+
+        for ($i = 0; $i < 37; $i++) {
+            $nilai = $kursor->format('Y-m');
+            $opsi[$nilai] = Bulan::periode($nilai);
+
+            $kursor = $kursor->copy()->addMonthNoOverflow();
+        }
+
+        foreach ($termasuk as $nilai) {
+            if ($nilai && ! array_key_exists($nilai, $opsi)) {
+                $opsi[$nilai] = Bulan::periode($nilai);
+            }
+        }
+
+        // Urutkan kronologis, termasuk bulan di luar rentang.
+        ksort($opsi);
+
+        return collect($opsi);
+    }
+
+    /**
      * Periode harus berformat YYYY-MM.
      */
     private static function periodeValid(string $periode): bool
@@ -222,6 +257,7 @@ class InvoiceController extends Controller
         return view('invoices.edit', [
             'invoice' => $invoice,
             'tenants' => $this->tenantOptions(),
+            'bulanOpsi' => $this->bulanOptions($invoice->periode),
         ]);
     }
 

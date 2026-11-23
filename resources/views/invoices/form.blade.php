@@ -36,13 +36,12 @@
                 required
             />
 
-            <x-dashboard.form-field
+            <x-dashboard.form-select
                 name="periode"
                 label="Periode"
-                type="month"
-                :value="$invoice->periode"
+                :options="$bulanOpsi"
+                :selected="$invoice->periode"
                 :error="$errors->first('periode')"
-                hint="Satu tagihan hanya untuk satu bulan. Samakan dengan bulan tanggal pemesanan, format YYYY-MM, mis. 2026-11."
                 required
             />
 
