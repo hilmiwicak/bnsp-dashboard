@@ -38,8 +38,9 @@ Additional behaviour:
 - **Room requests** — a tenant sees the available rooms and can request a booking.
   The request is stored as `Menunggu` and appears in the admin's *Pemesanan* list
   for approval; the admin still picks rooms for bookings they create themselves.
-  A request must fall inside the tenant's active contract period — tenants with
-  no contract yet are not restricted.
+  A request must fall inside the tenant's active contract period, and a tenancy
+  whose contract has ended or was cancelled can no longer request rooms. Only an
+  account that has never had a contract is unrestricted.
 - **Booking conflict detection** — overlapping bookings on the same room and
   date are rejected; back-to-back slots are allowed.
 - **No external chart library** — the bar, pie and line charts are hand-built
