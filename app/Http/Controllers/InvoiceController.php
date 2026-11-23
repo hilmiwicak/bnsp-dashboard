@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\InvoiceRequest;
 use App\Models\Invoice;
 use App\Models\Tenant;
+use App\Support\TagihanRuang;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -47,17 +48,36 @@ class InvoiceController extends Controller
     /**
      * Tampilkan formulir tambah tagihan.
      */
-    public function create(): View
+    public function create(Request $request): View
     {
+        $tenantId = $request->integer('tenant_id') ?: null;
+        $periode = trim((string) $request->query('periode'));
+        $periodeValid = preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', $periode) === 1;
+
+        $siapHitung = $tenantId !== null && $periodeValid;
+
+        $saran = $siapHitung ? TagihanRuang::ringkasan($tenantId, $periode) : null;
+
+        $duplikat = $siapHitung
+            ? Invoice::query()->where('tenant_id', $tenantId)->where('periode', $periode)->count()
+            : 0;
+
         return view('invoices.create', [
             'invoice' => new Invoice([
                 'nomor_tagihan' => Invoice::nextKodeTagihan(),
-                'periode' => now()->format('Y-m'),
-                'jumlah' => 2500000,
+                'tenant_id' => $tenantId,
+                'periode' => $periodeValid ? $periode : now()->format('Y-m'),
+                'jumlah' => $saran['total'] ?? 2500000,
                 'jatuh_tempo' => now()->endOfMonth(),
                 'status' => 'Belum Dibayar',
             ]),
             'tenants' => $this->tenantOptions(),
+            'saran' => $saran,
+            'duplikat' => $duplikat,
+            'filter' => [
+                'tenant_id' => $tenantId,
+                'periode' => $periodeValid ? $periode : '',
+            ],
         ]);
     }
 
