@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'kode_pemesanan',
     'tenant_id',
     'room_id',
+    'harga_per_jam',
     'tanggal',
     'jam_mulai',
     'jam_selesai',
@@ -69,6 +70,7 @@ class Booking extends Model
         return [
             'tanggal' => 'date',
             'jumlah_peserta' => 'integer',
+            'harga_per_jam' => 'integer',
         ];
     }
 

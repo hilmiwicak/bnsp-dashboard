@@ -69,7 +69,14 @@ class BookingController extends Controller
      */
     public function store(BookingRequest $request): RedirectResponse
     {
-        $booking = Booking::create($request->validated());
+        $validated = $request->validated();
+
+        // Bekukan tarif ruang saat pemesanan dicatat.
+        $validated['harga_per_jam'] = Room::query()
+            ->whereKey($validated['room_id'])
+            ->value('harga_per_jam');
+
+        $booking = Booking::create($validated);
 
         return redirect()
             ->route('pemesanan.index')
@@ -93,7 +100,16 @@ class BookingController extends Controller
      */
     public function update(BookingRequest $request, Booking $booking): RedirectResponse
     {
-        $booking->update($request->validated());
+        $validated = $request->validated();
+
+        // Tarif mengikuti ruang baru bila ruangnya diganti.
+        if ((int) $validated['room_id'] !== (int) $booking->room_id) {
+            $validated['harga_per_jam'] = Room::query()
+                ->whereKey($validated['room_id'])
+                ->value('harga_per_jam');
+        }
+
+        $booking->update($validated);
 
         return redirect()
             ->route('pemesanan.index')

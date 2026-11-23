@@ -253,6 +253,21 @@ class PortalBookingTest extends TestCase
         $this->assertDatabaseCount('bookings', 1);
     }
 
+    public function test_the_room_rate_is_snapshotted_on_the_request(): void
+    {
+        $room = Room::factory()->create([
+            'status' => 'Tersedia',
+            'kapasitas' => 8,
+            'harga_per_jam' => 175000,
+        ]);
+
+        $this->actingAs($this->tenantUser())
+            ->post('/portal/ruang', $this->payload($room, ['jumlah_peserta' => 2]))
+            ->assertRedirect('/portal/ruang');
+
+        $this->assertSame(175000, Booking::firstOrFail()->harga_per_jam);
+    }
+
     public function test_the_page_only_lists_the_tenant_own_requests(): void
     {
         $tenant = Tenant::factory()->create();

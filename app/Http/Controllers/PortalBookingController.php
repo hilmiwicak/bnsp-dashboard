@@ -51,10 +51,15 @@ class PortalBookingController extends Controller
             return redirect()->route('portal.apply');
         }
 
+        $validated = $request->validated();
+
         // tenant_id dan status selalu ditentukan server, bukan dari input.
         $booking = Booking::create([
-            ...$request->validated(),
+            ...$validated,
             'kode_pemesanan' => Booking::nextKodePemesanan(),
+            'harga_per_jam' => Room::query()
+                ->whereKey($validated['room_id'])
+                ->value('harga_per_jam'),
             'tenant_id' => $tenant->id,
             'status' => 'Menunggu',
         ]);

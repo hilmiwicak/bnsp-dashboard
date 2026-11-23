@@ -247,6 +247,39 @@ class BookingTest extends TestCase
         $this->assertDatabaseCount('bookings', 0);
     }
 
+    public function test_the_room_rate_is_snapshotted_on_the_booking(): void
+    {
+        $room = Room::factory()->create(['kapasitas' => 12, 'harga_per_jam' => 150000]);
+
+        $this->actingAs(User::factory()->create())
+            ->post('/pemesanan', $this->payload(['room_id' => $room->id]))
+            ->assertRedirect('/pemesanan');
+
+        $this->assertSame(150000, Booking::firstOrFail()->harga_per_jam);
+    }
+
+    public function test_changing_the_room_refreshes_the_rate_snapshot(): void
+    {
+        $first = Room::factory()->create(['kapasitas' => 12, 'harga_per_jam' => 100000]);
+        $second = Room::factory()->create(['kapasitas' => 12, 'harga_per_jam' => 250000]);
+
+        $booking = Booking::factory()->create([
+            'room_id' => $first->id,
+            'harga_per_jam' => 100000,
+            'jumlah_peserta' => 2,
+        ]);
+
+        $this->actingAs(User::factory()->create())
+            ->put("/pemesanan/{$booking->id}", $this->payload([
+                'kode_pemesanan' => $booking->kode_pemesanan,
+                'tenant_id' => $booking->tenant_id,
+                'room_id' => $second->id,
+            ]))
+            ->assertRedirect('/pemesanan');
+
+        $this->assertSame(250000, $booking->fresh()->harga_per_jam);
+    }
+
     public function test_the_status_can_be_changed_with_one_click(): void
     {
         $booking = Booking::factory()->create(['status' => 'Menunggu']);
