@@ -8,11 +8,18 @@ use App\Models\Tenant;
 use App\Support\TagihanRuang;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class InvoiceController extends Controller
 {
+    /**
+     * Batas jumlah bulan yang boleh diterbitkan sekaligus.
+     */
+    private const MAKS_BULAN = 24;
+
     /**
      * Tampilkan daftar tagihan beserta pencarian dan filter.
      */
@@ -52,7 +59,10 @@ class InvoiceController extends Controller
     {
         $tenantId = $request->integer('tenant_id') ?: null;
         $periode = trim((string) $request->query('periode'));
-        $periodeValid = preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', $periode) === 1;
+        $periodeAkhir = trim((string) $request->query('periode_akhir'));
+
+        $periodeValid = self::periodeValid($periode);
+        $akhirValid = self::periodeValid($periodeAkhir);
 
         $siapHitung = $tenantId !== null && $periodeValid;
 
@@ -61,6 +71,22 @@ class InvoiceController extends Controller
         $duplikat = $siapHitung
             ? Invoice::query()->where('tenant_id', $tenantId)->where('periode', $periode)->count()
             : 0;
+
+        // Rentang hanya dihitung bila bulan akhir berada setelah bulan awal.
+        $rentang = null;
+        $totalRentang = 0;
+        $periodeAda = [];
+
+        if ($siapHitung && $akhirValid && $periodeAkhir > $periode) {
+            $rentang = TagihanRuang::rentang($tenantId, $periode, $periodeAkhir);
+            $totalRentang = (int) array_sum(array_column($rentang, 'total'));
+
+            $periodeAda = Invoice::query()
+                ->where('tenant_id', $tenantId)
+                ->whereIn('periode', array_column($rentang, 'periode'))
+                ->pluck('periode')
+                ->all();
+        }
 
         return view('invoices.create', [
             'invoice' => new Invoice([
@@ -74,11 +100,106 @@ class InvoiceController extends Controller
             'tenants' => $this->tenantOptions(),
             'saran' => $saran,
             'duplikat' => $duplikat,
+            'rentang' => $rentang,
+            'totalRentang' => $totalRentang,
+            'periodeAda' => $periodeAda,
             'filter' => [
                 'tenant_id' => $tenantId,
                 'periode' => $periodeValid ? $periode : '',
+                'periode_akhir' => $akhirValid ? $periodeAkhir : '',
             ],
         ]);
+    }
+
+    /**
+     * Terbitkan satu tagihan untuk setiap bulan pada rentang yang dipilih.
+     */
+    public function generate(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'tenant_id' => ['required', 'integer', 'exists:tenants,id'],
+            'periode_awal' => ['required', 'string', 'regex:/^\d{4}-(0[1-9]|1[0-2])$/'],
+            'periode_akhir' => [
+                'required', 'string', 'regex:/^\d{4}-(0[1-9]|1[0-2])$/',
+                'after_or_equal:periode_awal',
+            ],
+            'catatan' => ['nullable', 'string', 'max:500'],
+        ], [
+            'periode_akhir.after_or_equal' => 'Periode akhir tidak boleh sebelum periode awal.',
+        ]);
+
+        $awal = Carbon::createFromFormat('Y-m', $validated['periode_awal'])->startOfMonth();
+        $akhir = Carbon::createFromFormat('Y-m', $validated['periode_akhir'])->startOfMonth();
+
+        $jumlahBulan = (($akhir->year - $awal->year) * 12) + ($akhir->month - $awal->month) + 1;
+
+        if ($jumlahBulan > self::MAKS_BULAN) {
+            return back()->withErrors([
+                'periode_akhir' => 'Rentang maksimal '.self::MAKS_BULAN.' bulan sekali terbit.',
+            ]);
+        }
+
+        $dibuat = 0;
+        $sudahAda = 0;
+        $kosong = 0;
+
+        DB::transaction(function () use ($validated, $awal, $jumlahBulan, &$dibuat, &$sudahAda, &$kosong) {
+            for ($i = 0; $i < $jumlahBulan; $i++) {
+                $bulan = $awal->copy()->addMonthsNoOverflow($i);
+                $periode = $bulan->format('Y-m');
+
+                $ada = Invoice::query()
+                    ->where('tenant_id', $validated['tenant_id'])
+                    ->where('periode', $periode)
+                    ->exists();
+
+                if ($ada) {
+                    $sudahAda++;
+
+                    continue;
+                }
+
+                $ringkasan = TagihanRuang::ringkasan((int) $validated['tenant_id'], $periode);
+
+                if ($ringkasan['total'] <= 0) {
+                    $kosong++;
+
+                    continue;
+                }
+
+                Invoice::create([
+                    'nomor_tagihan' => Invoice::nextKodeTagihan(),
+                    'tenant_id' => $validated['tenant_id'],
+                    'periode' => $periode,
+                    'jumlah' => $ringkasan['total'],
+                    'jatuh_tempo' => $bulan->copy()->endOfMonth()->toDateString(),
+                    'status' => 'Belum Dibayar',
+                    'catatan' => $validated['catatan'] ?? null,
+                ]);
+
+                $dibuat++;
+            }
+        });
+
+        $pesan = "{$dibuat} tagihan diterbitkan.";
+
+        if ($sudahAda > 0) {
+            $pesan .= " {$sudahAda} bulan dilewati karena sudah ada tagihan.";
+        }
+
+        if ($kosong > 0) {
+            $pesan .= " {$kosong} bulan dilewati karena tidak ada pemesanan.";
+        }
+
+        return redirect()->route('tagihan-pembayaran.index')->with('status', $pesan);
+    }
+
+    /**
+     * Periode harus berformat YYYY-MM.
+     */
+    private static function periodeValid(string $periode): bool
+    {
+        return preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', $periode) === 1;
     }
 
     /**

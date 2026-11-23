@@ -99,8 +99,8 @@ class InvoiceSuggestionTest extends TestCase
         $this->actingAs(User::factory()->create())
             ->get('/tagihan-pembayaran/create')
             ->assertOk()
-            ->assertSee('Satu tagihan hanya mencakup satu bulan')
-            ->assertSee('YYYY-MM');
+            ->assertSee('YYYY-MM')
+            ->assertSee('beberapa bulan sekaligus');
     }
 
     public function test_the_amount_starts_at_zero_until_it_is_calculated(): void

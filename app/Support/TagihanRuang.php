@@ -57,6 +57,29 @@ class TagihanRuang
     }
 
     /**
+     * Ringkasan per bulan untuk sebuah rentang periode, urut dari bulan awal.
+     *
+     * @return list<array{periode: string, pemesanan: int, menit: int, total: int}>
+     */
+    public static function rentang(int $tenantId, string $awal, string $akhir): array
+    {
+        $kursor = Carbon::createFromFormat('Y-m', $awal)->startOfMonth();
+        $batas = Carbon::createFromFormat('Y-m', $akhir)->startOfMonth();
+
+        $hasil = [];
+
+        while ($kursor->lessThanOrEqualTo($batas)) {
+            $periode = $kursor->format('Y-m');
+
+            $hasil[] = ['periode' => $periode] + self::ringkasan($tenantId, $periode);
+
+            $kursor = $kursor->copy()->addMonthsNoOverflow(1);
+        }
+
+        return $hasil;
+    }
+
+    /**
      * Durasi satu pemesanan dalam menit.
      */
     public static function menit(Booking $booking): int

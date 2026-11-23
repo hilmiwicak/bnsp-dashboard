@@ -59,6 +59,10 @@ Route::middleware('auth')->group(function () {
         Route::patch('tagihan-pembayaran/{invoice}/lunas', [InvoiceController::class, 'markPaid'])
             ->name('tagihan-pembayaran.lunas');
 
+        // Terbitkan tagihan untuk beberapa bulan sekaligus.
+        Route::post('tagihan-pembayaran/generate', [InvoiceController::class, 'generate'])
+            ->name('tagihan-pembayaran.generate');
+
         Route::get('laporan', [ReportController::class, 'index'])->name('laporan.index');
     });
 
