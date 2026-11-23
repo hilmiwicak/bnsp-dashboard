@@ -43,6 +43,8 @@ Additional behaviour:
   account that has never had a contract is unrestricted.
 - **Booking conflict detection** — overlapping bookings on the same room and
   date are rejected; back-to-back slots are allowed.
+- **Capacity check** — a booking's participant count cannot exceed the capacity of
+  the selected room, on both the admin form and the tenant request page.
 - **No external chart library** — the bar, pie and line charts are hand-built
   SVG components.
 
