@@ -112,8 +112,10 @@
                             name="jam_mulai"
                             label="Jam Mulai"
                             type="time"
+                            step="1800"
                             value="09:00"
                             :error="$errors->first('jam_mulai')"
+                            hint="Pilih kelipatan 30 menit."
                             required
                         />
 
@@ -121,8 +123,10 @@
                             name="jam_selesai"
                             label="Jam Selesai"
                             type="time"
+                            step="1800"
                             value="10:00"
                             :error="$errors->first('jam_selesai')"
+                            hint="Pilih kelipatan 30 menit."
                             required
                         />
 

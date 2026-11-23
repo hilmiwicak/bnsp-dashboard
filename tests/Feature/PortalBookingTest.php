@@ -268,6 +268,49 @@ class PortalBookingTest extends TestCase
         $this->assertSame(175000, Booking::firstOrFail()->harga_per_jam);
     }
 
+    public function test_booking_times_must_be_in_half_hour_steps(): void
+    {
+        $room = $this->room();
+
+        $this->actingAs($this->tenantUser())
+            ->post('/portal/ruang', $this->payload($room, [
+                'jam_mulai' => '10:01',
+                'jam_selesai' => '11:00',
+            ]))
+            ->assertSessionHasErrors(['jam_mulai']);
+
+        $this->assertDatabaseCount('bookings', 0);
+    }
+
+    public function test_the_end_time_must_also_be_in_half_hour_steps(): void
+    {
+        $room = $this->room();
+
+        $this->actingAs($this->tenantUser())
+            ->post('/portal/ruang', $this->payload($room, [
+                'jam_mulai' => '10:00',
+                'jam_selesai' => '10:31',
+            ]))
+            ->assertSessionHasErrors(['jam_selesai']);
+
+        $this->assertDatabaseCount('bookings', 0);
+    }
+
+    public function test_half_hour_slots_are_accepted(): void
+    {
+        $room = $this->room();
+
+        $this->actingAs($this->tenantUser())
+            ->post('/portal/ruang', $this->payload($room, [
+                'jam_mulai' => '10:30',
+                'jam_selesai' => '11:30',
+            ]))
+            ->assertRedirect('/portal/ruang')
+            ->assertSessionHasNoErrors();
+
+        $this->assertDatabaseCount('bookings', 1);
+    }
+
     public function test_the_page_only_lists_the_tenant_own_requests(): void
     {
         $tenant = Tenant::factory()->create();

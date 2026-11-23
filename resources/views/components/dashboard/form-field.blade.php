@@ -40,6 +40,7 @@
             type="{{ $type }}"
             value="{{ $current }}"
             @if ($placeholder) placeholder="{{ $placeholder }}" @endif
+            @if ($attributes->get('step')) step="{{ $attributes->get('step') }}" @endif
             @if ($error) aria-invalid="true" aria-describedby="{{ $name }}-error" @endif
             class="{{ $base }} {{ $tone }} h-[50px]"
         />
