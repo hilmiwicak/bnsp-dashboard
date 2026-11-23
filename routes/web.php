@@ -5,6 +5,7 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\PortalBookingController;
 use App\Http\Controllers\PortalController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoomController;
@@ -68,6 +69,10 @@ Route::middleware('auth')->group(function () {
         // Pengajuan sewa mandiri bagi tenant yang belum punya data tenant.
         Route::get('/portal/pengajuan', [TenantApplicationController::class, 'create'])->name('portal.apply');
         Route::post('/portal/pengajuan', [TenantApplicationController::class, 'store'])->name('portal.apply.store');
+
+        // Permintaan pemesanan ruang dari tenant, disetujui oleh admin.
+        Route::get('/portal/ruang', [PortalBookingController::class, 'create'])->name('portal.ruang');
+        Route::post('/portal/ruang', [PortalBookingController::class, 'store'])->name('portal.ruang.store');
     });
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

@@ -1,0 +1,185 @@
+<?php
+
+namespace Tests\Feature;
+
+use App\Models\Booking;
+use App\Models\Room;
+use App\Models\Tenant;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
+
+class PortalBookingTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function test_a_tenant_can_open_the_room_page(): void
+    {
+        $room = Room::factory()->create([
+            'nama_ruang' => 'Ruang Melati',
+            'status' => 'Tersedia',
+        ]);
+
+        $this->actingAs($this->tenantUser())
+            ->get('/portal/ruang')
+            ->assertOk()
+            ->assertSee('Ruang Tersedia')
+            ->assertSee('Ruang Melati')
+            ->assertSee('Ajukan Pemesanan')
+            ->assertSee('Permintaan Saya');
+    }
+
+    public function test_a_tenant_without_a_tenancy_is_sent_to_the_application_form(): void
+    {
+        $this->actingAs(User::factory()->tenant()->create())
+            ->get('/portal/ruang')
+            ->assertRedirect('/portal/pengajuan');
+    }
+
+    public function test_a_tenant_can_request_a_room(): void
+    {
+        $room = Room::factory()->create(['status' => 'Tersedia']);
+        $tenant = Tenant::factory()->create();
+
+        $this->actingAs($this->tenantUser($tenant))
+            ->post('/portal/ruang', $this->payload($room))
+            ->assertRedirect('/portal/ruang')
+            ->assertSessionHas('status');
+
+        $booking = Booking::where('room_id', $room->id)->firstOrFail();
+
+        $this->assertSame($tenant->id, $booking->tenant_id);
+        $this->assertSame('Menunggu', $booking->status);
+        $this->assertSame('PMN-001', $booking->kode_pemesanan);
+    }
+
+    public function test_the_tenant_id_cannot_be_spoofed(): void
+    {
+        $room = Room::factory()->create(['status' => 'Tersedia']);
+        $tenant = Tenant::factory()->create();
+        $other = Tenant::factory()->create();
+
+        $this->actingAs($this->tenantUser($tenant))
+            ->post('/portal/ruang', $this->payload($room) + ['tenant_id' => $other->id])
+            ->assertRedirect('/portal/ruang');
+
+        $this->assertSame($tenant->id, Booking::firstOrFail()->tenant_id);
+    }
+
+    public function test_the_request_is_always_pending_approval(): void
+    {
+        $room = Room::factory()->create(['status' => 'Tersedia']);
+
+        $this->actingAs($this->tenantUser())
+            ->post('/portal/ruang', $this->payload($room) + ['status' => 'Disetujui'])
+            ->assertRedirect('/portal/ruang');
+
+        $this->assertSame('Menunggu', Booking::firstOrFail()->status);
+    }
+
+    public function test_an_overlapping_request_is_rejected(): void
+    {
+        $room = Room::factory()->create(['status' => 'Tersedia']);
+        $tenant = Tenant::factory()->create();
+
+        Booking::factory()->create([
+            'tenant_id' => $tenant->id,
+            'room_id' => $room->id,
+            'tanggal' => now()->addDay()->toDateString(),
+            'jam_mulai' => '09:00',
+            'jam_selesai' => '10:00',
+            'status' => 'Menunggu',
+        ]);
+
+        $this->actingAs($this->tenantUser($tenant))
+            ->post('/portal/ruang', $this->payload($room, [
+                'jam_mulai' => '09:30',
+                'jam_selesai' => '10:30',
+            ]))
+            ->assertSessionHasErrors(['jam_mulai']);
+
+        $this->assertSame(1, Booking::count());
+    }
+
+    public function test_a_room_that_is_not_available_cannot_be_requested(): void
+    {
+        $room = Room::factory()->create(['status' => 'Perbaikan']);
+
+        $this->actingAs($this->tenantUser())
+            ->post('/portal/ruang', $this->payload($room))
+            ->assertSessionHasErrors(['room_id']);
+
+        $this->assertDatabaseCount('bookings', 0);
+    }
+
+    public function test_the_date_cannot_be_in_the_past(): void
+    {
+        $room = Room::factory()->create(['status' => 'Tersedia']);
+
+        $this->actingAs($this->tenantUser())
+            ->post('/portal/ruang', $this->payload($room, [
+                'tanggal' => now()->subDay()->toDateString(),
+            ]))
+            ->assertSessionHasErrors(['tanggal']);
+
+        $this->assertDatabaseCount('bookings', 0);
+    }
+
+    public function test_the_page_only_lists_the_tenant_own_requests(): void
+    {
+        $tenant = Tenant::factory()->create();
+        $other = Tenant::factory()->create();
+
+        Booking::factory()->create([
+            'tenant_id' => $tenant->id,
+            'kode_pemesanan' => 'PMN-MILIK',
+        ]);
+
+        Booking::factory()->create([
+            'tenant_id' => $other->id,
+            'kode_pemesanan' => 'PMN-LAIN',
+        ]);
+
+        $this->actingAs($this->tenantUser($tenant))
+            ->get('/portal/ruang')
+            ->assertOk()
+            ->assertSee('PMN-MILIK')
+            ->assertDontSee('PMN-LAIN');
+    }
+
+    public function test_admins_cannot_open_the_room_page(): void
+    {
+        $this->actingAs(User::factory()->create())
+            ->get('/portal/ruang')
+            ->assertForbidden();
+    }
+
+    public function test_guests_are_redirected_to_login(): void
+    {
+        $this->get('/portal/ruang')->assertRedirect('/login');
+        $this->post('/portal/ruang', [])->assertRedirect('/login');
+    }
+
+    private function tenantUser(?Tenant $tenant = null): User
+    {
+        return User::factory()->tenant()->create([
+            'tenant_id' => ($tenant ?? Tenant::factory()->create())->id,
+        ]);
+    }
+
+    /**
+     * @param  array<string, mixed>  $overrides
+     * @return array<string, mixed>
+     */
+    private function payload(Room $room, array $overrides = []): array
+    {
+        return array_merge([
+            'room_id' => $room->id,
+            'tanggal' => now()->addDay()->toDateString(),
+            'jam_mulai' => '13:00',
+            'jam_selesai' => '14:00',
+            'jumlah_peserta' => 4,
+            'catatan' => 'Butuh proyektor.',
+        ], $overrides);
+    }
+}
