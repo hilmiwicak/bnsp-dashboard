@@ -75,14 +75,27 @@ class PortalBookingRequest extends FormRequest
     }
 
     /**
-     * Pesan galat bila tanggal di luar periode sewa, atau null bila tidak ada
-     * kontrak sama sekali. Tenant tanpa kontrak tidak dibatasi.
+     * Pesan galat bila tanggal di luar periode sewa, atau null bila permintaan
+     * masih boleh diproses. Tenant tanpa kontrak sama sekali tidak dibatasi;
+     * tenant yang kontraknya sudah berakhir atau dibatalkan tidak boleh memesan.
      */
     private function periodErrorMessage(): ?string
     {
-        $contract = $this->user()?->tenant?->currentContract;
+        $tenant = $this->user()?->tenant;
+
+        if (! $tenant) {
+            return null;
+        }
+
+        $contract = $tenant->currentContract;
 
         if (! $contract) {
+            // Tidak ada kontrak yang berlaku. Bila tenant pernah punya kontrak,
+            // berarti masa sewanya sudah berakhir atau dibatalkan.
+            if ($tenant->contracts()->exists()) {
+                return 'Masa sewa Anda sudah berakhir. Hubungi admin kantor virtual untuk memperpanjang.';
+            }
+
             return null;
         }
 

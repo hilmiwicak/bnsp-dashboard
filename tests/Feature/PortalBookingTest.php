@@ -169,6 +169,51 @@ class PortalBookingTest extends TestCase
         $this->assertDatabaseCount('bookings', 0);
     }
 
+    public function test_a_tenant_whose_contract_ended_cannot_request_a_room(): void
+    {
+        $room = Room::factory()->create(['status' => 'Tersedia']);
+        $tenant = Tenant::factory()->create();
+
+        $this->contractFor($tenant, now()->subYear(), now()->subMonth(), 'Berakhir');
+
+        $this->actingAs($this->tenantUser($tenant))
+            ->post('/portal/ruang', $this->payload($room))
+            ->assertSessionHasErrors(['tanggal']);
+
+        $this->assertDatabaseCount('bookings', 0);
+    }
+
+    public function test_a_tenant_whose_contract_was_cancelled_cannot_request_a_room(): void
+    {
+        $room = Room::factory()->create(['status' => 'Tersedia']);
+        $tenant = Tenant::factory()->create();
+
+        $this->contractFor($tenant, now()->subMonth(), now()->addYear(), 'Dibatalkan');
+
+        $this->actingAs($this->tenantUser($tenant))
+            ->post('/portal/ruang', $this->payload($room))
+            ->assertSessionHasErrors(['tanggal']);
+
+        $this->assertDatabaseCount('bookings', 0);
+    }
+
+    public function test_a_renewed_tenant_can_still_request_a_room(): void
+    {
+        $room = Room::factory()->create(['status' => 'Tersedia']);
+        $tenant = Tenant::factory()->create();
+
+        // Kontrak lama sudah berakhir, lalu diperpanjang.
+        $this->contractFor($tenant, now()->subYears(2), now()->subYear(), 'Berakhir');
+        $this->contractFor($tenant);
+
+        $this->actingAs($this->tenantUser($tenant))
+            ->post('/portal/ruang', $this->payload($room))
+            ->assertRedirect('/portal/ruang')
+            ->assertSessionHasNoErrors();
+
+        $this->assertDatabaseCount('bookings', 1);
+    }
+
     public function test_a_tenant_without_a_contract_is_not_restricted(): void
     {
         $room = Room::factory()->create(['status' => 'Tersedia']);
@@ -238,13 +283,17 @@ class PortalBookingTest extends TestCase
     /**
      * Kontrak aktif yang berlaku sebagai periode sewa tenant.
      */
-    private function contractFor(Tenant $tenant, $mulai = null, $berakhir = null): Contract
-    {
+    private function contractFor(
+        Tenant $tenant,
+        $mulai = null,
+        $berakhir = null,
+        string $status = 'Aktif',
+    ): Contract {
         return Contract::factory()->create([
             'tenant_id' => $tenant->id,
             'tanggal_mulai' => ($mulai ?? now()->subMonth())->toDateString(),
             'tanggal_berakhir' => ($berakhir ?? now()->addYear())->toDateString(),
-            'status' => 'Aktif',
+            'status' => $status,
         ]);
     }
 
