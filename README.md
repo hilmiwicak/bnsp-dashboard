@@ -136,6 +136,9 @@ All demo accounts use the password `password`.
 | `admin@example.com` | Admin | Full management area |
 | `tenant@example.com` | Tenant | Linked to tenant `TNT-001` |
 | `pendaftar@example.com` | Tenant | Not linked to a tenancy — can submit an application |
+| PIC email of each seeded tenant | Tenant | Every seeded tenant (`TNT-001` … `TNT-008`) also gets an account for its PIC email, linked to that tenancy |
+
+So `siti@karyamandiri.id` (PIC of `TNT-002`) can log in straight to `/portal`, and so on for the other seeded tenants.
 
 ---
 

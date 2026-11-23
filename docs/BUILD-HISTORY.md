@@ -80,6 +80,11 @@ The mentor's prompts, in order:
     with `tenant_id` taken from the account, never from the form, and overlapping
     slots are rejected by the same rule the admin form uses. The admin approves
     it from *Pemesanan*; once approved it appears on *Jadwal Penggunaan Ruang*.
+26. **Seeder covers every tenant** — each seeded tenant (`TNT-001` … `TNT-008`)
+    now gets a PIC login account on its own PIC email, linked to that tenancy,
+    instead of only `TNT-001` having one. The accounts use the demo password
+    `password`, and re-running the seeder matches on email so nothing is
+    duplicated and no existing password is overwritten.
 
 ---
 
@@ -135,7 +140,9 @@ php artisan migrate:fresh --seed
 
 That gives 8 tenants, 6 rooms, 6 bookings, 7 contracts and 24 invoices, so the
 next generated codes are `TNT-009`, `RNG-007`, `PMN-007`, `KTR-008`, `INV-025`.
-All demo accounts use the password `password`.
+All demo accounts use the password `password`. Every seeded tenant also has a
+PIC account on its own email (e.g. `budi@nusantaradigital.co.id` for
+`TNT-001`), so any of them can log in and see their portal.
 
 ### 1. Admin — add a tenant
 
