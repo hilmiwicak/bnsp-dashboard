@@ -27,6 +27,10 @@ class TenantRequest extends FormRequest
     {
         $ignoreId = $this->tenantBeingUpdated()?->id;
 
+        // Periode sewa hanya diminta saat menambah tenant baru; kontrak
+        // berikutnya dikelola lewat modul Kontrak Sewa.
+        $creating = $this->tenantBeingUpdated() === null;
+
         return [
             'kode_tenant' => [
                 'required', 'string', 'max:20',
@@ -43,6 +47,8 @@ class TenantRequest extends FormRequest
                 $this->emailMustNotBelongToAnotherAccount(...),
             ],
             'status' => ['required', Rule::in(Tenant::STATUS)],
+            'tanggal_mulai_sewa' => $creating ? ['required', 'date'] : ['nullable'],
+            'durasi_sewa' => $creating ? ['required', 'integer', 'min:1', 'max:120'] : ['nullable'],
         ];
     }
 
@@ -58,6 +64,8 @@ class TenantRequest extends FormRequest
             'nama_perusahaan' => 'nama perusahaan',
             'nib_npwp' => 'NIB/NPWP',
             'no_hp' => 'nomor HP',
+            'tanggal_mulai_sewa' => 'tanggal mulai sewa',
+            'durasi_sewa' => 'durasi sewa',
         ];
     }
 

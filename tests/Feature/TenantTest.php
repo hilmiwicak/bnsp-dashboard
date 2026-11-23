@@ -76,7 +76,8 @@ class TenantTest extends TestCase
             ->get('/tenants/create')
             ->assertOk()
             ->assertSee('Informasi PIC')
-            ->assertSee('Status Keanggotaan')
+            ->assertSee('Detail Sewa')
+            ->assertSee('Tanggal Mulai Sewa')
             ->assertSee('value="'.Tenant::nextKodeTenant().'"', false);
 
         $this->actingAs($user)
@@ -195,6 +196,57 @@ class TenantTest extends TestCase
         $this->assertDatabaseMissing('tenants', ['kode_tenant' => 'TNT-100']);
     }
 
+    public function test_creating_a_tenant_also_records_its_contract(): void
+    {
+        $this->actingAs(User::factory()->create())
+            ->post('/tenants', $this->payload([
+                'tanggal_mulai_sewa' => '2026-02-01',
+                'durasi_sewa' => 12,
+                'status' => 'Aktif',
+            ]))
+            ->assertRedirect('/tenants');
+
+        $tenant = Tenant::where('kode_tenant', 'TNT-100')->firstOrFail();
+        $contract = $tenant->contracts()->firstOrFail();
+
+        $this->assertSame('2026-02-01', $contract->tanggal_mulai->toDateString());
+        $this->assertSame('2027-02-01', $contract->tanggal_berakhir->toDateString());
+        $this->assertSame('Aktif', $contract->status);
+        $this->assertSame('KTR-001', $contract->nomor_kontrak);
+    }
+
+    public function test_a_pending_tenant_starts_with_a_pending_contract(): void
+    {
+        $this->actingAs(User::factory()->create())
+            ->post('/tenants', $this->payload(['status' => 'Menunggu Verifikasi']))
+            ->assertRedirect('/tenants');
+
+        $contract = Tenant::where('kode_tenant', 'TNT-100')->firstOrFail()->contracts()->firstOrFail();
+
+        $this->assertSame('Menunggu Verifikasi', $contract->status);
+    }
+
+    public function test_updating_a_tenant_does_not_touch_its_contracts(): void
+    {
+        $tenant = Tenant::factory()->create();
+
+        $contract = Contract::factory()->create([
+            'tenant_id' => $tenant->id,
+            'nomor_kontrak' => 'KTR-TETAP',
+        ]);
+
+        $this->actingAs(User::factory()->create())
+            ->put("/tenants/{$tenant->id}", $this->payload([
+                'kode_tenant' => $tenant->kode_tenant,
+                'email' => $tenant->email,
+                'durasi_sewa' => 6,
+            ]))
+            ->assertRedirect('/tenants');
+
+        $this->assertSame('KTR-TETAP', $contract->fresh()->nomor_kontrak);
+        $this->assertSame(1, $tenant->contracts()->count());
+    }
+
     public function test_store_validates_required_fields(): void
     {
         $this->actingAs(User::factory()->create())
@@ -207,6 +259,8 @@ class TenantTest extends TestCase
                 'no_hp',
                 'email',
                 'status',
+                'tanggal_mulai_sewa',
+                'durasi_sewa',
             ]);
 
         $this->assertDatabaseCount('tenants', 0);
@@ -384,6 +438,8 @@ class TenantTest extends TestCase
             'no_hp' => '081200011122',
             'email' => 'rina@ujicoba.id',
             'status' => 'Aktif',
+            'tanggal_mulai_sewa' => now()->toDateString(),
+            'durasi_sewa' => 12,
         ], $overrides);
     }
 }

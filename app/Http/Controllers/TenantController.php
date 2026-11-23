@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Enums\UserRole;
 use App\Http\Requests\TenantRequest;
+use App\Models\Contract;
 use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -61,16 +64,32 @@ class TenantController extends Controller
         $validated = $request->validated();
         $password = null;
 
-        $tenant = DB::transaction(function () use ($validated, &$password) {
-            $tenant = Tenant::create($validated);
+        // Periode sewa berakhir di tabel kontrak, bukan di tabel tenant.
+        $periode = Arr::only($validated, ['tanggal_mulai_sewa', 'durasi_sewa']);
+        $data = Arr::except($validated, ['tanggal_mulai_sewa', 'durasi_sewa']);
 
-            $account = User::query()->where('email', $validated['email'])->first();
+        $tenant = DB::transaction(function () use ($data, $periode, &$password) {
+            $tenant = Tenant::create($data);
+
+            // Kontrak awal ikut dicatat agar periode sewa langsung terisi.
+            $mulai = Carbon::parse($periode['tanggal_mulai_sewa']);
+
+            $tenant->contracts()->create([
+                'nomor_kontrak' => Contract::nextKodeKontrak(),
+                'tanggal_mulai' => $mulai,
+                'tanggal_berakhir' => $mulai->copy()->addMonths((int) $periode['durasi_sewa']),
+                'nilai_sewa' => 0,
+                // Kontrak mengikuti status tenant saat dicatat.
+                'status' => $data['status'] === 'Aktif' ? 'Aktif' : 'Menunggu Verifikasi',
+            ]);
+
+            $account = User::query()->where('email', $data['email'])->first();
 
             if ($account) {
                 // PIC sudah punya akun (mendaftar sendiri lebih dulu): hubungkan
                 // ke data tenant ini tanpa mengganti password lamanya.
                 $account->update([
-                    'name' => $validated['nama_pic'],
+                    'name' => $data['nama_pic'],
                     'role' => UserRole::Tenant,
                     'tenant_id' => $tenant->id,
                 ]);
@@ -78,8 +97,8 @@ class TenantController extends Controller
                 $password = Str::password(12, symbols: false);
 
                 User::create([
-                    'name' => $validated['nama_pic'],
-                    'email' => $validated['email'],
+                    'name' => $data['nama_pic'],
+                    'email' => $data['email'],
                     'password' => password_hash($password, PASSWORD_DEFAULT),
                     'role' => UserRole::Tenant,
                     'tenant_id' => $tenant->id,
@@ -101,7 +120,7 @@ class TenantController extends Controller
 
         return $redirect->with('kredensial', [
             'kode_tenant' => $tenant->kode_tenant,
-            'email' => $validated['email'],
+            'email' => $data['email'],
             'password' => $password,
         ]);
     }
@@ -121,7 +140,7 @@ class TenantController extends Controller
     {
         $previousEmail = $tenant->email;
 
-        $tenant->update($request->validated());
+        $tenant->update(Arr::except($request->validated(), ['tanggal_mulai_sewa', 'durasi_sewa']));
 
         // Sinkronkan akun login PIC utama saja — akun PIC lain yang berbagi
         // tenancy ini tidak boleh ikut berubah (dan akan bentrok emailnya).

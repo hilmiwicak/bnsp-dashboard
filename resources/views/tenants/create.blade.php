@@ -10,6 +10,7 @@
             'action' => route('tenants.store'),
             'method' => 'POST',
             'submitLabel' => 'Simpan Data Tenant',
+            'showPeriodRequest' => true,
         ])
     </div>
 </x-layouts.dashboard>
