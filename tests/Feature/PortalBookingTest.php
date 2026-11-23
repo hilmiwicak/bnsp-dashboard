@@ -19,6 +19,7 @@ class PortalBookingTest extends TestCase
         $room = Room::factory()->create([
             'nama_ruang' => 'Ruang Melati',
             'status' => 'Tersedia',
+            'kapasitas' => 8,
         ]);
 
         $this->actingAs($this->tenantUser())
@@ -39,7 +40,7 @@ class PortalBookingTest extends TestCase
 
     public function test_a_tenant_can_request_a_room(): void
     {
-        $room = Room::factory()->create(['status' => 'Tersedia']);
+        $room = $this->room();
         $tenant = Tenant::factory()->create();
 
         $this->actingAs($this->tenantUser($tenant))
@@ -56,7 +57,7 @@ class PortalBookingTest extends TestCase
 
     public function test_the_tenant_id_cannot_be_spoofed(): void
     {
-        $room = Room::factory()->create(['status' => 'Tersedia']);
+        $room = $this->room();
         $tenant = Tenant::factory()->create();
         $other = Tenant::factory()->create();
 
@@ -69,7 +70,7 @@ class PortalBookingTest extends TestCase
 
     public function test_the_request_is_always_pending_approval(): void
     {
-        $room = Room::factory()->create(['status' => 'Tersedia']);
+        $room = $this->room();
 
         $this->actingAs($this->tenantUser())
             ->post('/portal/ruang', $this->payload($room) + ['status' => 'Disetujui'])
@@ -80,7 +81,7 @@ class PortalBookingTest extends TestCase
 
     public function test_an_overlapping_request_is_rejected(): void
     {
-        $room = Room::factory()->create(['status' => 'Tersedia']);
+        $room = $this->room();
         $tenant = Tenant::factory()->create();
 
         Booking::factory()->create([
@@ -104,7 +105,7 @@ class PortalBookingTest extends TestCase
 
     public function test_a_room_that_is_not_available_cannot_be_requested(): void
     {
-        $room = Room::factory()->create(['status' => 'Perbaikan']);
+        $room = $this->room(status: 'Perbaikan');
 
         $this->actingAs($this->tenantUser())
             ->post('/portal/ruang', $this->payload($room))
@@ -115,7 +116,7 @@ class PortalBookingTest extends TestCase
 
     public function test_the_date_cannot_be_in_the_past(): void
     {
-        $room = Room::factory()->create(['status' => 'Tersedia']);
+        $room = $this->room();
 
         $this->actingAs($this->tenantUser())
             ->post('/portal/ruang', $this->payload($room, [
@@ -128,7 +129,7 @@ class PortalBookingTest extends TestCase
 
     public function test_a_request_within_the_contract_period_is_accepted(): void
     {
-        $room = Room::factory()->create(['status' => 'Tersedia']);
+        $room = $this->room();
         $tenant = Tenant::factory()->create();
 
         $this->contractFor($tenant);
@@ -143,7 +144,7 @@ class PortalBookingTest extends TestCase
 
     public function test_a_request_after_the_contract_ends_is_rejected(): void
     {
-        $room = Room::factory()->create(['status' => 'Tersedia']);
+        $room = $this->room();
         $tenant = Tenant::factory()->create();
 
         $this->contractFor($tenant, now()->subYear(), now()->subDay());
@@ -157,7 +158,7 @@ class PortalBookingTest extends TestCase
 
     public function test_a_request_before_the_contract_starts_is_rejected(): void
     {
-        $room = Room::factory()->create(['status' => 'Tersedia']);
+        $room = $this->room();
         $tenant = Tenant::factory()->create();
 
         $this->contractFor($tenant, now()->addDays(10), now()->addYear());
@@ -171,7 +172,7 @@ class PortalBookingTest extends TestCase
 
     public function test_a_tenant_whose_contract_ended_cannot_request_a_room(): void
     {
-        $room = Room::factory()->create(['status' => 'Tersedia']);
+        $room = $this->room();
         $tenant = Tenant::factory()->create();
 
         $this->contractFor($tenant, now()->subYear(), now()->subMonth(), 'Berakhir');
@@ -185,7 +186,7 @@ class PortalBookingTest extends TestCase
 
     public function test_a_tenant_whose_contract_was_cancelled_cannot_request_a_room(): void
     {
-        $room = Room::factory()->create(['status' => 'Tersedia']);
+        $room = $this->room();
         $tenant = Tenant::factory()->create();
 
         $this->contractFor($tenant, now()->subMonth(), now()->addYear(), 'Dibatalkan');
@@ -199,7 +200,7 @@ class PortalBookingTest extends TestCase
 
     public function test_a_renewed_tenant_can_still_request_a_room(): void
     {
-        $room = Room::factory()->create(['status' => 'Tersedia']);
+        $room = $this->room();
         $tenant = Tenant::factory()->create();
 
         // Kontrak lama sudah berakhir, lalu diperpanjang.
@@ -214,9 +215,32 @@ class PortalBookingTest extends TestCase
         $this->assertDatabaseCount('bookings', 1);
     }
 
+    public function test_a_request_above_the_room_capacity_is_rejected(): void
+    {
+        $room = $this->room(kapasitas: 4);
+
+        $this->actingAs($this->tenantUser())
+            ->post('/portal/ruang', $this->payload($room, ['jumlah_peserta' => 5]))
+            ->assertSessionHasErrors(['jumlah_peserta']);
+
+        $this->assertDatabaseCount('bookings', 0);
+    }
+
+    public function test_a_request_at_the_room_capacity_is_accepted(): void
+    {
+        $room = $this->room(kapasitas: 4);
+
+        $this->actingAs($this->tenantUser())
+            ->post('/portal/ruang', $this->payload($room, ['jumlah_peserta' => 4]))
+            ->assertRedirect('/portal/ruang')
+            ->assertSessionHasNoErrors();
+
+        $this->assertDatabaseCount('bookings', 1);
+    }
+
     public function test_a_tenant_without_a_contract_is_not_restricted(): void
     {
-        $room = Room::factory()->create(['status' => 'Tersedia']);
+        $room = $this->room();
         $tenant = Tenant::factory()->create();
 
         $this->actingAs($this->tenantUser($tenant))
@@ -277,6 +301,17 @@ class PortalBookingTest extends TestCase
     {
         return User::factory()->tenant()->create([
             'tenant_id' => ($tenant ?? Tenant::factory()->create())->id,
+        ]);
+    }
+
+    /**
+     * Ruang uji dengan kapasitas tetap agar jumlah peserta selalu pasti.
+     */
+    private function room(int $kapasitas = 8, string $status = 'Tersedia'): Room
+    {
+        return Room::factory()->create([
+            'kapasitas' => $kapasitas,
+            'status' => $status,
         ]);
     }
 

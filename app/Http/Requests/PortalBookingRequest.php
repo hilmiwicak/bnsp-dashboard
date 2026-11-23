@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\Booking;
+use App\Rules\FitsRoomCapacity;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Carbon;
 use Illuminate\Validation\Rule;
@@ -34,7 +35,10 @@ class PortalBookingRequest extends FormRequest
             'tanggal' => ['required', 'date', 'after_or_equal:today'],
             'jam_mulai' => ['required', 'date_format:H:i'],
             'jam_selesai' => ['required', 'date_format:H:i', 'after:jam_mulai'],
-            'jumlah_peserta' => ['required', 'integer', 'min:1', 'max:500'],
+            'jumlah_peserta' => [
+                'required', 'integer', 'min:1', 'max:500',
+                new FitsRoomCapacity($this->integer('room_id')),
+            ],
             'catatan' => ['nullable', 'string', 'max:500'],
         ];
     }

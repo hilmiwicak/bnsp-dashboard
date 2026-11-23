@@ -25,7 +25,7 @@ class BookingTest extends TestCase
     public function test_index_lists_bookings(): void
     {
         $tenant = Tenant::factory()->create(['nama_perusahaan' => 'PT Nusantara Digital']);
-        $room = Room::factory()->create(['nama_ruang' => 'Anggrek 1']);
+        $room = Room::factory()->create(['nama_ruang' => 'Anggrek 1', 'kapasitas' => 12]);
 
         Booking::factory()->create([
             'kode_pemesanan' => 'PMN-900',
@@ -45,7 +45,7 @@ class BookingTest extends TestCase
     public function test_index_can_be_searched_and_filtered(): void
     {
         $tenant = Tenant::factory()->create(['nama_perusahaan' => 'PT Nusantara Digital']);
-        $room = Room::factory()->create(['nama_ruang' => 'Anggrek 1']);
+        $room = Room::factory()->create(['nama_ruang' => 'Anggrek 1', 'kapasitas' => 12]);
 
         Booking::factory()->create([
             'kode_pemesanan' => 'PMN-901',
@@ -100,7 +100,7 @@ class BookingTest extends TestCase
     public function test_a_booking_can_be_stored(): void
     {
         $tenant = Tenant::factory()->create();
-        $room = Room::factory()->create();
+        $room = Room::factory()->create(['kapasitas' => 12]);
 
         $this->actingAs(User::factory()->create())
             ->post('/pemesanan', $this->payload([
@@ -139,7 +139,7 @@ class BookingTest extends TestCase
     public function test_the_end_time_must_be_after_the_start_time(): void
     {
         $tenant = Tenant::factory()->create();
-        $room = Room::factory()->create();
+        $room = Room::factory()->create(['kapasitas' => 12]);
 
         $this->actingAs(User::factory()->create())
             ->post('/pemesanan', $this->payload([
@@ -154,7 +154,7 @@ class BookingTest extends TestCase
     public function test_an_overlapping_booking_on_the_same_room_is_rejected(): void
     {
         $tenant = Tenant::factory()->create();
-        $room = Room::factory()->create();
+        $room = Room::factory()->create(['kapasitas' => 12]);
 
         Booking::factory()->create([
             'tenant_id' => $tenant->id,
@@ -181,7 +181,7 @@ class BookingTest extends TestCase
     public function test_back_to_back_bookings_on_the_same_room_are_allowed(): void
     {
         $tenant = Tenant::factory()->create();
-        $room = Room::factory()->create();
+        $room = Room::factory()->create(['kapasitas' => 12]);
 
         Booking::factory()->create([
             'tenant_id' => $tenant->id,
@@ -207,7 +207,10 @@ class BookingTest extends TestCase
 
     public function test_a_booking_can_be_updated_without_conflicting_with_itself(): void
     {
+        $room = Room::factory()->create(['kapasitas' => 12]);
+
         $booking = Booking::factory()->create([
+            'room_id' => $room->id,
             'tanggal' => '2026-12-02',
             'jam_mulai' => '09:00',
             'jam_selesai' => '10:00',
@@ -228,6 +231,20 @@ class BookingTest extends TestCase
 
         $this->assertDatabaseHas('bookings', ['id' => $booking->id]);
         $this->assertSame('11:00', $booking->fresh()->jamSelesaiShort());
+    }
+
+    public function test_a_booking_above_the_room_capacity_is_rejected(): void
+    {
+        $room = Room::factory()->create(['kapasitas' => 4]);
+
+        $this->actingAs(User::factory()->create())
+            ->post('/pemesanan', $this->payload([
+                'room_id' => $room->id,
+                'jumlah_peserta' => 5,
+            ]))
+            ->assertSessionHasErrors(['jumlah_peserta']);
+
+        $this->assertDatabaseCount('bookings', 0);
     }
 
     public function test_the_status_can_be_changed_with_one_click(): void
@@ -283,7 +300,7 @@ class BookingTest extends TestCase
         return array_merge([
             'kode_pemesanan' => 'PMN-100',
             'tenant_id' => Tenant::factory()->create()->id,
-            'room_id' => Room::factory()->create()->id,
+            'room_id' => Room::factory()->create(['kapasitas' => 12])->id,
             'tanggal' => '2026-12-05',
             'jam_mulai' => '09:00',
             'jam_selesai' => '10:00',
