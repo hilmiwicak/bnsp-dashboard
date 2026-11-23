@@ -91,6 +91,11 @@ The mentor's prompts, in order:
     same transaction, with `nilai_sewa` 0. The contract status follows the tenant
     status: `Aktif` when the tenant is created active, otherwise `Menunggu
     Verifikasi`. Editing a tenant never touches its contracts.
+28. **Room capacity check** — a new `FitsRoomCapacity` rule compares
+    `jumlah_peserta` with the selected room's `kapasitas` and rejects an oversize
+    booking on both the admin form and the tenant request page. Previously the
+    count was capped at a hardcoded 500 with no relation to the room. Neighbouring
+    tests now pin `kapasitas` so the outcome is deterministic.
 26. **Seeder covers every tenant** — each seeded tenant (`TNT-001` … `TNT-008`)
     now gets a PIC login account on its own PIC email, linked to that tenancy,
     instead of only `TNT-001` having one. The accounts use the demo password
