@@ -119,6 +119,17 @@ The mentor's prompts, in order:
 33. **Invoice explanation note** — `invoices.catatan` is a free-text field, like
     `contracts.catatan`, so the admin can record why a nominal was set. It shows
     under the amount on the invoice list.
+34. **Batch invoice generation** — the **Hitung** panel takes a *Dari Bulan* and an
+    optional *Sampai Bulan*. With a range selected it previews every month with
+    its booking count, duration and amount, then `POST /tagihan-pembayaran/generate`
+    creates one invoice per month (`periode`, computed `jumlah`, due date at that
+    month's end, status `Belum Dibayar`, shared `catatan`). Months that already have
+    an invoice or no approved bookings are skipped and counted in the flash
+    message. A range is capped at 24 months.
+35. **Month pickers** — the billing period is chosen from a list of month names
+    (`November 2026`) instead of typed, in both the **Hitung** panel and the invoice
+    form. The list spans 24 months back to 12 forward and always includes the value
+    currently selected, so editing an old invoice still shows its period.
 
 ---
 
@@ -215,10 +226,12 @@ PIC account on its own email (e.g. `budi@nusantaradigital.co.id` for
    period and status **Aktif**, then **Simpan Kontrak**. The *Durasi* column shows
    the months between the two dates. Contracts carry no price any more.
 2. **Tagihan & Pembayaran** → **Terbitkan Tagihan** (*nomor* prefilled
-   `INV-025`). In the **Hitung dari Pemakaian Ruang** panel pick a tenant and the
-   current month, then **Hitung** — the total of that tenant's `Disetujui` and
+   `INV-025`). In the **Hitung dari Pemakaian Ruang** panel pick a tenant and a
+   *Dari Bulan*, then **Hitung** — the total of that tenant's `Disetujui` and
    `Selesai` bookings appears and *Jumlah Tagihan* fills in. Adjust it if you
    like, add a *Catatan* explaining the figure, then **Simpan Tagihan**.
+   Filling *Sampai Bulan* instead shows one row per month and a **Terbitkan N
+   Tagihan** button that creates them all at once.
 3. The row shows an amber *Belum Dibayar* badge and a **Tandai Lunas** button.
    Click it — the badge turns green *Lunas* and the *Pembayaran* column fills in
    today's date.
